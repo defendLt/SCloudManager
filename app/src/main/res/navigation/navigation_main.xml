@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_main"
+    app:startDestination="@id/loginFragment">
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.platdmit.simplecloudmanager.app.fragments.LoginFragment"
+        android:label="@string/navigation_login" />
+    <fragment
+        android:id="@+id/domainListFragment"
+        android:name="com.platdmit.simplecloudmanager.app.fragments.DomainListFragment"
+        android:label="@string/navigation_domains" >
+        <action
+            android:id="@+id/action_domainListFragment_to_domainFragment"
+            app:destination="@id/domainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/domainFragment"
+        android:name="com.platdmit.simplecloudmanager.app.fragments.DomainFragment"
+        android:label="DomainFragment" >
+        <argument
+            android:name="ID"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/serverListFragment"
+        android:name="com.platdmit.simplecloudmanager.app.fragments.ServerListFragment"
+        android:label="@string/navigation_servers" >
+        <action
+            android:id="@+id/action_serverListFragment_to_serverFragment"
+            app:destination="@id/serverFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/serverFragment"
+        android:name="com.platdmit.simplecloudmanager.app.fragments.ServerFragment"
+        android:label="" >
+        <argument
+            android:name="ID"
+            app:argType="integer" />
+    </fragment>
+</navigation>

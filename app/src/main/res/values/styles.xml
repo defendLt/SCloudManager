@@ -1,0 +1,178 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorBaseDark</item>
+        <item name="colorPrimaryDark">@color/colorBaseDark</item>
+        <item name="colorAccent">@color/colorBaseLight</item>
+        <item name="android:windowBackground">@color/colorBaseDark</item>
+        <item name="android:navigationBarColor">@color/colorBaseDark</item>
+        <item name="android:textColorPrimary">@color/colorBaseLight</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+    <style name="BaseTitle">
+        <item name="android:textColor">@color/colorBaseWhite</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="BaseDesc">
+        <item name="android:textColor">@color/colorBaseLight</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="ListItemStatusBox">
+        <item name="android:textColor">@color/colorBaseWhite</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:background">@drawable/status_box_left_round</item>
+        <item name="android:paddingBottom">6dp</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">12dp</item>
+    </style>
+    <style name="ListItemStatusBox.green">
+        <item name="android:background">@drawable/status_box_ok_left_round</item>
+    </style>
+
+    <style name="ListItemStatusBox.allRound">
+        <item name="android:background">@drawable/status_box_all_round</item>
+        <item name="android:paddingEnd">8dp</item>
+    </style>
+
+    <style name="ListItemStatusBox.allRound.green">
+        <item name="android:background">@drawable/status_box_ok_all_round</item>
+    </style>
+
+    <style name="BaseListItem">
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:minHeight">60dp</item>
+    </style>
+
+    <style name="BaseListItem.Action">
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginEnd">10dp</item>
+    </style>
+
+    <style name="BaseListItem.Server">
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginEnd">10dp</item>
+    </style>
+
+    <style name="BaseListItem.Domain">
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginEnd">10dp</item>
+    </style>
+
+    <style name="BaseListItem.Backup">
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginEnd">10dp</item>
+    </style>
+
+
+    <style name="DomainRecordListTitle">
+        <item name="android:textColor">@color/colorBaseWhite</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:textSize">11sp</item>
+    </style>
+    <style name="DomainRecordListValue">
+        <item name="android:textColor">@color/colorBaseLight</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+
+    <style name="ActionTitle">
+        <item name="android:textColor">@color/colorBaseWhite</item>
+        <item name="android:textSize">10sp</item>
+    </style>
+    <style name="ActionValue">
+        <item name="android:textColor">@color/colorBaseLight</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="ServerTabLayout" parent="Widget.Design.TabLayout">
+        <item name="android:background">@color/colorBaseDark</item>
+        <item name="tabBackground">@color/colorBaseDark</item>
+        <item name="tabIndicatorColor">@color/colorBaseWhite</item>
+        <item name="tabSelectedTextColor">@color/colorBaseWhite</item>
+        <item name="tabTextColor">@color/colorBaseLight</item>
+        <item name="android:elevation">2dp</item>
+        <item name="tabMode">scrollable</item>
+    </style>
+    
+    <style name="BottomTabPanel" parent="Widget.Design.BottomNavigationView">
+        <item name="itemTextColor">@color/colorBaseWhite</item>
+        <item name="itemIconTint">@color/colorBaseWhite</item>
+        <item name="itemBackground">@color/colorBaseDark</item>
+        <item name="android:background">@color/colorBaseDark</item>
+    </style>
+
+    <style name="LoginFormInput">
+        <item name="android:textColorHint">@color/colorBaseLight</item>
+        <item name="android:textColor">@color/colorBaseWhite</item>
+        <item name="android:backgroundTint">@color/colorBaseLight</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="LoginFormInput.Pin">
+        <item name="android:maxLength">4</item>
+        <item name="android:textSize">40sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:backgroundTint">@color/colorBaseDark</item>
+        <item name="android:cursorVisible">false</item>
+    </style>
+    <style name="LoginFormButton">
+        <item name="android:textColor">@color/colorBaseWhite</item>
+        <item name="android:textSize">12sp</item>
+        <item name="backgroundTint">@drawable/btn_login_form</item>
+    </style>
+
+    <style name="ListItemHeader">
+        <item name="android:paddingBottom">10dp</item>
+    </style>
+
+    <style name="DetailPageHeader">
+        <item name="android:layout_marginLeft">18dp</item>
+        <item name="android:layout_marginRight">18dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+    </style>
+
+    <style name="DetailPageHeader.Domain">
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+    </style>
+
+    <style name="SeparationBorder">
+        <item name="android:background">@color/colorBaseLight</item>
+    </style>
+
+    <style name="SeparationBorder.Vertical">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">11dp</item>
+        <item name="android:layout_marginStart">10dp</item>
+    </style>
+
+    <style name="SeparationBorder.Horizontal">
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
+    <style name="ItemLogo">
+        <item name="android:src">@drawable/server_default_image</item>
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+    </style>
+
+</resources>

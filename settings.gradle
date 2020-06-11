@@ -1,0 +1,2 @@
+rootProject.name='SimpleCloudManager'
+include ':app'

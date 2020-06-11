@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="start"
+    style="@style/BaseListItem.Server"
+    android:paddingEnd="0dp">
+
+    <ImageView
+        android:id="@+id/server_image_logo"
+        style="@style/ItemLogo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/server_name"
+        style="@style/BaseTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="@string/data_empty_name"
+        app:layout_constraintBottom_toTopOf="@+id/server_uptime"
+        app:layout_constraintEnd_toStartOf="@+id/server_status"
+        app:layout_constraintStart_toEndOf="@+id/server_image_logo"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/server_uptime"
+        style="@style/BaseDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/data_empty_uptime"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/server_image_logo"
+        app:layout_constraintTop_toBottomOf="@+id/server_name"
+        app:layout_constraintEnd_toStartOf="@+id/border_line"/>
+
+    <ImageView
+        style="@style/SeparationBorder.Vertical"
+        android:id="@+id/border_line"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/server_id"
+        app:layout_constraintStart_toEndOf="@+id/server_uptime"
+        app:layout_constraintTop_toBottomOf="@+id/server_name" />
+
+    <TextView
+        android:id="@+id/server_id"
+        style="@style/BaseDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/data_empty_id"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/border_line"
+        app:layout_constraintTop_toBottomOf="@+id/server_name" />
+
+    <TextView
+        android:id="@+id/server_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/ListItemStatusBox.green"
+        android:text="@string/data_empty_status"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        style="@style/SeparationBorder.Horizontal"
+        android:id="@+id/bottom_border"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@+id/server_id"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

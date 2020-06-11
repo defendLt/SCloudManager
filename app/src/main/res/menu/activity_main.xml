@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <item
+        android:id="@+id/serverListFragment"
+        android:icon="@drawable/bottom_nav_server"
+        android:title="@string/navigation_servers" />
+    <item
+        android:id="@+id/domainListFragment"
+        android:icon="@drawable/bottom_nav_domain"
+        android:title="@string/navigation_domains" />
+</menu>

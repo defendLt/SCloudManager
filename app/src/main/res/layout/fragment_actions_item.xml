@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/BaseListItem.Action"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="start">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        style="@style/ListItemHeader"
+        android:id="@+id/action_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/action_type_title">
+
+        <TextView
+            android:id="@+id/action_id"
+            style="@style/ActionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/data_empty_id"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/action_start"
+            style="@style/ActionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/data_empty_start"
+            app:layout_constraintEnd_toStartOf="@+id/action_complete"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/action_complete"
+            style="@style/ActionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/data_empty_complete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/action_type_title"
+        style="@style/ActionTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/action_type"
+        app:layout_constraintBottom_toTopOf="@+id/action_type"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/action_top" />
+
+    <TextView
+        android:id="@+id/action_type"
+        style="@style/ActionValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/data_empty_type"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/action_type_title" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.45" />
+
+    <TextView
+        android:id="@+id/action_initiator_title"
+        style="@style/ActionTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/action_initiator"
+        app:layout_constraintBottom_toTopOf="@+id/action_initiator"
+        app:layout_constraintEnd_toStartOf="@+id/action_status"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/action_top" />
+
+    <TextView
+        android:id="@+id/action_initiator"
+        style="@style/ActionValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/data_empty_initiator"
+        app:layout_constraintTop_toBottomOf="@+id/action_initiator_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/action_status"
+        app:layout_constraintStart_toEndOf="@+id/guideline" />
+
+    <TextView
+        android:id="@+id/action_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/ListItemStatusBox.green"
+        android:text="@string/data_empty_status"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/action_top" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
