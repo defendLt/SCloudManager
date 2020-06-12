@@ -8,6 +8,7 @@ import com.platdmit.simplecloudmanager.data.api.models.ApiRequestBody;
 import com.platdmit.simplecloudmanager.data.api.rest.RestDomain;
 import com.platdmit.simplecloudmanager.domain.helpers.ActualApiKeyService;
 
+import java.io.IOException;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Single;
@@ -37,7 +38,10 @@ public class ApiDomainRepoImp implements ApiDomainRepo {
                 } else {
                     throw new Throwable(response.message());
                 }
-            } catch (Exception e) {
+            } catch (IOException e) {
+                System.out.println(TAG+ e.getLocalizedMessage());
+            } catch (Exception e){
+                System.out.println(TAG+ e.getLocalizedMessage());
                 requestResult.onError(e);
             }
         });
@@ -54,7 +58,10 @@ public class ApiDomainRepoImp implements ApiDomainRepo {
                 } else {
                     throw new Throwable(response.message());
                 }
-            } catch (Exception e) {
+            } catch (IOException e) {
+                System.out.println(TAG+ e.getLocalizedMessage());
+            } catch (Exception e){
+                System.out.println(TAG+ e.getLocalizedMessage());
                 requestResult.onError(e);
             }
         });
@@ -71,7 +78,10 @@ public class ApiDomainRepoImp implements ApiDomainRepo {
                 } else {
                     throw new Throwable(response.message());
                 }
-            } catch (Exception e) {
+            } catch (IOException e) {
+                System.out.println(TAG+ e.getLocalizedMessage());
+            } catch (Exception e){
+                System.out.println(TAG+ e.getLocalizedMessage());
                 requestResult.onError(e);
             }
         });
@@ -88,7 +98,10 @@ public class ApiDomainRepoImp implements ApiDomainRepo {
                 } else {
                     throw new Throwable(response.message());
                 }
-            } catch (Exception e) {
+            } catch (IOException e) {
+                System.out.println(TAG+ e.getLocalizedMessage());
+            } catch (Exception e){
+                System.out.println(TAG+ e.getLocalizedMessage());
                 requestResult.onError(e);
             }
         });
