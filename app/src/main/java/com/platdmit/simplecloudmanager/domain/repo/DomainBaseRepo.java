@@ -9,4 +9,5 @@ import io.reactivex.rxjava3.core.Observable;
 public interface DomainBaseRepo {
     Observable<List<Domain>> getDomains();
     Observable<Domain> getDomain(long id);
+    void nextUpdate();
 }

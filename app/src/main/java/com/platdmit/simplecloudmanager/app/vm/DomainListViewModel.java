@@ -29,7 +29,7 @@ public class DomainListViewModel extends BaseViewModel {
     }
 
     public void reloadDomainList() {
-
+        mDomainRepo.nextUpdate();
     }
 
     public LiveData<List<Domain>> getDomainsLiveData() {

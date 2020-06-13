@@ -2,7 +2,6 @@ package com.platdmit.simplecloudmanager.app.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -28,19 +27,15 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class ServerListFragment extends Fragment {
     private static final String TAG = ServerListFragment.class.getSimpleName();
 
     private ServerListViewModel mServerListViewModel;
     private RecyclerView mRecyclerView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private ServerListAdapter mServerListAdapter;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
 
     @Nullable
     @Override
@@ -62,6 +57,9 @@ public class ServerListFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_servers_list, container, false);
 
+        mSwipeRefreshLayout = v.findViewById(R.id.update_swipe);
+        mSwipeRefreshLayout.setOnRefreshListener(() -> mServerListViewModel.reloadServerList());
+
         mRecyclerView = v.findViewById(R.id.fragments_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mServerListAdapter = new ServerListAdapter();
@@ -71,23 +69,13 @@ public class ServerListFragment extends Fragment {
         return v;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.refresh_data:
-                mServerListViewModel.reloadServerList();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     private void showResultMassage(String massage){
         Snackbar.make(getView(), massage, Snackbar.LENGTH_SHORT).show();
     }
 
     private void updateAdapterData(List<Server> servers){
         mServerListAdapter.setContentData(servers);
+        mSwipeRefreshLayout.setRefreshing(false);
         if(mRecyclerView.getAdapter() == null){
             mRecyclerView.setAdapter(mServerListAdapter);
         } else {

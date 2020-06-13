@@ -28,18 +28,19 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class DomainListFragment extends Fragment {
     private static final String TAG = DomainFragment.class.getSimpleName();
 
     private DomainListViewModel mDomainListViewModel;
     private RecyclerView mRecyclerView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private DomainListAdapter mDomainListAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -64,21 +65,13 @@ public class DomainListFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mDomainListAdapter = new DomainListAdapter();
 
+        mSwipeRefreshLayout = v.findViewById(R.id.update_swipe);
+        mSwipeRefreshLayout.setOnRefreshListener(() -> mDomainListViewModel.reloadDomainList());
+
         mDomainListViewModel.getDomainsLiveData().observe(getViewLifecycleOwner(), this::updateAdapterData);
         mDomainListViewModel.getResultMassage().observe(getViewLifecycleOwner(), this::showResultMassage);
 
         return v;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.refresh_data:
-                mDomainListViewModel.reloadDomainList();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     private void showResultMassage(String massage){
@@ -87,6 +80,7 @@ public class DomainListFragment extends Fragment {
 
     private void updateAdapterData(List<Domain> domains){
         mDomainListAdapter.setContentData(domains);
+        mSwipeRefreshLayout.setRefreshing(false);
         if(mRecyclerView.getAdapter() == null){
             mRecyclerView.setAdapter(mDomainListAdapter);
         } else {

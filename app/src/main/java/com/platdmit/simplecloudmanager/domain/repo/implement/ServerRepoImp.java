@@ -32,11 +32,9 @@ import com.platdmit.simplecloudmanager.domain.repo.ServerStatisticsRepo;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import androidx.lifecycle.MutableLiveData;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 
@@ -242,7 +240,6 @@ public class ServerRepoImp implements
 
     private Observable<List<DbServer>> getBdOrApiServers(boolean status){
         if (status) {
-            System.out.println("GETDB!");
             return Observable.just(mDbServerRepo.getAll());
         } else {
             return mApiServerRepo.getServers()

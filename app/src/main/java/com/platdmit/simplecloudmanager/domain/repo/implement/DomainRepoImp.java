@@ -13,19 +13,16 @@ import com.platdmit.simplecloudmanager.domain.models.Domain;
 import com.platdmit.simplecloudmanager.domain.repo.DomainBaseRepo;
 
 import java.util.List;
-import java.util.Observer;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.ObservableSource;
-import io.reactivex.rxjava3.functions.Function;
-import io.reactivex.rxjava3.functions.Supplier;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.rxjava3.subjects.PublishSubject;
 
 public class DomainRepoImp implements DomainBaseRepo {
     private static final String TAG = DomainRepoImp.class.getSimpleName();
 
+    private PublishSubject<Boolean> handCall = PublishSubject.create();
     private List<DbDomain> mDbDomains;
 
     private ApiDomainRepo mApiDomainRepo;
@@ -71,7 +68,7 @@ public class DomainRepoImp implements DomainBaseRepo {
                 .onErrorComplete(throwable -> {
                     System.out.println(throwable.getMessage());
                     return true;
-                }).repeatWhen(updateController -> updateController.delay(1, TimeUnit.MINUTES))
+                }).repeatWhen(updateController -> handCall.hide())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
@@ -103,5 +100,10 @@ public class DomainRepoImp implements DomainBaseRepo {
                     return true;
                 })
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public void nextUpdate() {
+        handCall.onNext(true);
     }
 }
