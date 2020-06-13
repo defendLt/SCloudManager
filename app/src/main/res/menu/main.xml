@@ -4,7 +4,7 @@
     <item
         android:id="@+id/refresh_data"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_refresh_black_24dp"
-        android:title="@string/top_menu_refresh"
+        android:icon="@drawable/ab_account_settings"
+        android:title="@string/top_menu_settings"
         app:showAsAction="always" />
 </menu>
