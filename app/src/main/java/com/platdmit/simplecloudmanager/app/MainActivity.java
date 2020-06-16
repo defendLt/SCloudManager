@@ -7,12 +7,15 @@ import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.platdmit.simplecloudmanager.R;
-import com.platdmit.simplecloudmanager.app.fragments.DomainFragment;
 import com.platdmit.simplecloudmanager.app.helpers.UiVisibilityStatus;
+import com.platdmit.simplecloudmanager.app.vm.MainViewModel;
+import com.platdmit.simplecloudmanager.app.vm.factory.MainActivityViewModelFactory;
+import com.platdmit.simplecloudmanager.domain.SCMApp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -24,11 +27,20 @@ public class MainActivity extends AppCompatActivity implements UiVisibilityStatu
     private AppBarConfiguration mAppBarConfiguration;
     private BottomNavigationView mBottomNavigationView;
     private Toolbar mToolbar;
+    private MainViewModel mMainViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (savedInstanceState != null) {
+            mMainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        } else {
+            mMainViewModel = new ViewModelProvider(this,
+                    new MainActivityViewModelFactory(SCMApp.getActualApiKeyService())
+            ).get(MainViewModel.class);
+        }
 
         toolbarInit();
         navigationInit();
