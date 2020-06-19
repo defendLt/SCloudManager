@@ -62,9 +62,7 @@ class DomainListFragment : Fragment() {
     private fun updateAdapterData(domains: List<Domain>) {
         mDomainListAdapter.setContentData(domains)
         update_swipe.isRefreshing = false
-        fragments_list.adapter?.let {
-            fragments_list.adapter = mDomainListAdapter
-        }
+
         if (fragments_list.adapter == null) {
             fragments_list.adapter = mDomainListAdapter
         } else {
