@@ -1,9 +1,5 @@
 package com.platdmit.simplecloudmanager.domain.models
 
-class Domain {
+data class Domain(val id: Long, val name: String, val type: String, val deleteDate: String, val isDelegate: Boolean) {
     var domainRecords: List<DomainRecord>? = null
-
-    constructor(name: String, type: String);
-
-    constructor(id: Long, name: String, type: String, deleteDate: String, isDelegate: Boolean);
 }
