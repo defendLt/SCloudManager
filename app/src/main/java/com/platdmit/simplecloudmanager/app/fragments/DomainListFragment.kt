@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.main.fragment_domains_list.*
 class DomainListFragment : Fragment() {
     private lateinit var mDomainListViewModel: DomainListViewModel
     private val mDomainListAdapter: DomainListAdapter = DomainListAdapter()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mDomainListViewModel = if (savedInstanceState != null) {
@@ -41,14 +42,17 @@ class DomainListFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View = inflater.inflate(R.layout.fragment_domains_list, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         fragments_list.layoutManager = LinearLayoutManager(context)
         update_swipe.setOnRefreshListener{mDomainListViewModel.reloadDomainList()}
 
         mDomainListViewModel.domainsLiveData.observe(viewLifecycleOwner, Observer {updateAdapterData(it)})
         mDomainListViewModel.resultMassage.observe(viewLifecycleOwner, Observer {showResultMassage(it)})
-
-        return inflater.inflate(R.layout.fragment_domains_list, container, false)
     }
 
     private fun showResultMassage(massage: String) {
