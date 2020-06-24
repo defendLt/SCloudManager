@@ -18,15 +18,9 @@ class DomainConvertImp : DomainConverter {
         return Domain(apiDomain.id, apiDomain.name, apiDomain.type, apiDomain.deleteDate, apiDomain.isDelegated)
     }
 
-    override fun fromApiToDomainList(apiList: List<ApiDomain>): List<Domain> {
-        return apiList.map { fromApiToDomain(it) }.toList()
-    }
+    override fun fromApiToDomainList(apiList: List<ApiDomain>): List<Domain> = apiList.map { fromApiToDomain(it) }
 
-    override fun fromDbToDomainList(dbList: List<DbDomain>): List<Domain> {
-        return dbList.map { fromDbToDomain(it) }.toList()
-    }
+    override fun fromDbToDomainList(dbList: List<DbDomain>): List<Domain> = dbList.map { fromDbToDomain(it) }
 
-    override fun fromApiToDbList(apiList: List<ApiDomain>): List<DbDomain> {
-        return apiList.map { fromApiToDb(it) }.toList()
-    }
+    override fun fromApiToDbList(apiList: List<ApiDomain>): List<DbDomain> = apiList.map { fromApiToDb(it) }
 }
