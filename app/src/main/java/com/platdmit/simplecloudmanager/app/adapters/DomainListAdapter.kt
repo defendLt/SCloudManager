@@ -1,9 +1,9 @@
 package com.platdmit.simplecloudmanager.app.adapters
 
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.platdmit.simplecloudmanager.R
@@ -38,9 +38,7 @@ class DomainListAdapter : RecyclerView.Adapter<DomainListHolder>() {
             mName.text = data.name
             mType.text = data.type
             itemView.setOnClickListener {
-                val bundle = Bundle()
-                bundle.putLong("ELEMENT_ID", data.id)
-                Navigation.findNavController(it).navigate(R.id.domainFragment, bundle)
+                Navigation.findNavController(it).navigate(R.id.domainFragment, bundleOf("ELEMENT_ID" to data.id))
             }
         }
     }

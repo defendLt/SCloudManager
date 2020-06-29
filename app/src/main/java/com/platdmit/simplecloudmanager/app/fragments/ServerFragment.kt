@@ -51,17 +51,20 @@ class ServerFragment : Fragment() {
 
         mServerViewModel.serverLiveData.observe(viewLifecycleOwner, Observer { initData(it) })
 
-        val serverViewPagerAdapter = ServerViewStateAdapter.Builder()
+        val serverViewPagerAdapter = ServerViewStateAdapter
                 .add(ServerTabMainFragment(resources.getString(R.string.server_tab_main)))
                 .add(ServerTabActionsFragment(resources.getString(R.string.server_tab_action)))
                 .add(ServerTabBackupsFragment(resources.getString(R.string.server_tab_backups)))
                 .add(ServerTabStatisticsFragment(resources.getString(R.string.server_tab_statistics)))
                 .build(childFragmentManager, lifecycle, requireArguments().getLong("ELEMENT_ID"))
 
-        view_pager.adapter = serverViewPagerAdapter
-
-        TabLayoutMediator(tabs, view_pager, TabConfigurationStrategy { tab: TabLayout.Tab, position: Int -> tab.text = serverViewPagerAdapter.getPageTitle(position) }).attach()
-    }
+        serverViewPagerAdapter?.let {
+            view_pager.adapter = it
+            TabLayoutMediator(tabs, view_pager, TabConfigurationStrategy {
+                tab: TabLayout.Tab, position: Int -> tab.text = it.getPageTitle(position)
+            }).attach()
+        }
+     }
 
     @SuppressLint("SetTextI18n")
     private fun initData(server: Server) {
