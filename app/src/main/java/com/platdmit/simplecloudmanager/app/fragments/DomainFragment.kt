@@ -35,9 +35,9 @@ class DomainFragment : Fragment() {
             ViewModelProvider(this,
                     SingleElementViewModelFactory(
                             DomainRepoImp(
-                                    ApiDomainRepoImp(SCMApp.getActualApiKeyService()), SCMApp.getDb(),
+                                    ApiDomainRepoImp(SCMApp.actualApiKeyService), SCMApp.db,
                                     DomainConvertImp(), DomainRecordConvertImp(),
-                                    ContentUpdateService(UpdateScheduleRepImp(SCMApp.getDb()))
+                                    ContentUpdateService(UpdateScheduleRepImp(SCMApp.db))
                             ), DomainBaseRepo::class.java, requireArguments().getLong("ELEMENT_ID")
                     )).get(DomainViewModel::class.java)
             //TODO fix requireArguments

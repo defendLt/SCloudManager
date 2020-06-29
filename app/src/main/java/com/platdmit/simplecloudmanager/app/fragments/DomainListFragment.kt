@@ -35,8 +35,8 @@ class DomainListFragment : Fragment() {
             ViewModelProvider(this,
                     ListElementsViewModelFactory(
                             DomainRepoImp(
-                                    ApiDomainRepoImp(SCMApp.getActualApiKeyService()), SCMApp.getDb(),
-                                    DomainConvertImp(), ContentUpdateService(UpdateScheduleRepImp(SCMApp.getDb()))
+                                    ApiDomainRepoImp(SCMApp.actualApiKeyService), SCMApp.db,
+                                    DomainConvertImp(), ContentUpdateService(UpdateScheduleRepImp(SCMApp.db))
                             ), DomainBaseRepo::class.java
                     )).get(DomainListViewModel::class.java)
         }
