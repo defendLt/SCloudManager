@@ -15,7 +15,7 @@ import org.mindrot.BCrypt
 
 class AccountRepoImp(private val mApiAccountRepo: ApiAccountRepo, dbManager: DbManager, private val mAccountConverter: AccountConverter) : AccountRepo {
     private val mDbAccountRepo: AccountDao = dbManager.mAccountDao()
-    override fun getActiveAccount(): Single<UserAccount?> {
+    override fun getActiveAccount(): Single<UserAccount> {
         return Single.create {
             val dbAccount = mDbAccountRepo.baseAccount
             if (dbAccount != null) {
@@ -28,7 +28,7 @@ class AccountRepoImp(private val mApiAccountRepo: ApiAccountRepo, dbManager: DbM
         }
     }
 
-    override fun getPrepareAccountInfo(login: String, pass: String): Single<UserAccount?> {
+    override fun getPrepareAccountInfo(login: String, pass: String): Single<UserAccount> {
         return mApiAccountRepo.getApiKey(login, pass)
                 .subscribeOn(Schedulers.newThread())
                 .flatMap {

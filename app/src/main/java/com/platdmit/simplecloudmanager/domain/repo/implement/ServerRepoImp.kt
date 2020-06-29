@@ -18,6 +18,8 @@ import java.util.concurrent.TimeUnit
 class ServerRepoImp : ServerBaseRepo, ServerActionsRepo, ServerStatisticsRepo, ServerBackupRepo, ServerLoadAveragesRepo {
     private val handCall = PublishSubject.create<Boolean>()
     private val mApiServerRepo: ApiServerRepo
+    private val mUpdateScheduleService: UpdateScheduleService
+
     private lateinit var mDbServerRepo: ServerDao
     private lateinit var mDbActionRepo: ActionDao
     private lateinit var mDbBackupRepo: BackupDao
@@ -28,7 +30,6 @@ class ServerRepoImp : ServerBaseRepo, ServerActionsRepo, ServerStatisticsRepo, S
     private lateinit var mBackupConverter: BackupConverter
     private lateinit var mStatisticConverter: StatisticConverter
     private lateinit var mLoadAverageConverter: LoadAverageConverter
-    private val mUpdateScheduleService: UpdateScheduleService
 
     constructor(apiServerRepo: ApiServerRepo, dbManager: DbManager, serverConverter: ServerConverter, updateScheduleService: UpdateScheduleService) {
         mApiServerRepo = apiServerRepo
@@ -90,10 +91,6 @@ class ServerRepoImp : ServerBaseRepo, ServerActionsRepo, ServerStatisticsRepo, S
                 it.onError(e)
             }
         }
-    }
-
-    override fun nextUpdate() {
-        handCall.onNext(true)
     }
 
     override fun getServerActions(id: Long): Observable<List<Action>> {
@@ -184,6 +181,10 @@ class ServerRepoImp : ServerBaseRepo, ServerActionsRepo, ServerStatisticsRepo, S
                 .flatMap {Observable.just(mStatisticConverter.fromDbToDomainList(it))}
                 .repeatWhen {it.delay(1, TimeUnit.MINUTES)}
                 .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    override fun nextUpdate() {
+        handCall.onNext(true)
     }
 
     private fun getBdOrApiServers(status: Boolean): Observable<List<DbServer>> {

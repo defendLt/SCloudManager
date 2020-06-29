@@ -14,11 +14,11 @@ class UpdateScheduleRepImp(dbManager: DbManager) : UpdateScheduleRepo {
     }
 
     override fun getUpdateTime(key: String): Long {
-        return mDbManager.getScheduleForName(key).nextUpdate ?: 0
+        return mDbManager.getScheduleForName(key)?.nextUpdate ?: 0
     }
 
     override fun setUpdateTime(key: String, nextUpdate: Long) {
-        Completable.fromAction { mDbManager.insert(DbUpdateSchedule(key, nextUpdate)) }.observeOn(Schedulers.io()).subscribe()
+        Completable.fromAction {mDbManager.insert(DbUpdateSchedule(key, nextUpdate))}.observeOn(Schedulers.io()).subscribe()
     }
 
     companion object {

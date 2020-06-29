@@ -18,10 +18,11 @@ class DomainRepoImp : DomainBaseRepo {
     private val handCall = PublishSubject.create<Boolean>()
     private val mApiDomainRepo: ApiDomainRepo
     private val mDbDomainRepo: DomainDao
-    private lateinit var mDbDomainRecordRepo: DomainRecordDao
     private val mDomainConverter: DomainConverter
-    private lateinit var mDomainRecordConverter: DomainRecordConverter
     private val mUpdateScheduleService: UpdateScheduleService
+
+    private lateinit var mDbDomainRecordRepo: DomainRecordDao
+    private lateinit var mDomainRecordConverter: DomainRecordConverter
 
     constructor(apiDomainRepo: ApiDomainRepo, dbManager: DbManager, domainConverter: DomainConverter, updateScheduleService: UpdateScheduleService) {
         mApiDomainRepo = apiDomainRepo
@@ -44,7 +45,7 @@ class DomainRepoImp : DomainBaseRepo {
             if (mUpdateScheduleService.getActualStatus(TAG)) {
                 return@defer Observable.just(mDbDomainRepo.all)
             } else {
-                return@defer mApiDomainRepo.domains.flatMapObservable {
+                return@defer mApiDomainRepo.getDomains().flatMapObservable {
                     val dbDomains = mDomainConverter.fromApiToDbList(it)
                     mDbDomainRepo.insertList(dbDomains)
                     Observable.just(dbDomains)
@@ -53,8 +54,8 @@ class DomainRepoImp : DomainBaseRepo {
         }
                 .subscribeOn(Schedulers.newThread())
                 .flatMap { Observable.just(mDomainConverter.fromDbToDomainList(it!!)) }
-                .onErrorComplete { throwable: Throwable ->
-                    println(throwable.message)
+                .onErrorComplete {
+                    println(it.message)
                     true
                 }.repeatWhen { handCall.hide() }
                 .observeOn(AndroidSchedulers.mainThread())
@@ -80,8 +81,8 @@ class DomainRepoImp : DomainBaseRepo {
                     domain.domainRecords = mDomainRecordConverter.fromDbToDomainList(it)
                     Observable.just(domain)
                 }
-                .onErrorComplete { throwable: Throwable ->
-                    println(throwable.message)
+                .onErrorComplete {
+                    println(it.message)
                     true
                 }
                 .observeOn(AndroidSchedulers.mainThread())
