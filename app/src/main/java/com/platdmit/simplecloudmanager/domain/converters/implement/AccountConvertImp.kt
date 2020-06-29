@@ -21,25 +21,23 @@ class AccountConvertImp : AccountConverter {
     override fun fromApiToDomain(apiAccount: ApiAccount, password: String): UserAccount {
         return UserAccount(
                 apiAccount.uuid.toLong(),
-                true,
                 apiAccount.isSubaccount,
                 apiAccount.login,
                 password,
                 apiAccount.balance,
-                apiAccount.vpsLimit,
-                ""
+                apiAccount.vpsLimit
         )
     }
 
     override fun fromDbToDomain(dbAccount: DbAccount): UserAccount {
         return UserAccount(
                 dbAccount.id,
-                dbAccount.isMain,
                 dbAccount.isSubAccount,
                 dbAccount.login,
                 dbAccount.pass,
                 dbAccount.balance,
                 dbAccount.vpsLimit,
+                dbAccount.isMain,
                 dbAccount.pin
         )
     }
@@ -47,7 +45,7 @@ class AccountConvertImp : AccountConverter {
     override fun fromDomainToDb(userAccount: UserAccount): DbAccount {
         return DbAccount(
                 userAccount.id,
-                userAccount.isSubAccount,
+                userAccount.subAccount,
                 userAccount.login,
                 userAccount.email,
                 userAccount.pass,

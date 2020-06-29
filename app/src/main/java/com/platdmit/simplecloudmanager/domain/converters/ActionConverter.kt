@@ -7,6 +7,6 @@ import com.platdmit.simplecloudmanager.domain.models.Action
 interface ActionConverter {
     fun fromApiToDb(apiAction: ApiAction): DbAction
     fun fromDbToDomain(dbAction: DbAction): Action
-    fun fromDbToDomainList(dbList: List<DbAction>): List<Action?>
-    fun fromApiToDbList(apiList: List<ApiAction>): List<DbAction?>
+    fun fromDbToDomainList(dbList: List<DbAction>): List<Action>
+    fun fromApiToDbList(apiList: List<ApiAction>): List<DbAction>
 }

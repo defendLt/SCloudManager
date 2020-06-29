@@ -34,9 +34,9 @@ class ActionConvertImp : ActionConverter {
         )
     }
 
-    override fun fromDbToDomainList(dbList: List<DbAction>): List<Action?> = dbList.map { fromDbToDomain(it) }
+    override fun fromDbToDomainList(dbList: List<DbAction>): List<Action> = dbList.map { fromDbToDomain(it) }
 
-    override fun fromApiToDbList(apiList: List<ApiAction>): List<DbAction?> = apiList.map { fromApiToDb(it) }
+    override fun fromApiToDbList(apiList: List<ApiAction>): List<DbAction> = apiList.map { fromApiToDb(it) }
 
     private fun actionDateConvert(date: String): String {
         try {
