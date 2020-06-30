@@ -38,7 +38,7 @@ class AccountConvertImp : AccountConverter {
                 dbAccount.balance,
                 dbAccount.vpsLimit,
                 dbAccount.isMain,
-                dbAccount.pin
+                dbAccount.pin.orEmpty()
         )
     }
 

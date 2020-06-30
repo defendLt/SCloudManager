@@ -8,7 +8,7 @@ import com.platdmit.simplecloudmanager.domain.models.Size
 class SizeConvertImp : SizeConverter {
     override fun fromApiToDb(apiSize: ApiSize): DbSize {
         return DbSize(
-                apiSize.id,
+                apiSize.id.toLong(),
                 apiSize.slug,
                 apiSize.memory,
                 apiSize.vcpus,
@@ -26,7 +26,7 @@ class SizeConvertImp : SizeConverter {
     override fun fromDbToDomain(dbSize: DbSize): Size {
         return Size(
                 dbSize.id,
-                dbSize.netId,
+                dbSize.id.toString(),
                 dbSize.slug,
                 dbSize.memory,
                 dbSize.vcpus,
