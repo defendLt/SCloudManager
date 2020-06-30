@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.platdmit.simplecloudmanager.app.helpers.charts.serverValueFormatter
+import com.platdmit.simplecloudmanager.app.helpers.charts.ServerValueFormatter
 import com.platdmit.simplecloudmanager.domain.models.ComplexChartsData
 import com.platdmit.simplecloudmanager.domain.models.Statistic
 import com.platdmit.simplecloudmanager.domain.repo.ServerStatisticsRepo
@@ -38,13 +38,13 @@ class StatisticsViewModel(private val mServerStatisticsRepo: ServerStatisticsRep
             mRamDataCharts.postValue(
                     ComplexChartsData(
                             LineData(LineDataSet(ramEntries, "")),
-                            serverValueFormatter(titles)
+                            ServerValueFormatter(titles)
                     )
             )
             mCpuDataCharts.postValue(
                     ComplexChartsData(
                             LineData(LineDataSet(cpuEntries, "")),
-                            serverValueFormatter(titles)
+                            ServerValueFormatter(titles)
                     )
             )
 
