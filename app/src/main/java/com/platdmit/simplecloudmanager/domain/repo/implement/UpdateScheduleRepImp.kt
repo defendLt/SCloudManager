@@ -10,7 +10,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 class UpdateScheduleRepImp(dbManager: DbManager) : UpdateScheduleRepo {
     private val mDbManager: UpdateScheduleDao = dbManager.mUpdateScheduleDao();
     override fun getUpdateTimeList(): List<DbUpdateSchedule>? {
-        return mDbManager.scheduleAll
+        return mDbManager.getScheduleAll()
     }
 
     override fun getUpdateTime(key: String): Long {

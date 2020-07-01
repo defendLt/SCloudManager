@@ -17,7 +17,7 @@ class ApiDomainRepoImp(private val mActualApiKeyService: ActualApiKeyService) : 
     override fun getDomains(): Single<List<ApiDomain>> {
         return Single.create {
             try {
-                val response = restDomain.domains.execute()
+                val response = restDomain.getDomains().execute()
                 if (response.isSuccessful) {
                     val apiRequestBody = response.body()
                     it.onSuccess(apiRequestBody!!.domains)

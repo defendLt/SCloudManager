@@ -17,10 +17,10 @@ class AccountRepoImp(private val mApiAccountRepo: ApiAccountRepo, dbManager: DbM
     private val mDbAccountRepo: AccountDao = dbManager.mAccountDao()
     override fun getActiveAccount(): Single<UserAccount> {
         return Single.create {
-            val dbAccount = mDbAccountRepo.baseAccount
+            val dbAccount = mDbAccountRepo.getBaseAccount()
             if (dbAccount != null) {
                 val userAccount = mAccountConverter.fromDbToDomain(dbAccount)
-                userAccount.pin = dbAccount.pin
+                userAccount.pin = dbAccount.pin.toString()
                 it.onSuccess(userAccount)
             } else {
                 it.onError(Throwable("Not active account"))

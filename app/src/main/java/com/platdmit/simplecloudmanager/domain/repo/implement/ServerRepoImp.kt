@@ -107,7 +107,7 @@ class ServerRepoImp : ServerBaseRepo, ServerActionsRepo, ServerStatisticsRepo, S
             }
         }
                 .subscribeOn(Schedulers.newThread())
-                .flatMap {Observable.just(mActionConverter.fromDbToDomainList(it))}
+                .flatMap {Observable.just(mActionConverter.fromDbToDomainList(it!!))}
                 .onErrorComplete {
                     println(it.message)
                     true
@@ -131,7 +131,7 @@ class ServerRepoImp : ServerBaseRepo, ServerActionsRepo, ServerStatisticsRepo, S
             }
         }
                 .subscribeOn(Schedulers.newThread())
-                .flatMap {Observable.just(mBackupConverter.fromDbToDomainList(it)) }
+                .flatMap {Observable.just(mBackupConverter.fromDbToDomainList(it!!)) }
                 .onErrorComplete {
                     println(it.message)
                     true
@@ -154,7 +154,7 @@ class ServerRepoImp : ServerBaseRepo, ServerActionsRepo, ServerStatisticsRepo, S
             }
         }
                 .subscribeOn(Schedulers.newThread())
-                .flatMap {Observable.just(mLoadAverageConverter.fromDbToDomain(it))}
+                .flatMap {Observable.just(mLoadAverageConverter.fromDbToDomain(it!!))}
                 .onErrorComplete {
                     println(it.message)
                     true
@@ -178,7 +178,7 @@ class ServerRepoImp : ServerBaseRepo, ServerActionsRepo, ServerStatisticsRepo, S
             }
         }
                 .subscribeOn(Schedulers.newThread())
-                .flatMap {Observable.just(mStatisticConverter.fromDbToDomainList(it))}
+                .flatMap {Observable.just(mStatisticConverter.fromDbToDomainList(it!!))}
                 .repeatWhen {it.delay(1, TimeUnit.MINUTES)}
                 .observeOn(AndroidSchedulers.mainThread())
     }
@@ -189,7 +189,7 @@ class ServerRepoImp : ServerBaseRepo, ServerActionsRepo, ServerStatisticsRepo, S
 
     private fun getBdOrApiServers(status: Boolean): Observable<List<DbServer>> {
         return if (status) {
-            Observable.just(mDbServerRepo.all)
+            Observable.just(mDbServerRepo.getAllElement())
         } else {
             mApiServerRepo.getServers()
                     .flatMapObservable {

@@ -29,7 +29,7 @@ class ApiAccountRepoImp : ApiAccountRepo {
     override fun getActiveAccount(): Single<ApiAccount> {
         return Single.create {
             try {
-                val response = mSRestAccount.account.execute()
+                val response = mSRestAccount.getAccount().execute()
                 if (response.isSuccessful) {
                     val apiRequestBody = response.body()!!.account
                     it.onSuccess(apiRequestBody.account)

@@ -17,7 +17,7 @@ class ApiServerRepoImp(private val mActualApiKeyService: ActualApiKeyService) : 
     override fun getServers(): Single<List<ApiServer>> {
         return Single.create {
             try {
-                val response = restServer.servers.execute()
+                val response = restServer.getServers().execute()
                 if (response.isSuccessful) {
                     val apiRequestBody = response.body()
                     it.onSuccess(apiRequestBody!!.servers)

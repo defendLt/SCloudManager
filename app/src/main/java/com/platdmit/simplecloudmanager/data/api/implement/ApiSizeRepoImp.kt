@@ -15,7 +15,7 @@ class ApiSizeRepoImp(private val mActualApiKeyService: ActualApiKeyService) : Ap
     override fun getSizes(): Single<List<ApiSize>> {
         return Single.create {
             try {
-                val response = restSize.sizes.execute()
+                val response = restSize.getSizes().execute()
                 if (response.isSuccessful) {
                     val apiRequestBody = response.body()
                     it.onSuccess(apiRequestBody!!.sizes)

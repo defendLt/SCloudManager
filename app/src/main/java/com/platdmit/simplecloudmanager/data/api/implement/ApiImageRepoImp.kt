@@ -17,7 +17,7 @@ class ApiImageRepoImp(private val mActualApiKeyService: ActualApiKeyService) : A
     override fun getImages(): Single<List<ApiImage>> {
         return Single.create {
             try {
-                val response = restImage.images.execute()
+                val response = restImage.getImages().execute()
                 if (response.isSuccessful) {
                     val apiRequestBody = response.body()
                     it.onSuccess(apiRequestBody!!.images)

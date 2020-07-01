@@ -43,7 +43,7 @@ class DomainRepoImp : DomainBaseRepo {
     override fun getDomains(): Observable<List<Domain>> {
         return Observable.defer {
             if (mUpdateScheduleService.getActualStatus(TAG)) {
-                return@defer Observable.just(mDbDomainRepo.all)
+                return@defer Observable.just(mDbDomainRepo.getAllElement())
             } else {
                 return@defer mApiDomainRepo.getDomains().flatMapObservable {
                     val dbDomains = mDomainConverter.fromApiToDbList(it)
@@ -77,8 +77,8 @@ class DomainRepoImp : DomainBaseRepo {
                 .subscribeOn(Schedulers.newThread())
                 .flatMap {
                     val dbDomain = mDbDomainRepo.getElement(id)
-                    val domain = mDomainConverter.fromDbToDomain(dbDomain)
-                    domain.domainRecords = mDomainRecordConverter.fromDbToDomainList(it)
+                    val domain = mDomainConverter.fromDbToDomain(dbDomain!!)
+                    domain.domainRecords = mDomainRecordConverter.fromDbToDomainList(it!!)
                     Observable.just(domain)
                 }
                 .onErrorComplete {
