@@ -25,7 +25,8 @@
     <string name="backup_oc">ОС</string>
     <string name="backup_size">Объем</string>
     <string name="backup_price">Стоимость</string>
-    <string name="navigation_login">Профиль</string>
+    <string name="navigation_login">Авторизация</string>
+    <string name="navigation_profile">Профиль</string>
     <string name="navigation_domains">Домены</string>
     <string name="navigation_servers">VDS</string>
     <string name="server_statistics_cpu">Процессор</string>
