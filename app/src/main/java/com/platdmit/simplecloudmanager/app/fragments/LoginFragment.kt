@@ -1,7 +1,9 @@
 package com.platdmit.simplecloudmanager.app.fragments
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
@@ -76,7 +78,10 @@ class LoginFragment : Fragment() {
 
     private fun regStatusHandler(status: LoginFormStatus) {
         when (status) {
-            LoginFormStatus.AUTH_INVALID -> showTextAlert(R.string.login_submit_not_found)
+            LoginFormStatus.AUTH_INVALID -> {
+                showTextAlert(R.string.login_submit_not_found)
+                showVibratorAlert()
+            }
             LoginFormStatus.NEED_SET_PIN -> {
                 showTextAlert(R.string.login_submit_correct)
                 login_layout.visibility = View.GONE
@@ -174,7 +179,11 @@ class LoginFragment : Fragment() {
         try {
             val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             if (vibrator.hasVibrator()) {
-                vibrator.vibrate(200)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+                } else {
+                    vibrator.vibrate(200)
+                }
             }
         } catch (ignored: NullPointerException) {
         }
