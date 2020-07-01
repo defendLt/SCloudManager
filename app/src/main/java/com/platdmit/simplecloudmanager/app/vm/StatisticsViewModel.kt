@@ -14,7 +14,10 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*
 import kotlin.collections.ArrayList
 
-class StatisticsViewModel(private val mServerStatisticsRepo: ServerStatisticsRepo, serverId: Long) : BaseViewModel() {
+class StatisticsViewModel(
+        private val mServerStatisticsRepo: ServerStatisticsRepo,
+        serverId: Long
+) : BaseViewModel() {
     private val mCpuDataCharts = MutableLiveData<ComplexChartsData>()
     private val mRamDataCharts = MutableLiveData<ComplexChartsData>()
 

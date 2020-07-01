@@ -22,7 +22,9 @@ import com.platdmit.simplecloudmanager.domain.repo.implement.ServerRepoImp
 import com.platdmit.simplecloudmanager.domain.repo.implement.UpdateScheduleRepImp
 import kotlinx.android.synthetic.main.fragment_server_tab_main.*
 
-class ServerTabMainFragment(private val mTitle: String = "empty") : Fragment(), ServerTabFragment<ServerTabMainFragment> {
+class ServerTabMainFragment(
+        private val mTitle: String = "empty"
+) : Fragment(), ServerTabFragment<ServerTabMainFragment> {
     private lateinit var mLoadAverageViewModel: LoadAverageViewModel
     private val mLoadAverageListAdapter: LoadAverageListAdapter = LoadAverageListAdapter()
 

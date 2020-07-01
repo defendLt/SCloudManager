@@ -6,13 +6,12 @@ import com.platdmit.simplecloudmanager.domain.models.Domain
 import com.platdmit.simplecloudmanager.domain.repo.DomainBaseRepo
 import io.reactivex.rxjava3.processors.BehaviorProcessor
 
-class DomainViewModel(private val mDomainRepo: DomainBaseRepo, id: Long) : BaseViewModel() {
+class DomainViewModel(
+        private val mDomainRepo: DomainBaseRepo,
+        id: Long
+) : BaseViewModel() {
     val domainLiveData: LiveData<Domain>
     private val mContentProvider = BehaviorProcessor.create<Domain>()
-
-    companion object {
-        private val TAG = DomainViewModel::class.java.simpleName
-    }
 
     init {
         //Fast fix for prevent overSubscription after resize
@@ -23,5 +22,9 @@ class DomainViewModel(private val mDomainRepo: DomainBaseRepo, id: Long) : BaseV
     override fun onCleared() {
         super.onCleared()
         mContentProvider.onComplete()
+    }
+
+    companion object {
+        private val TAG = DomainViewModel::class.java.simpleName
     }
 }

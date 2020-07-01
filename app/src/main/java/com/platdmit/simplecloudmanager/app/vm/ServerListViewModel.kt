@@ -7,7 +7,9 @@ import com.platdmit.simplecloudmanager.domain.models.Server
 import com.platdmit.simplecloudmanager.domain.repo.ServerBaseRepo
 import io.reactivex.rxjava3.processors.BehaviorProcessor
 
-class ServerListViewModel(private val mServerRepo: ServerBaseRepo) : BaseViewModel() {
+class ServerListViewModel(
+        private val mServerRepo: ServerBaseRepo
+) : BaseViewModel() {
     val serversLiveData: LiveData<List<Server>>
     val resultMassage = MutableLiveData<String>()
     private val mContentProvider = BehaviorProcessor.create<List<Server>>()

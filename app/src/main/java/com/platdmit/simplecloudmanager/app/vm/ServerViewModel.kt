@@ -9,7 +9,10 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.processors.BehaviorProcessor
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class ServerViewModel(private val mServerRepo: ServerBaseRepo, id: Long) : BaseViewModel() {
+class ServerViewModel(
+        private val mServerRepo: ServerBaseRepo,
+        id: Long
+) : BaseViewModel() {
     val serverLiveData: LiveData<Server>
     val resultMassage = MediatorLiveData<String>()
     private val mContentProvider = BehaviorProcessor.create<Server>()

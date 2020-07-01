@@ -22,7 +22,9 @@ import com.platdmit.simplecloudmanager.domain.repo.implement.ServerRepoImp
 import com.platdmit.simplecloudmanager.domain.repo.implement.UpdateScheduleRepImp
 import kotlinx.android.synthetic.main.fragment_server_tab_actions.*
 
-class ServerTabActionsFragment(private val mTitle: String = "empty") : Fragment(), ServerTabFragment<ServerTabActionsFragment> {
+class ServerTabActionsFragment(
+        private val mTitle: String = "empty"
+) : Fragment(), ServerTabFragment<ServerTabActionsFragment> {
     private lateinit var mActionViewModel: ActionViewModel
     private val mActionListAdapter: ActionListAdapter = ActionListAdapter()
 

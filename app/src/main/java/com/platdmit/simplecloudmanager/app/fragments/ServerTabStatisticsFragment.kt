@@ -21,7 +21,9 @@ import com.platdmit.simplecloudmanager.domain.repo.implement.ServerRepoImp
 import com.platdmit.simplecloudmanager.domain.repo.implement.UpdateScheduleRepImp
 import kotlinx.android.synthetic.main.fragment_server_tab_statistics.*
 
-class ServerTabStatisticsFragment(private val mTitle: String = "empty") : Fragment(), ServerTabFragment<ServerTabStatisticsFragment> {
+class ServerTabStatisticsFragment(
+        private val mTitle: String = "empty"
+) : Fragment(), ServerTabFragment<ServerTabStatisticsFragment> {
     private lateinit var mStatisticsViewModel: StatisticsViewModel
     private var mCpuChart: LineChart? = null
     private var mRamChart: LineChart? = null

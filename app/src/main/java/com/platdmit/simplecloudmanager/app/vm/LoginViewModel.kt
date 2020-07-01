@@ -7,11 +7,13 @@ import com.platdmit.simplecloudmanager.domain.models.UserAccount
 import com.platdmit.simplecloudmanager.domain.repo.AccountRepo
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.functions.Consumer
 import io.reactivex.rxjava3.schedulers.Schedulers
 import org.mindrot.BCrypt
 
-class LoginViewModel(private val mAccountRep: AccountRepo, private val mActualApiKeyService: ActualApiKeyService) : BaseViewModel() {
+class LoginViewModel(
+        private val mAccountRep: AccountRepo,
+        private val mActualApiKeyService: ActualApiKeyService
+) : BaseViewModel() {
     private val mAuthStatus = MutableLiveData<LoginFormStatus>()
     private val mRegStatus = MutableLiveData<LoginFormStatus>()
     private lateinit var mUserAccount: UserAccount

@@ -22,7 +22,9 @@ import com.platdmit.simplecloudmanager.domain.repo.implement.ServerRepoImp
 import com.platdmit.simplecloudmanager.domain.repo.implement.UpdateScheduleRepImp
 import kotlinx.android.synthetic.main.fragment_server_tab_backups.*
 
-class ServerTabBackupsFragment(private val mTitle: String = "empty") : Fragment(), ServerTabFragment<ServerTabBackupsFragment> {
+class ServerTabBackupsFragment(
+        private val mTitle: String = "empty"
+) : Fragment(), ServerTabFragment<ServerTabBackupsFragment> {
     private lateinit var mBackupsViewModel: BackupsViewModel
     private val mAdapter: BackupListAdapter = BackupListAdapter()
 

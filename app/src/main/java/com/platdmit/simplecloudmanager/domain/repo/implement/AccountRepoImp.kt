@@ -13,7 +13,11 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import org.mindrot.BCrypt
 
-class AccountRepoImp(private val mApiAccountRepo: ApiAccountRepo, dbManager: DbManager, private val mAccountConverter: AccountConverter) : AccountRepo {
+class AccountRepoImp(
+        private val mApiAccountRepo: ApiAccountRepo,
+        dbManager: DbManager,
+        private val mAccountConverter: AccountConverter
+) : AccountRepo {
     private val mDbAccountRepo: AccountDao = dbManager.mAccountDao()
     override fun getActiveAccount(): Single<UserAccount> {
         return Single.create {

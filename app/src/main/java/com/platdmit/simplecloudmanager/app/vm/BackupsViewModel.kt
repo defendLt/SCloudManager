@@ -7,7 +7,10 @@ import com.platdmit.simplecloudmanager.domain.models.Backup
 import com.platdmit.simplecloudmanager.domain.repo.ServerBackupRepo
 import io.reactivex.rxjava3.processors.BehaviorProcessor
 
-class BackupsViewModel(private val mBackupRepo: ServerBackupRepo, serverId: Long) : BaseViewModel() {
+class BackupsViewModel(
+        private val mBackupRepo: ServerBackupRepo,
+        serverId: Long
+) : BaseViewModel() {
     val backupsLiveData: LiveData<List<Backup>>
     val resultMassage = MutableLiveData<String>()
     private val mContentProvider = BehaviorProcessor.create<List<Backup>>()
@@ -18,12 +21,12 @@ class BackupsViewModel(private val mBackupRepo: ServerBackupRepo, serverId: Long
         backupsLiveData = LiveDataReactiveStreams.fromPublisher(mContentProvider)
     }
 
-    companion object {
-        private val TAG = BackupsViewModel::class.java.simpleName
-    }
-
     override fun onCleared() {
         super.onCleared()
         mContentProvider.onComplete()
+    }
+
+    companion object {
+        private val TAG = BackupsViewModel::class.java.simpleName
     }
 }
