@@ -16,7 +16,6 @@ import com.platdmit.simplecloudmanager.app.vm.MainViewModel
 import com.platdmit.simplecloudmanager.app.vm.factory.MainActivityViewModelFactory
 import com.platdmit.simplecloudmanager.domain.SCMApp
 import kotlinx.android.synthetic.main.activity_main.*
-
 class MainActivity : AppCompatActivity(), UiVisibilityStatus {
     private lateinit var mNavController: NavController
     private lateinit var mAppBarConfiguration: AppBarConfiguration
@@ -29,7 +28,7 @@ class MainActivity : AppCompatActivity(), UiVisibilityStatus {
             ViewModelProvider(this).get(MainViewModel::class.java)
         } else {
             ViewModelProvider(this,
-                    MainActivityViewModelFactory(SCMApp.getActualApiKeyService())
+                    MainActivityViewModelFactory(SCMApp.actualApiKeyService)
             ).get(MainViewModel::class.java)
         }
         toolbarInit()

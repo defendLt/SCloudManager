@@ -8,7 +8,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.platdmit.simplecloudmanager.app.fragments.ServerTabFragment
 
 class ServerViewStateAdapter(
-        private val fragmentManager: FragmentManager,
+        fragmentManager: FragmentManager,
         val lifecycle: Lifecycle,
         val serverId: Long,
         private val serverTabFragments: List<ServerTabFragment<out Fragment>>
@@ -33,7 +33,7 @@ class ServerViewStateAdapter(
         private val serverTabFragments : MutableList<ServerTabFragment<out Fragment>> = ArrayList();
 
         fun add(serverTabFragment: ServerTabFragment<out Fragment>): Companion {
-            serverTabFragments.add(serverTabFragment);
+            serverTabFragments.add  (serverTabFragment);
             count++
             return this
         }

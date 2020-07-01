@@ -68,7 +68,7 @@ class LoginViewModel(private val mAccountRep: AccountRepo, private val mActualAp
 
     private fun successAuth() {
         mCompositeDisposable.add(
-                mActualApiKeyService.accountStatus
+                mActualApiKeyService.getAccountStatus()
                         .observeOn(Schedulers.newThread())
                         .onErrorComplete()
                         .subscribe {if (it) mAuthStatus.postValue(LoginFormStatus.SUCCESS) }
