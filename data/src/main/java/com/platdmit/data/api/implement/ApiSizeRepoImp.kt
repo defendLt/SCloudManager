@@ -4,7 +4,7 @@ import com.platdmit.data.api.ApiManager.getApiPoint
 import com.platdmit.data.api.ApiSizeRepo
 import com.platdmit.data.api.models.ApiSize
 import com.platdmit.data.api.rest.RestSize
-import com.platdmit.simplecloudmanager.domain.helpers.ActualApiKeyService
+import com.platdmit.data.helpers.ActualApiKeyService
 import io.reactivex.rxjava3.core.Single
 
 class ApiSizeRepoImp(private val mActualApiKeyService: ActualApiKeyService) : ApiSizeRepo {

@@ -5,7 +5,7 @@ import com.platdmit.data.api.ApiManager.getApiPoint
 import com.platdmit.data.api.implement.ApiDomainRepoImp
 import com.platdmit.data.api.models.ApiImage
 import com.platdmit.data.api.rest.RestImage
-import com.platdmit.simplecloudmanager.domain.helpers.ActualApiKeyService
+import com.platdmit.data.helpers.ActualApiKeyService
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleEmitter
 
