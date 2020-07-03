@@ -1,6 +1,6 @@
 package com.platdmit.simplecloudmanager.domain.repo
 
-import com.platdmit.simplecloudmanager.data.database.entity.DbUpdateSchedule
+import com.platdmit.data.database.entity.DbUpdateSchedule
 
 interface UpdateScheduleRepo {
     fun getUpdateTimeList(): List<DbUpdateSchedule>?

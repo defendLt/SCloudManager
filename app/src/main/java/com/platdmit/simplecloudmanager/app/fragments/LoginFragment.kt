@@ -20,7 +20,7 @@ import com.platdmit.simplecloudmanager.app.helpers.UiVisibilityStatus
 import com.platdmit.simplecloudmanager.app.vm.LoginViewModel
 import com.platdmit.simplecloudmanager.app.vm.LoginViewModel.LoginFormStatus
 import com.platdmit.simplecloudmanager.app.vm.factory.LoginViewModelFactory
-import com.platdmit.simplecloudmanager.data.api.implement.ApiAccountRepoImp
+import com.platdmit.data.api.implement.ApiAccountRepoImp
 import com.platdmit.simplecloudmanager.domain.SCMApp
 import com.platdmit.simplecloudmanager.domain.converters.implement.AccountConvertImp
 import com.platdmit.simplecloudmanager.domain.repo.AccountRepo

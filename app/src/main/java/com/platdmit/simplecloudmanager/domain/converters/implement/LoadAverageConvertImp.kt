@@ -1,7 +1,7 @@
 package com.platdmit.simplecloudmanager.domain.converters.implement
 
-import com.platdmit.simplecloudmanager.data.api.models.ApiLoadAverage
-import com.platdmit.simplecloudmanager.data.database.entity.DbLoadAverage
+import com.platdmit.data.api.models.ApiLoadAverage
+import com.platdmit.data.database.entity.DbLoadAverage
 import com.platdmit.simplecloudmanager.domain.converters.LoadAverageConverter
 import com.platdmit.simplecloudmanager.domain.models.LoadAverage
 import java.util.*

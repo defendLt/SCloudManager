@@ -1,7 +1,7 @@
 package com.platdmit.simplecloudmanager.domain.converters.implement
 
-import com.platdmit.simplecloudmanager.data.api.models.ApiStatistic
-import com.platdmit.simplecloudmanager.data.database.entity.DbStatistic
+import com.platdmit.data.api.models.ApiStatistic
+import com.platdmit.data.database.entity.DbStatistic
 import com.platdmit.simplecloudmanager.domain.converters.StatisticConverter
 import com.platdmit.simplecloudmanager.domain.models.Statistic
 import org.joda.time.format.DateTimeFormat

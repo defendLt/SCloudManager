@@ -1,8 +1,8 @@
 package com.platdmit.simplecloudmanager.domain.converters.implement
 
 import android.util.Log
-import com.platdmit.simplecloudmanager.data.api.models.ApiAction
-import com.platdmit.simplecloudmanager.data.database.entity.DbAction
+import com.platdmit.data.api.models.ApiAction
+import com.platdmit.data.database.entity.DbAction
 import com.platdmit.simplecloudmanager.domain.converters.ActionConverter
 import com.platdmit.simplecloudmanager.domain.models.Action
 import org.joda.time.DateTime

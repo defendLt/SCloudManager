@@ -1,7 +1,7 @@
 package com.platdmit.simplecloudmanager.domain.converters.implement
 
-import com.platdmit.simplecloudmanager.data.api.models.ApiBackup
-import com.platdmit.simplecloudmanager.data.database.entity.DbBackup
+import com.platdmit.data.api.models.ApiBackup
+import com.platdmit.data.database.entity.DbBackup
 import com.platdmit.simplecloudmanager.domain.converters.BackupConverter
 import com.platdmit.simplecloudmanager.domain.models.Backup
 

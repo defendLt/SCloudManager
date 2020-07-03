@@ -1,7 +1,7 @@
 package com.platdmit.simplecloudmanager.domain.converters.implement
 
-import com.platdmit.simplecloudmanager.data.api.models.ApiAccount
-import com.platdmit.simplecloudmanager.data.database.entity.DbAccount
+import com.platdmit.data.api.models.ApiAccount
+import com.platdmit.data.database.entity.DbAccount
 import com.platdmit.simplecloudmanager.domain.converters.AccountConverter
 import com.platdmit.simplecloudmanager.domain.models.UserAccount
 

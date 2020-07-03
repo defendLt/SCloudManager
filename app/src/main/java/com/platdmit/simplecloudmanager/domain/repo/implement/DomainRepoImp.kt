@@ -1,9 +1,9 @@
 package com.platdmit.simplecloudmanager.domain.repo.implement
 
-import com.platdmit.simplecloudmanager.data.api.ApiDomainRepo
-import com.platdmit.simplecloudmanager.data.database.DbManager
-import com.platdmit.simplecloudmanager.data.database.dao.DomainDao
-import com.platdmit.simplecloudmanager.data.database.dao.DomainRecordDao
+import com.platdmit.data.api.ApiDomainRepo
+import com.platdmit.data.database.DbManager
+import com.platdmit.data.database.dao.DomainDao
+import com.platdmit.data.database.dao.DomainRecordDao
 import com.platdmit.simplecloudmanager.domain.converters.DomainConverter
 import com.platdmit.simplecloudmanager.domain.converters.DomainRecordConverter
 import com.platdmit.simplecloudmanager.domain.helpers.UpdateScheduleService

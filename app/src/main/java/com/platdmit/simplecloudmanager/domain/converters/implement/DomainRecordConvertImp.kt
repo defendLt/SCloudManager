@@ -1,7 +1,7 @@
 package com.platdmit.simplecloudmanager.domain.converters.implement
 
-import com.platdmit.simplecloudmanager.data.api.models.ApiDomainRecord
-import com.platdmit.simplecloudmanager.data.database.entity.DbDomainRecord
+import com.platdmit.data.api.models.ApiDomainRecord
+import com.platdmit.data.database.entity.DbDomainRecord
 import com.platdmit.simplecloudmanager.domain.converters.DomainRecordConverter
 import com.platdmit.simplecloudmanager.domain.models.DomainRecord
 import java.util.*

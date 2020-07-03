@@ -1,7 +1,7 @@
 package com.platdmit.simplecloudmanager.domain.converters
 
-import com.platdmit.simplecloudmanager.data.api.models.ApiSize
-import com.platdmit.simplecloudmanager.data.database.entity.DbSize
+import com.platdmit.data.api.models.ApiSize
+import com.platdmit.data.database.entity.DbSize
 import com.platdmit.simplecloudmanager.domain.models.Size
 
 interface SizeConverter {

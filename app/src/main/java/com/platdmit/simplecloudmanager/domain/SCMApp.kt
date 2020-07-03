@@ -2,8 +2,8 @@ package com.platdmit.simplecloudmanager.domain
 
 import android.app.Application
 import androidx.room.Room
-import com.platdmit.simplecloudmanager.data.api.implement.ApiAccountRepoImp
-import com.platdmit.simplecloudmanager.data.database.DbManager
+import com.platdmit.data.api.implement.ApiAccountRepoImp
+import com.platdmit.data.database.DbManager
 import com.platdmit.simplecloudmanager.domain.helpers.ActualApiKeyModule
 import com.platdmit.simplecloudmanager.domain.helpers.ActualApiKeyService
 import net.danlew.android.joda.JodaTimeAndroid

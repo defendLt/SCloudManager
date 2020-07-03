@@ -16,7 +16,7 @@ import com.platdmit.simplecloudmanager.R
 import com.platdmit.simplecloudmanager.app.adapters.ServerListAdapter
 import com.platdmit.simplecloudmanager.app.vm.ServerListViewModel
 import com.platdmit.simplecloudmanager.app.vm.factory.ListElementsViewModelFactory
-import com.platdmit.simplecloudmanager.data.api.implement.ApiServerRepoImp
+import com.platdmit.data.api.implement.ApiServerRepoImp
 import com.platdmit.simplecloudmanager.domain.SCMApp
 import com.platdmit.simplecloudmanager.domain.converters.implement.ServerConvertImp
 import com.platdmit.simplecloudmanager.domain.helpers.ContentUpdateService

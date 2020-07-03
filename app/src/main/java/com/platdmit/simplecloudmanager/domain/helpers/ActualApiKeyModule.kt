@@ -1,9 +1,7 @@
 package com.platdmit.simplecloudmanager.domain.helpers
 
-import com.platdmit.simplecloudmanager.data.api.ApiAccountRepo
-import com.platdmit.simplecloudmanager.data.api.models.ApiAuth
+import com.platdmit.data.api.ApiAccountRepo
 import com.platdmit.simplecloudmanager.domain.models.UserAccount
-import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.BehaviorSubject

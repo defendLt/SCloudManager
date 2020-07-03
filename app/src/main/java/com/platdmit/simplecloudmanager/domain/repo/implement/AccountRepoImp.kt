@@ -1,8 +1,8 @@
 package com.platdmit.simplecloudmanager.domain.repo.implement
 
-import com.platdmit.simplecloudmanager.data.api.ApiAccountRepo
-import com.platdmit.simplecloudmanager.data.database.DbManager
-import com.platdmit.simplecloudmanager.data.database.dao.AccountDao
+import com.platdmit.data.api.ApiAccountRepo
+import com.platdmit.data.database.DbManager
+import com.platdmit.data.database.dao.AccountDao
 import com.platdmit.simplecloudmanager.domain.converters.AccountConverter
 import com.platdmit.simplecloudmanager.domain.models.UserAccount
 import com.platdmit.simplecloudmanager.domain.repo.AccountRepo

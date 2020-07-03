@@ -13,7 +13,7 @@ import com.platdmit.simplecloudmanager.R
 import com.platdmit.simplecloudmanager.app.adapters.DomainListAdapter
 import com.platdmit.simplecloudmanager.app.vm.DomainListViewModel
 import com.platdmit.simplecloudmanager.app.vm.factory.ListElementsViewModelFactory
-import com.platdmit.simplecloudmanager.data.api.implement.ApiDomainRepoImp
+import com.platdmit.data.api.implement.ApiDomainRepoImp
 import com.platdmit.simplecloudmanager.domain.SCMApp
 import com.platdmit.simplecloudmanager.domain.converters.implement.DomainConvertImp
 import com.platdmit.simplecloudmanager.domain.helpers.ContentUpdateService

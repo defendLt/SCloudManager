@@ -1,8 +1,8 @@
 package com.platdmit.simplecloudmanager.domain.repo.implement
 
-import com.platdmit.simplecloudmanager.data.database.DbManager
-import com.platdmit.simplecloudmanager.data.database.dao.UpdateScheduleDao
-import com.platdmit.simplecloudmanager.data.database.entity.DbUpdateSchedule
+import com.platdmit.data.database.DbManager
+import com.platdmit.data.database.dao.UpdateScheduleDao
+import com.platdmit.data.database.entity.DbUpdateSchedule
 import com.platdmit.simplecloudmanager.domain.repo.UpdateScheduleRepo
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.schedulers.Schedulers

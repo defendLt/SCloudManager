@@ -1,7 +1,7 @@
 package com.platdmit.simplecloudmanager.domain.converters.implement
 
-import com.platdmit.simplecloudmanager.data.api.models.ApiServer
-import com.platdmit.simplecloudmanager.data.database.entity.DbServer
+import com.platdmit.data.api.models.ApiServer
+import com.platdmit.data.database.entity.DbServer
 import com.platdmit.simplecloudmanager.domain.converters.ServerConverter
 import com.platdmit.simplecloudmanager.domain.models.Server
 import org.joda.time.DateTime
