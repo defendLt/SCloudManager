@@ -179,6 +179,10 @@ class ServerRepoImp : ServerBaseRepo, ServerActionsRepo, ServerStatisticsRepo, S
         }
                 .subscribeOn(Schedulers.newThread())
                 .flatMap {Observable.just(mStatisticConverter.fromDbToDomainList(it!!))}
+                .onErrorComplete {
+                    println(it.message)
+                    true
+                }
                 .repeatWhen {it.delay(1, TimeUnit.MINUTES)}
                 .observeOn(AndroidSchedulers.mainThread())
     }
