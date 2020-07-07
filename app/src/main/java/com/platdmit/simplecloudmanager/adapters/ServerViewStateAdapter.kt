@@ -29,18 +29,18 @@ class ServerViewStateAdapter(
     fun getPageTitle(position : Int) : CharSequence = serverTabFragments[position].getTitle()
 
     companion object {
-        private var count : Int = 0;
         private val serverTabFragments : MutableList<ServerTabFragment<out Fragment>> = ArrayList();
 
         fun add(serverTabFragment: ServerTabFragment<out Fragment>): Companion {
             serverTabFragments.add  (serverTabFragment);
-            count++
             return this
         }
 
         fun build(fm : FragmentManager, lifecycle : Lifecycle, serverId: Long) : ServerViewStateAdapter?{
-            return if(count > 0){
-                ServerViewStateAdapter(fm, lifecycle, serverId, serverTabFragments)
+            return if(serverTabFragments.size > 0){
+                val serverViewStateAdapter = ServerViewStateAdapter(fm, lifecycle, serverId, serverTabFragments.toList())
+                serverTabFragments.clear()
+                return serverViewStateAdapter
             } else {
                 null
             }
