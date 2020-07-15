@@ -1,32 +1,39 @@
 package com.platdmit.simplecloudmanager.vm
 
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import com.platdmit.domain.models.Backup
 import com.platdmit.domain.repo.ServerBackupRepo
 import io.reactivex.rxjava3.processors.BehaviorProcessor
 
-class BackupsViewModel(
-        private val mBackupRepo: ServerBackupRepo,
-        serverId: Long
+class BackupsViewModel
+@ViewModelInject
+constructor(
+        private val serverBackupRepo: ServerBackupRepo,
+        @Assisted private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
     val backupsLiveData: LiveData<List<Backup>>
-    val resultMassage = MutableLiveData<String>()
-    private val mContentProvider = BehaviorProcessor.create<List<Backup>>()
+    val messageLiveData = LiveDataReactiveStreams.fromPublisher(messageProvider)
+
+    private val contentProvider = BehaviorProcessor.create<List<Backup>>()
 
     init {
+        backupsLiveData = LiveDataReactiveStreams.fromPublisher(contentProvider)
+    }
+
+    fun setActiveId(id: Long){
         //Fast fix for prevent overSubscription after resize
-        mCompositeDisposable.add(mBackupRepo.getServerBackups(serverId).subscribe { mContentProvider.onNext(it) })
-        backupsLiveData = LiveDataReactiveStreams.fromPublisher(mContentProvider)
+        compositeDisposable.add(
+                serverBackupRepo.getServerBackups(id)
+                        .subscribe { contentProvider.onNext(it) }
+        )
     }
 
     override fun onCleared() {
         super.onCleared()
-        mContentProvider.onComplete()
-    }
-
-    companion object {
-        private val TAG = BackupsViewModel::class.java.simpleName
+        contentProvider.onComplete()
     }
 }

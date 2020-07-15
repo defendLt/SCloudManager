@@ -10,13 +10,18 @@ import com.platdmit.data.database.entity.*
     DbAction::class, DbBackup::class, DbLoadAverage::class, DbStatistic::class, DbUpdateSchedule::class
 ], version = 1, exportSchema = false)
 abstract class DbManager : RoomDatabase() {
-    abstract fun mAccountDao(): AccountDao
-    abstract fun mDomainDao(): DomainDao
-    abstract fun mDomainRecordDao(): DomainRecordDao
-    abstract fun mServerDao(): ServerDao
-    abstract fun mActionDao(): ActionDao
-    abstract fun mBackupDao(): BackupDao
-    abstract fun mLoadAverageDao(): LoadAverageDao
-    abstract fun mStatisticDao(): StatisticDao
-    abstract fun mUpdateScheduleDao(): UpdateScheduleDao
+
+    abstract fun accountDao(): AccountDao
+    abstract fun domainDao(): DomainDao
+    abstract fun domainRecordDao(): DomainRecordDao
+    abstract fun serverDao(): ServerDao
+    abstract fun actionDao(): ActionDao
+    abstract fun backupDao(): BackupDao
+    abstract fun loadAverageDao(): LoadAverageDao
+    abstract fun statisticDao(): StatisticDao
+    abstract fun updateScheduleDao(): UpdateScheduleDao
+
+    companion object{
+        const val DATABASE_NAME = "sc_manager"
+    }
 }

@@ -1,18 +1,15 @@
 package com.platdmit.data.api.implement
 
-import com.platdmit.data.api.ApiManager
 import com.platdmit.data.api.ApiServerRepo
 import com.platdmit.data.api.models.*
 import com.platdmit.data.api.rest.RestServer
-import com.platdmit.data.helpers.ActualApiKeyService
 import io.reactivex.rxjava3.core.Single
 import java.io.IOException
 
-class ApiServerRepoImp(private val mActualApiKeyService: ActualApiKeyService) : ApiServerRepo {
-    //always gets the actual key
-    private val restServer: RestServer
-        get() =//always gets the actual key
-            ApiManager.getApiPoint(RestServer::class.java, mActualApiKeyService.apiKey)
+class ApiServerRepoImp(
+        private val restServer: RestServer
+) : ApiServerRepo {
+    private val TAG = ApiServerRepoImp::class.java.simpleName
 
     override fun getServers(): Single<List<ApiServer>> {
         return Single.create {
@@ -108,9 +105,4 @@ class ApiServerRepoImp(private val mActualApiKeyService: ActualApiKeyService) : 
             }
         }
     }
-
-    companion object {
-        private val TAG = ApiServerRepoImp::class.java.simpleName
-    }
-
 }

@@ -5,9 +5,11 @@ import com.platdmit.data.database.entity.DbStatistic
 import com.platdmit.domain.converters.StatisticConverter
 import com.platdmit.domain.models.Statistic
 import org.joda.time.format.DateTimeFormat
-import java.util.*
+import javax.inject.Inject
 
-class StatisticConvertImp : StatisticConverter {
+class StatisticConvertImp
+@Inject
+constructor() : StatisticConverter<ApiStatistic, Statistic, DbStatistic> {
     override fun fromApiToDb(apiStatistic: ApiStatistic, serverId: Long): DbStatistic {
         return DbStatistic(
                 serverId,

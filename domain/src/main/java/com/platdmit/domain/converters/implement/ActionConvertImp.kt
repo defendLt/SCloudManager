@@ -7,8 +7,11 @@ import com.platdmit.domain.converters.ActionConverter
 import com.platdmit.domain.models.Action
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
+import javax.inject.Inject
 
-class ActionConvertImp : ActionConverter {
+class ActionConvertImp
+@Inject
+constructor() : ActionConverter<ApiAction, Action, DbAction> {
     override fun fromApiToDb(apiAction: ApiAction): DbAction {
         return DbAction(apiAction.id.toInt().toLong(),
                 apiAction.status,

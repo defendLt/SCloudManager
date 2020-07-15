@@ -7,9 +7,11 @@ import com.platdmit.domain.models.Server
 import org.joda.time.DateTime
 import org.joda.time.Duration
 import org.joda.time.format.DateTimeFormat
-import java.util.*
+import javax.inject.Inject
 
-class ServerConvertImp : ServerConverter {
+class ServerConvertImp
+@Inject
+constructor() : ServerConverter<ApiServer, Server, DbServer> {
     override fun fromApiToDb(apiServer: ApiServer): DbServer {
         return DbServer(
                 apiServer.id.toLong(),

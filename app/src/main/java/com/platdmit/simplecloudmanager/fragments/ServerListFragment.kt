@@ -5,57 +5,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.google.android.material.snackbar.Snackbar
 import com.platdmit.simplecloudmanager.R
 import com.platdmit.simplecloudmanager.adapters.ServerListAdapter
 import com.platdmit.simplecloudmanager.vm.ServerListViewModel
-import com.platdmit.simplecloudmanager.vm.factory.ListElementsViewModelFactory
-import com.platdmit.data.api.implement.ApiServerRepoImp
-import com.platdmit.simplecloudmanager.SCMApp
-import com.platdmit.domain.converters.implement.ServerConvertImp
-import com.platdmit.domain.helpers.ContentUpdateService
 import com.platdmit.domain.models.Server
-import com.platdmit.domain.repo.ServerBaseRepo
-import com.platdmit.domain.repo.implement.ServerRepoImp
-import com.platdmit.domain.repo.implement.UpdateScheduleRepImp
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_servers_list.*
 
-class ServerListFragment : Fragment() {
-    private lateinit var mServerListViewModel: ServerListViewModel
-    private val mServerListAdapter: ServerListAdapter = ServerListAdapter()
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mServerListViewModel = if (savedInstanceState != null) {
-            ViewModelProvider(this).get(ServerListViewModel::class.java)
-        } else {
-            ViewModelProvider(this,
-                    ListElementsViewModelFactory(
-                            ServerRepoImp(
-                                    ApiServerRepoImp(SCMApp.actualApiKeyService),
-                                    SCMApp.db,
-                                    ServerConvertImp(),
-                                    ContentUpdateService(UpdateScheduleRepImp(SCMApp.db))
-                            ), ServerBaseRepo::class.java
-                    )).get(ServerListViewModel::class.java)
-        }
-
-        return inflater.inflate(R.layout.fragment_servers_list, container, false)
-    }
+@AndroidEntryPoint
+class ServerListFragment : Fragment(R.layout.fragment_servers_list) {
+    private val serverListViewModel: ServerListViewModel by viewModels()
+    private val serverListAdapter: ServerListAdapter = ServerListAdapter()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        update_swipe.setOnRefreshListener { mServerListViewModel.reloadServerList() }
+        update_swipe.setOnRefreshListener { serverListViewModel.reloadServerList() }
         fragments_list.layoutManager = LinearLayoutManager(context)
 
-        mServerListViewModel.serversLiveData.observe(viewLifecycleOwner, Observer { updateAdapterData(it) })
-        mServerListViewModel.resultMassage.observe(viewLifecycleOwner, Observer { showResultMassage(it) })
+        serverListViewModel.serversLiveData.observe(viewLifecycleOwner, Observer { updateAdapterData(it) })
+        serverListViewModel.messageLiveData.observe(viewLifecycleOwner, Observer { showResultMassage(it) })
     }
 
     private fun showResultMassage(massage: String) {
@@ -63,16 +36,12 @@ class ServerListFragment : Fragment() {
     }
 
     private fun updateAdapterData(servers: List<Server>) {
-        mServerListAdapter.setContentData(servers)
+        serverListAdapter.setContentData(servers)
         update_swipe.isRefreshing = false
         if (fragments_list.adapter == null) {
-            fragments_list.adapter = mServerListAdapter
+            fragments_list.adapter = serverListAdapter
         } else {
-            mServerListAdapter.notifyDataSetChanged()
+            serverListAdapter.notifyDataSetChanged()
         }
-    }
-
-    companion object {
-        private val TAG = ServerListFragment::class.java.simpleName
     }
 }

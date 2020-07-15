@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider.NewInstanceFactory
 import com.platdmit.data.helpers.ActualApiKeyService
 import com.platdmit.domain.helpers.ActualApiKeyServiceManager
 
+@Deprecated("Use Hilt")
 class MainActivityViewModelFactory(private val mActualApiKeyServiceManager: ActualApiKeyServiceManager) : NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return try {

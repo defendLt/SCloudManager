@@ -1,12 +1,8 @@
 package com.platdmit.domain.converters
 
-import com.platdmit.data.api.models.ApiAction
-import com.platdmit.data.database.entity.DbAction
-import com.platdmit.domain.models.Action
-
-interface ActionConverter {
-    fun fromApiToDb(apiAction: ApiAction): DbAction
-    fun fromDbToDomain(dbAction: DbAction): Action
-    fun fromDbToDomainList(dbList: List<DbAction>): List<Action>
-    fun fromApiToDbList(apiList: List<ApiAction>): List<DbAction>
+interface ActionConverter <ApiModel, DomainModel, DbModel> {
+    fun fromApiToDb(apiAction: ApiModel): DbModel
+    fun fromDbToDomain(dbAction: DbModel): DomainModel
+    fun fromDbToDomainList(dbList: List<DbModel>): List<DomainModel>
+    fun fromApiToDbList(apiList: List<ApiModel>): List<DbModel>
 }

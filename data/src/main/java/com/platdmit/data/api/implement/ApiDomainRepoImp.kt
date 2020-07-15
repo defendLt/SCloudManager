@@ -1,18 +1,16 @@
 package com.platdmit.data.api.implement
 
 import com.platdmit.data.api.ApiDomainRepo
-import com.platdmit.data.api.ApiManager
 import com.platdmit.data.api.models.ApiDomain
 import com.platdmit.data.api.models.ApiDomainRecord
 import com.platdmit.data.api.rest.RestDomain
-import com.platdmit.data.helpers.ActualApiKeyService
 import io.reactivex.rxjava3.core.Single
 import java.io.IOException
 
-class ApiDomainRepoImp(private val mActualApiKeyService: ActualApiKeyService) : ApiDomainRepo {
-    //always gets the actual key
-    private val restDomain: RestDomain
-        get() = ApiManager.getApiPoint(RestDomain::class.java, mActualApiKeyService.apiKey)
+class ApiDomainRepoImp(
+        private val restDomain: RestDomain
+) : ApiDomainRepo {
+    private val TAG = ApiDomainRepoImp::class.java.simpleName
 
     override fun getDomains(): Single<List<ApiDomain>> {
         return Single.create {
@@ -89,9 +87,4 @@ class ApiDomainRepoImp(private val mActualApiKeyService: ActualApiKeyService) : 
             }
         }
     }
-
-    companion object {
-        private val TAG = ApiDomainRepoImp::class.java.simpleName
-    }
-
 }

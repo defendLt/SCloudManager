@@ -4,8 +4,11 @@ import com.platdmit.data.api.models.ApiBackup
 import com.platdmit.data.database.entity.DbBackup
 import com.platdmit.domain.converters.BackupConverter
 import com.platdmit.domain.models.Backup
+import javax.inject.Inject
 
-class BackupConvertImp : BackupConverter {
+class BackupConvertImp
+@Inject
+constructor() : BackupConverter<ApiBackup, Backup, DbBackup> {
     override fun fromApiToDb(apiBackup: ApiBackup, serverId: Long): DbBackup {
         return DbBackup(apiBackup.id.toInt().toLong(),
                 serverId,

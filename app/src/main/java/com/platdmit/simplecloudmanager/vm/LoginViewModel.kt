@@ -1,7 +1,9 @@
 package com.platdmit.simplecloudmanager.vm
 
-import androidx.lifecycle.LiveData
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import com.platdmit.domain.helpers.ActualApiKeyServiceManager
 import com.platdmit.domain.models.UserAccount
 import com.platdmit.domain.repo.AccountRepo
@@ -10,89 +12,83 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import org.mindrot.BCrypt
 
-class LoginViewModel(
-        private val mAccountRep: AccountRepo,
-        private val mActualApiKeyServiceManager: ActualApiKeyServiceManager
+class LoginViewModel
+@ViewModelInject
+constructor(
+        private val accountRepo: AccountRepo,
+        private val actualApiKeyServiceManager: ActualApiKeyServiceManager,
+        @Assisted private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
-    private val mAuthStatus = MutableLiveData<LoginFormStatus>()
-    private val mRegStatus = MutableLiveData<LoginFormStatus>()
-    private lateinit var mUserAccount: UserAccount
+
+    val authStatus = MutableLiveData<LoginFormStatus>()
+    val regStatus = MutableLiveData<LoginFormStatus>()
+    private lateinit var userAccount: UserAccount
 
     init {
-        mCompositeDisposable.add(
-                mAccountRep.getActiveAccount()
+        compositeDisposable.add(
+                accountRepo.getActiveAccount()
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
                             if (it.pin.isEmpty()) {
-                                mUserAccount = it
-                                mAuthStatus.postValue(LoginFormStatus.YES_ACTIVE_USER)
+                                userAccount = it
+                                authStatus.postValue(LoginFormStatus.YES_ACTIVE_USER)
                             } else {
-                                mAuthStatus.postValue(LoginFormStatus.NEED_SET_PIN)
+                                authStatus.postValue(LoginFormStatus.NEED_SET_PIN)
                             }
-                        }, {mAuthStatus.postValue(LoginFormStatus.NOT_ACTIVE_USER) })
+                        }, {authStatus.postValue(LoginFormStatus.NOT_ACTIVE_USER) })
         )
     }
 
     fun addNewAccount(login: String, pass: String) {
-        mCompositeDisposable.add(mAccountRep.getPrepareAccountInfo(login, pass)
+        compositeDisposable.add(accountRepo.getPrepareAccountInfo(login, pass)
                 .subscribe({
-                    mUserAccount = it
-                    mRegStatus.postValue(LoginFormStatus.NEED_SET_PIN)
-                }, {mRegStatus.postValue(LoginFormStatus.AUTH_INVALID) })
+                    userAccount = it
+                    regStatus.postValue(LoginFormStatus.NEED_SET_PIN)
+                }, {regStatus.postValue(LoginFormStatus.AUTH_INVALID) })
         )
     }
 
     fun addNewAccountPin(pin: String) {
-        mUserAccount.pin = pin
-        mCompositeDisposable.add(
-                mAccountRep.addAccountPin(mUserAccount)
+        userAccount.pin = pin
+        compositeDisposable.add(
+                accountRepo.addAccountPin(userAccount)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.newThread())
                         .subscribe {
-                            mActualApiKeyServiceManager.startAutoUpdate(mUserAccount)
-                            mAuthStatus.postValue(LoginFormStatus.SUCCESS)
+                            actualApiKeyServiceManager.startAutoUpdate(userAccount)
+                            authStatus.postValue(LoginFormStatus.SUCCESS)
                         }
         )
     }
 
     fun checkAccountPin(pin: String?) {
         Completable.fromAction {
-            if (BCrypt.checkpw(pin, mUserAccount.pin)) {
-                mAuthStatus.postValue(LoginFormStatus.LOAD_DATA)
-                mActualApiKeyServiceManager.startAutoUpdate(mUserAccount)
+            if (BCrypt.checkpw(pin, userAccount.pin)) {
+                authStatus.postValue(LoginFormStatus.LOAD_DATA)
+                actualApiKeyServiceManager.startAutoUpdate(userAccount)
                 successAuth()
             } else {
-                mAuthStatus.postValue(LoginFormStatus.PIN_INVALID)
+                authStatus.postValue(LoginFormStatus.PIN_INVALID)
             }
         }.observeOn(Schedulers.newThread()).subscribe()
     }
 
     private fun successAuth() {
-        mCompositeDisposable.add(
-                mActualApiKeyServiceManager.getAccountStatus()
+        compositeDisposable.add(
+                actualApiKeyServiceManager.getAccountStatus()
                         .observeOn(Schedulers.newThread())
                         .onErrorComplete()
-                        .subscribe {if (it) mAuthStatus.postValue(LoginFormStatus.SUCCESS) }
+                        .subscribe {if (it) authStatus.postValue(LoginFormStatus.SUCCESS) }
         )
     }
 
     fun onDemoAccount() {
-        mActualApiKeyServiceManager.startDemoMode()
-        mAuthStatus.postValue(LoginFormStatus.ON_DEMO)
+        actualApiKeyServiceManager.startDemoMode()
+        authStatus.postValue(LoginFormStatus.ON_DEMO)
     }
-
-    val authStatus: LiveData<LoginFormStatus>
-        get() = mAuthStatus
-
-    val regStatus: LiveData<LoginFormStatus>
-        get() = mRegStatus
 
     enum class LoginFormStatus {
         YES_ACTIVE_USER, NOT_ACTIVE_USER, PIN_INVALID, AUTH_INVALID, NEED_SET_PIN, LOAD_DATA, ON_DEMO, SUCCESS
-    }
-
-    companion object {
-        private val TAG = LoginViewModel::class.java.simpleName
     }
 }

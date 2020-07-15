@@ -4,8 +4,11 @@ import com.platdmit.data.api.models.ApiSize
 import com.platdmit.data.database.entity.DbSize
 import com.platdmit.domain.converters.SizeConverter
 import com.platdmit.domain.models.Size
+import javax.inject.Inject
 
-class SizeConvertImp : SizeConverter {
+class SizeConvertImp
+@Inject
+constructor() : SizeConverter<ApiSize, Size, DbSize> {
     override fun fromApiToDb(apiSize: ApiSize): DbSize {
         return DbSize(
                 apiSize.id.toLong(),

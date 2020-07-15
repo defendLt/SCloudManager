@@ -10,8 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding4.widget.textChanges
@@ -19,60 +19,44 @@ import com.platdmit.simplecloudmanager.R
 import com.platdmit.simplecloudmanager.helpers.UiVisibilityStatus
 import com.platdmit.simplecloudmanager.vm.LoginViewModel
 import com.platdmit.simplecloudmanager.vm.LoginViewModel.LoginFormStatus
-import com.platdmit.simplecloudmanager.vm.factory.LoginViewModelFactory
-import com.platdmit.data.api.implement.ApiAccountRepoImp
-import com.platdmit.simplecloudmanager.SCMApp
-import com.platdmit.domain.converters.implement.AccountConvertImp
-import com.platdmit.domain.repo.AccountRepo
-import com.platdmit.domain.repo.implement.AccountRepoImp
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.functions.BiFunction
 import kotlinx.android.synthetic.main.fragment_login.*
 
-class LoginFragment : Fragment() {
-    private lateinit var mLoginViewModel: LoginViewModel
-    private lateinit var mInputMethodManager: InputMethodManager
-    private val mCompositeDisposable = CompositeDisposable()
+@AndroidEntryPoint
+class LoginFragment : Fragment(R.layout.fragment_login) {
+    private val loginViewModel: LoginViewModel by viewModels()
+    private lateinit var inputMethodManager: InputMethodManager
+    private val compositeDisposable = CompositeDisposable()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         //Hide Bottom menu and Toolbar
         setUiVisibleStatus(false)
-        mLoginViewModel = if (savedInstanceState != null) {
-            ViewModelProvider(this).get(LoginViewModel::class.java)
-        } else {
-            ViewModelProvider(this,
-                    LoginViewModelFactory(
-                            AccountRepoImp(
-                                    ApiAccountRepoImp(),
-                                    SCMApp.db,
-                                    AccountConvertImp()
-                            ), AccountRepo::class.java, SCMApp.actualApiKeyService
-                    )).get(LoginViewModel::class.java)
-        }
-        return inflater.inflate(R.layout.fragment_login, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mInputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        mLoginViewModel.authStatus.observe(viewLifecycleOwner, Observer { authStatusHandler(it) })
-        mLoginViewModel.regStatus.observe(viewLifecycleOwner, Observer { regStatusHandler(it) })
+        inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        loginViewModel.authStatus.observe(viewLifecycleOwner, Observer { authStatusHandler(it) })
+        loginViewModel.regStatus.observe(viewLifecycleOwner, Observer { regStatusHandler(it) })
 
         //On demo mode
-        form_demo_submit.setOnClickListener { mLoginViewModel.onDemoAccount() }
+        form_demo_submit.setOnClickListener { loginViewModel.onDemoAccount() }
 
         //On check auth
         form_submit.setOnClickListener {
             it.isEnabled = false
-            mLoginViewModel.addNewAccount(user_login.text.toString(), user_pass.text.toString())
+            loginViewModel.addNewAccount(user_login.text.toString(), user_pass.text.toString())
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mCompositeDisposable.clear()
+        compositeDisposable.clear()
         setUiVisibleStatus(true)
     }
 
@@ -109,28 +93,28 @@ class LoginFragment : Fragment() {
     private fun pinFormInit(isNew: Boolean) {
         if (isNew) {
             pin_layout_title.setText(R.string.pin_layout_title_new)
-            mCompositeDisposable.add(
+            compositeDisposable.add(
                     user_pin_code.textChanges()
                             .filter { it.toString().length == 4 }
                             .map { it.toString() }
-                            .subscribe { mLoginViewModel.addNewAccountPin(it) }
+                            .subscribe { loginViewModel.addNewAccountPin(it) }
             )
         } else {
-            mCompositeDisposable.add(
+            compositeDisposable.add(
                     user_pin_code.textChanges()
                             .filter { it.toString().length == 4 }
                             .map { it.toString() }
-                            .subscribe { mLoginViewModel.checkAccountPin(it) }
+                            .subscribe { loginViewModel.checkAccountPin(it) }
             )
         }
         pin_layout.visibility = View.VISIBLE
         user_pin_code.requestFocus()
-        mInputMethodManager.showSoftInput(user_pin_code, InputMethodManager.SHOW_IMPLICIT)
+        inputMethodManager.showSoftInput(user_pin_code, InputMethodManager.SHOW_IMPLICIT)
     }
 
     private fun loginFormInit() {
         login_layout.visibility = View.VISIBLE
-        mCompositeDisposable.add(Observable.combineLatest(
+        compositeDisposable.add(Observable.combineLatest(
                 user_login.textChanges(),
                 user_pass.textChanges(),
                 BiFunction { login: CharSequence, pass: CharSequence -> login.isNotEmpty() && pass.isNotEmpty() })
@@ -140,7 +124,7 @@ class LoginFragment : Fragment() {
 
     private fun authSuccess() {
         try {
-            mInputMethodManager.hideSoftInputFromWindow(requireView().windowToken, 0)
+            inputMethodManager.hideSoftInputFromWindow(requireView().windowToken, 0)
             Navigation.findNavController(requireView()).popBackStack()
             Navigation.findNavController(requireView()).navigate(R.id.serverListFragment)
         } catch (ignored: NullPointerException) {
@@ -155,7 +139,7 @@ class LoginFragment : Fragment() {
 
     private fun authDemo() {
         try {
-            mInputMethodManager.hideSoftInputFromWindow(requireView().windowToken, 0)
+            inputMethodManager.hideSoftInputFromWindow(requireView().windowToken, 0)
             this.viewModelStore.clear()
             Navigation.findNavController(requireView()).navigate(R.id.serverListFragment)
             setUiVisibleStatus(true)
@@ -165,8 +149,8 @@ class LoginFragment : Fragment() {
 
     private fun setUiVisibleStatus(status: Boolean) {
         try {
-            (activity as UiVisibilityStatus?)!!.setVisibilityToolbar(status)
-            (activity as UiVisibilityStatus?)!!.setVisibilityNavigation(status)
+            (activity as? UiVisibilityStatus)?.setVisibilityToolbar(status)
+            (activity as? UiVisibilityStatus)?.setVisibilityNavigation(status)
         } catch (ignored: NullPointerException) {
         }
     }
@@ -187,9 +171,5 @@ class LoginFragment : Fragment() {
             }
         } catch (ignored: NullPointerException) {
         }
-    }
-
-    companion object {
-        private val TAG = LoginFragment::class.java.simpleName
     }
 }

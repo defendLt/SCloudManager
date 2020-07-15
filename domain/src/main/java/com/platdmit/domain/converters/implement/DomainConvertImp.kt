@@ -4,8 +4,11 @@ import com.platdmit.data.api.models.ApiDomain
 import com.platdmit.data.database.entity.DbDomain
 import com.platdmit.domain.converters.DomainConverter
 import com.platdmit.domain.models.Domain
+import javax.inject.Inject
 
-class DomainConvertImp : DomainConverter {
+class DomainConvertImp
+@Inject
+constructor() : DomainConverter<ApiDomain, Domain, DbDomain> {
     override fun fromApiToDb(apiDomain: ApiDomain): DbDomain {
         return DbDomain(apiDomain.id, apiDomain.name, apiDomain.type, apiDomain.deleteDate, apiDomain.isDelegated)
     }

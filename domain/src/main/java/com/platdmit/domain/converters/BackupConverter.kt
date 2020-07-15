@@ -1,12 +1,8 @@
 package com.platdmit.domain.converters
 
-import com.platdmit.data.api.models.ApiBackup
-import com.platdmit.data.database.entity.DbBackup
-import com.platdmit.domain.models.Backup
-
-interface BackupConverter {
-    fun fromApiToDb(apiBackup: ApiBackup, serverId: Long): DbBackup
-    fun fromDbToDomain(dbBackup: DbBackup): Backup
-    fun fromDbToDomainList(dbList: List<DbBackup>): List<Backup>
-    fun fromApiToDbList(apiList: List<ApiBackup>, serverId: Long): List<DbBackup>
+interface BackupConverter <ApiModel, DomainModel, DbModel> {
+    fun fromApiToDb(apiBackup: ApiModel, serverId: Long): DbModel
+    fun fromDbToDomain(dbBackup: DbModel): DomainModel
+    fun fromDbToDomainList(dbList: List<DbModel>): List<DomainModel>
+    fun fromApiToDbList(apiList: List<ApiModel>, serverId: Long): List<DbModel>
 }

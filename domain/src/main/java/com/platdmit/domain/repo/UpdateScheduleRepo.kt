@@ -1,9 +1,7 @@
 package com.platdmit.domain.repo
 
-import com.platdmit.data.database.entity.DbUpdateSchedule
-
-interface UpdateScheduleRepo {
-    fun getUpdateTimeList(): List<DbUpdateSchedule>?
+interface UpdateScheduleRepo<DbModel> {
+    fun getUpdateTimeList(): List<DbModel>?
     fun getUpdateTime(key: String): Long
     fun setUpdateTime(key: String, nextUpdate: Long)
 }

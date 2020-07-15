@@ -5,54 +5,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.platdmit.domain.models.Domain
 import com.platdmit.simplecloudmanager.R
 import com.platdmit.simplecloudmanager.adapters.DomainListAdapter
 import com.platdmit.simplecloudmanager.vm.DomainListViewModel
-import com.platdmit.simplecloudmanager.vm.factory.ListElementsViewModelFactory
-import com.platdmit.data.api.implement.ApiDomainRepoImp
-import com.platdmit.simplecloudmanager.SCMApp
-import com.platdmit.domain.converters.implement.DomainConvertImp
-import com.platdmit.domain.helpers.ContentUpdateService
-import com.platdmit.domain.models.Domain
-import com.platdmit.domain.repo.DomainBaseRepo
-import com.platdmit.domain.repo.implement.DomainRepoImp
-import com.platdmit.domain.repo.implement.UpdateScheduleRepImp
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_domains_list.*
 
-class DomainListFragment : Fragment() {
-    private lateinit var mDomainListViewModel: DomainListViewModel
-    private val mDomainListAdapter: DomainListAdapter = DomainListAdapter()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        mDomainListViewModel = if (savedInstanceState != null) {
-            ViewModelProvider(this).get(DomainListViewModel::class.java)
-        } else {
-            ViewModelProvider(this,
-                    ListElementsViewModelFactory(
-                            DomainRepoImp(
-                                    ApiDomainRepoImp(SCMApp.actualApiKeyService), SCMApp.db,
-                                    DomainConvertImp(), ContentUpdateService(UpdateScheduleRepImp(SCMApp.db))
-                            ), DomainBaseRepo::class.java
-                    )).get(DomainListViewModel::class.java)
-        }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.fragment_domains_list, container, false)
+@AndroidEntryPoint
+class DomainListFragment : Fragment(R.layout.fragment_domains_list) {
+    private val domainListViewModel: DomainListViewModel by viewModels()
+    private val domainListAdapter: DomainListAdapter = DomainListAdapter()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         fragments_list.layoutManager = LinearLayoutManager(context)
-        update_swipe.setOnRefreshListener{mDomainListViewModel.reloadDomainList()}
+        update_swipe.setOnRefreshListener{domainListViewModel.reloadDomainList()}
 
-        mDomainListViewModel.domainsLiveData.observe(viewLifecycleOwner, Observer {updateAdapterData(it)})
-        mDomainListViewModel.resultMassage.observe(viewLifecycleOwner, Observer {showResultMassage(it)})
+        domainListViewModel.domainsLiveData.observe(viewLifecycleOwner, Observer {updateAdapterData(it)})
+        domainListViewModel.messageLiveData.observe(viewLifecycleOwner, Observer {showResultMassage(it)})
     }
 
     private fun showResultMassage(massage: String) {
@@ -60,17 +36,13 @@ class DomainListFragment : Fragment() {
     }
 
     private fun updateAdapterData(domains: List<Domain>) {
-        mDomainListAdapter.setContentData(domains)
+        domainListAdapter.setContentData(domains)
         update_swipe.isRefreshing = false
 
         if (fragments_list.adapter == null) {
-            fragments_list.adapter = mDomainListAdapter
+            fragments_list.adapter = domainListAdapter
         } else {
-            mDomainListAdapter.notifyDataSetChanged()
+            domainListAdapter.notifyDataSetChanged()
         }
-    }
-
-    companion object {
-        private val TAG = DomainFragment::class.java.simpleName
     }
 }

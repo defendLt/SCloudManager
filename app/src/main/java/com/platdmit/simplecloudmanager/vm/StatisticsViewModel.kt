@@ -1,7 +1,11 @@
 package com.platdmit.simplecloudmanager.vm
 
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -14,19 +18,24 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*
 import kotlin.collections.ArrayList
 
-class StatisticsViewModel(
-        private val mServerStatisticsRepo: ServerStatisticsRepo,
-        serverId: Long
+class StatisticsViewModel
+@ViewModelInject
+constructor(
+        private val serverStatisticsRepo: ServerStatisticsRepo,
+        @Assisted private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
-    private val mCpuDataCharts = MutableLiveData<ComplexChartsData>()
-    private val mRamDataCharts = MutableLiveData<ComplexChartsData>()
+    val cpuDataLiveData = MutableLiveData<ComplexChartsData>()
+    val ramDataLiveData = MutableLiveData<ComplexChartsData>()
 
-    init {
-        mCompositeDisposable.add(mServerStatisticsRepo.getServerStatistics(serverId).subscribe { generateChart(it) })
+    val messageLiveData = LiveDataReactiveStreams.fromPublisher(messageProvider)
+
+    fun setActiveId(id: Long){
+        compositeDisposable.add(
+                serverStatisticsRepo.getServerStatistics(id).subscribe { generateChart(it) }
+        )
     }
 
     private fun generateChart(statistics: List<Statistic>) {
-
         Completable.fromAction {
             val cpuEntries: MutableList<Entry> = ArrayList()
             val ramEntries: MutableList<Entry> = ArrayList()
@@ -38,13 +47,13 @@ class StatisticsViewModel(
                 titles[i.toFloat() + 1] = v.time
             }
 
-            mRamDataCharts.postValue(
+            ramDataLiveData.postValue(
                     ComplexChartsData(
                             LineData(LineDataSet(ramEntries, "")),
                             ServerValueFormatter(titles)
                     )
             )
-            mCpuDataCharts.postValue(
+            cpuDataLiveData.postValue(
                     ComplexChartsData(
                             LineData(LineDataSet(cpuEntries, "")),
                             ServerValueFormatter(titles)
@@ -54,15 +63,5 @@ class StatisticsViewModel(
         }.observeOn(Schedulers.newThread())
                 .doOnError { it.printStackTrace() }
                 .subscribe()
-    }
-
-    val cpuDataLiveData: LiveData<ComplexChartsData>
-        get() = mCpuDataCharts
-
-    val ramDataLiveData: LiveData<ComplexChartsData>
-        get() = mRamDataCharts
-
-    companion object {
-        private val TAG = StatisticsViewModel::class.java.simpleName
     }
 }

@@ -1,20 +1,18 @@
 package com.platdmit.data.api.implement
 
 import com.platdmit.data.api.ApiAccountRepo
-import com.platdmit.data.api.ApiManager
 import com.platdmit.data.api.models.ApiAccount
 import com.platdmit.data.api.models.ApiAuth
 import com.platdmit.data.api.rest.RestAccount
 import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.core.SingleEmitter
 
-class ApiAccountRepoImp : ApiAccountRepo {
-    private val mSRestAccount: RestAccount = ApiManager.getApiPoint(RestAccount::class.java, "")
-
+class ApiAccountRepoImp(
+        private val restAccount: RestAccount
+) : ApiAccountRepo {
     override fun getApiKey(login: String, pass: String): Single<ApiAuth> {
         return Single.create {
             try {
-                val response = mSRestAccount.getApiKey(login, pass).execute()
+                val response = restAccount.getApiKey(login, pass).execute()
                 if (response.isSuccessful) {
                     it.onSuccess(response.body())
                 } else {
@@ -29,7 +27,7 @@ class ApiAccountRepoImp : ApiAccountRepo {
     override fun getActiveAccount(): Single<ApiAccount> {
         return Single.create {
             try {
-                val response = mSRestAccount.getAccount().execute()
+                val response = restAccount.getAccount().execute()
                 if (response.isSuccessful) {
                     val apiRequestBody = response.body()!!.account
                     it.onSuccess(apiRequestBody.account)
@@ -41,9 +39,4 @@ class ApiAccountRepoImp : ApiAccountRepo {
             }
         }
     }
-
-    companion object {
-        private val TAG = ApiAccountRepoImp::class.java.simpleName
-    }
-
 }

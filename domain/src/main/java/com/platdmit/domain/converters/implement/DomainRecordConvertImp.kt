@@ -4,9 +4,11 @@ import com.platdmit.data.api.models.ApiDomainRecord
 import com.platdmit.data.database.entity.DbDomainRecord
 import com.platdmit.domain.converters.DomainRecordConverter
 import com.platdmit.domain.models.DomainRecord
-import java.util.*
+import javax.inject.Inject
 
-class DomainRecordConvertImp : DomainRecordConverter {
+class DomainRecordConvertImp
+@Inject
+constructor() : DomainRecordConverter<ApiDomainRecord, DomainRecord, DbDomainRecord> {
     override fun fromApiToDb(apiDomainRecord: ApiDomainRecord, domainId: Long): DbDomainRecord {
         return DbDomainRecord(
                 apiDomainRecord.id, apiDomainRecord.priority.toString(), apiDomainRecord.port.toString(), apiDomainRecord.weight.toString(), apiDomainRecord.ttl.toString(),

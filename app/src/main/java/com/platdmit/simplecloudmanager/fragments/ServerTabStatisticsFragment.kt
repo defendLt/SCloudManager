@@ -5,45 +5,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.github.mikephil.charting.charts.LineChart
 import com.platdmit.simplecloudmanager.R
 import com.platdmit.simplecloudmanager.vm.StatisticsViewModel
-import com.platdmit.simplecloudmanager.vm.factory.SingleElementViewModelFactory
-import com.platdmit.data.api.implement.ApiServerRepoImp
-import com.platdmit.simplecloudmanager.SCMApp
-import com.platdmit.domain.converters.implement.StatisticConvertImp
-import com.platdmit.domain.helpers.ContentUpdateService
 import com.platdmit.domain.models.ComplexChartsData
-import com.platdmit.domain.repo.ServerStatisticsRepo
-import com.platdmit.domain.repo.implement.ServerRepoImp
-import com.platdmit.domain.repo.implement.UpdateScheduleRepImp
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_server_tab_statistics.*
 
+@AndroidEntryPoint
 class ServerTabStatisticsFragment(
         private val mTitle: String = "empty"
-) : Fragment(), ServerTabFragment<ServerTabStatisticsFragment> {
-    private lateinit var mStatisticsViewModel: StatisticsViewModel
-    private var mCpuChart: LineChart? = null
-    private var mRamChart: LineChart? = null
+) : Fragment(R.layout.fragment_server_tab_statistics), ServerTabFragment<ServerTabStatisticsFragment> {
+    private val statisticsViewModel: StatisticsViewModel by viewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mStatisticsViewModel = if (savedInstanceState != null) {
-            ViewModelProvider(this).get(StatisticsViewModel::class.java)
-        } else {
-            ViewModelProvider(this,
-                    SingleElementViewModelFactory(
-                            ServerRepoImp(
-                                    ApiServerRepoImp(SCMApp.actualApiKeyService),
-                                    SCMApp.db,
-                                    StatisticConvertImp(),
-                                    ContentUpdateService(UpdateScheduleRepImp(SCMApp.db))
-                            ), ServerStatisticsRepo::class.java, requireArguments().getLong("ELEMENT_ID")
-                    )).get(StatisticsViewModel::class.java)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if(savedInstanceState == null){
+            statisticsViewModel.setActiveId(requireArguments().getLong("ELEMENT_ID"))
         }
-
-        return inflater.inflate(R.layout.fragment_server_tab_statistics, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,8 +34,8 @@ class ServerTabStatisticsFragment(
         cpu_chart.setScaleEnabled(false)
         ram_chart.setScaleEnabled(false)
 
-        mStatisticsViewModel.cpuDataLiveData.observe(viewLifecycleOwner, Observer { updateCpuData(it) })
-        mStatisticsViewModel.ramDataLiveData.observe(viewLifecycleOwner, Observer { updateRamData(it) })
+        statisticsViewModel.cpuDataLiveData.observe(viewLifecycleOwner, Observer { updateCpuData(it) })
+        statisticsViewModel.ramDataLiveData.observe(viewLifecycleOwner, Observer { updateRamData(it) })
     }
 
     override fun getTitle(): String {
@@ -105,9 +86,5 @@ class ServerTabStatisticsFragment(
 
         } catch (e: NullPointerException) {
         }
-    }
-
-    companion object {
-        private val TAG = ServerTabStatisticsFragment::class.java.simpleName
     }
 }

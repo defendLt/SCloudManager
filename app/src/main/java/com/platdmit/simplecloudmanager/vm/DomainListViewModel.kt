@@ -1,35 +1,37 @@
 package com.platdmit.simplecloudmanager.vm
 
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import com.platdmit.domain.models.Domain
 import com.platdmit.domain.repo.DomainBaseRepo
 import io.reactivex.rxjava3.processors.BehaviorProcessor
 
-class DomainListViewModel(
-        private val mDomainRepo: DomainBaseRepo
+class DomainListViewModel
+@ViewModelInject
+constructor(
+        private val domainBaseRepo: DomainBaseRepo,
+        @Assisted private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
     val domainsLiveData: LiveData<List<Domain>>
-    val resultMassage = MutableLiveData<String>()
-    private val mContentProvider = BehaviorProcessor.create<List<Domain>>()
+    val messageLiveData = LiveDataReactiveStreams.fromPublisher(messageProvider)
+
+    private val contentProvider = BehaviorProcessor.create<List<Domain>>()
 
     init {
         //Fast fix for prevent overSubscription after resize
-        mCompositeDisposable.add(mDomainRepo.getDomains().subscribe {mContentProvider.onNext(it)})
-        domainsLiveData = LiveDataReactiveStreams.fromPublisher(mContentProvider)
+        compositeDisposable.add(domainBaseRepo.getDomains().subscribe {contentProvider.onNext(it)})
+        domainsLiveData = LiveDataReactiveStreams.fromPublisher(contentProvider)
     }
 
     fun reloadDomainList() {
-        mDomainRepo.nextUpdate()
+        domainBaseRepo.nextUpdate()
     }
 
     override fun onCleared() {
         super.onCleared()
-        mContentProvider.onComplete()
-    }
-
-    companion object {
-        private val TAG = DomainListViewModel::class.java.simpleName
+        contentProvider.onComplete()
     }
 }

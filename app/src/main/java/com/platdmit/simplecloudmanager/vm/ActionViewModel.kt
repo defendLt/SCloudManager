@@ -1,32 +1,39 @@
 package com.platdmit.simplecloudmanager.vm
 
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import com.platdmit.domain.models.Action
 import com.platdmit.domain.repo.ServerActionsRepo
 import io.reactivex.rxjava3.processors.BehaviorProcessor
 
-class ActionViewModel(
-        private val mActionsRepo: ServerActionsRepo,
-        serverId: Long
+class ActionViewModel
+@ViewModelInject
+constructor(
+        private val serverActionsRepo: ServerActionsRepo,
+        @Assisted private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
     val actionsLiveData: LiveData<List<Action>>
-    val resultMassage = MutableLiveData<String>()
+    val messageLiveData = LiveDataReactiveStreams.fromPublisher(messageProvider)
+
     private val mContentProvider = BehaviorProcessor.create<List<Action>>()
 
     init {
         //Fast fix for prevent overSubscription after resize
-        mCompositeDisposable.add(mActionsRepo.getServerActions(serverId).subscribe { mContentProvider.onNext(it) })
         actionsLiveData = LiveDataReactiveStreams.fromPublisher(mContentProvider)
+    }
+
+    fun setActiveId(id: Long){
+        compositeDisposable.add(
+                serverActionsRepo.getServerActions(id)
+                        .subscribe { mContentProvider.onNext(it) }
+        )
     }
 
     override fun onCleared() {
         super.onCleared()
         mContentProvider.onComplete()
-    }
-
-    companion object {
-        private val TAG = ActionViewModel::class.java.simpleName
     }
 }

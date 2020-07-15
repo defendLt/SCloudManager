@@ -4,9 +4,11 @@ import com.platdmit.data.api.models.ApiLoadAverage
 import com.platdmit.data.database.entity.DbLoadAverage
 import com.platdmit.domain.converters.LoadAverageConverter
 import com.platdmit.domain.models.LoadAverage
-import java.util.*
+import javax.inject.Inject
 
-class LoadAverageConvertImp : LoadAverageConverter {
+class LoadAverageConvertImp
+@Inject
+constructor() : LoadAverageConverter<ApiLoadAverage, LoadAverage, DbLoadAverage> {
     override fun fromApiToDb(apiLoadAverage: ApiLoadAverage, serverId: Long): List<DbLoadAverage> {
         val loadAverageList: MutableList<DbLoadAverage> = emptyList<DbLoadAverage>().toMutableList();
         loadAverageList.add(DbLoadAverage(

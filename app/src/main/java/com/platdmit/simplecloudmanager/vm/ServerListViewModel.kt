@@ -1,35 +1,36 @@
 package com.platdmit.simplecloudmanager.vm
 
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import com.platdmit.domain.models.Server
 import com.platdmit.domain.repo.ServerBaseRepo
 import io.reactivex.rxjava3.processors.BehaviorProcessor
 
-class ServerListViewModel(
-        private val mServerRepo: ServerBaseRepo
+class ServerListViewModel
+@ViewModelInject
+constructor(
+        private val mServerRepo: ServerBaseRepo,
+        @Assisted private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
     val serversLiveData: LiveData<List<Server>>
-    val resultMassage = MutableLiveData<String>()
-    private val mContentProvider = BehaviorProcessor.create<List<Server>>()
+    val messageLiveData = LiveDataReactiveStreams.fromPublisher(messageProvider)
+    private val contentProvider = BehaviorProcessor.create<List<Server>>()
+
+    init {
+        //Fast fix for prevent overSubscription after resize
+        compositeDisposable.add(mServerRepo.getServers().subscribe { contentProvider.onNext(it) })
+        serversLiveData = LiveDataReactiveStreams.fromPublisher(contentProvider)
+    }
 
     fun reloadServerList() {
         mServerRepo.nextUpdate()
     }
 
-    init {
-        //Fast fix for prevent overSubscription after resize
-        mCompositeDisposable.add(mServerRepo.getServers().subscribe { mContentProvider.onNext(it) })
-        serversLiveData = LiveDataReactiveStreams.fromPublisher(mContentProvider)
-    }
-
     override fun onCleared() {
         super.onCleared()
-        mContentProvider.onComplete()
-    }
-
-    companion object {
-        private val TAG = ServerListViewModel::class.java.simpleName
+        contentProvider.onComplete()
     }
 }

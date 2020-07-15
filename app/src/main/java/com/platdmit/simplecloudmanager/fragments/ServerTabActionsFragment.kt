@@ -5,45 +5,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.platdmit.simplecloudmanager.R
 import com.platdmit.simplecloudmanager.adapters.ActionListAdapter
 import com.platdmit.simplecloudmanager.vm.ActionViewModel
-import com.platdmit.simplecloudmanager.vm.factory.SingleElementViewModelFactory
-import com.platdmit.data.api.implement.ApiServerRepoImp
-import com.platdmit.simplecloudmanager.SCMApp
-import com.platdmit.domain.converters.implement.ActionConvertImp
-import com.platdmit.domain.helpers.ContentUpdateService
 import com.platdmit.domain.models.Action
-import com.platdmit.domain.repo.ServerActionsRepo
-import com.platdmit.domain.repo.implement.ServerRepoImp
-import com.platdmit.domain.repo.implement.UpdateScheduleRepImp
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_server_tab_actions.*
 
+@AndroidEntryPoint
 class ServerTabActionsFragment(
         private val mTitle: String = "empty"
-) : Fragment(), ServerTabFragment<ServerTabActionsFragment> {
-    private lateinit var mActionViewModel: ActionViewModel
-    private val mActionListAdapter: ActionListAdapter = ActionListAdapter()
+) : Fragment(R.layout.fragment_server_tab_actions), ServerTabFragment<ServerTabActionsFragment> {
+    private val actionViewModel: ActionViewModel by viewModels()
+    private val actionListAdapter = ActionListAdapter()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mActionViewModel = if (savedInstanceState != null) {
-            ViewModelProvider(this).get(ActionViewModel::class.java)
-        } else {
-            ViewModelProvider(this,
-                    SingleElementViewModelFactory(
-                            ServerRepoImp(
-                                    ApiServerRepoImp(SCMApp.actualApiKeyService),
-                                    SCMApp.db,
-                                    ActionConvertImp(),
-                                    ContentUpdateService(UpdateScheduleRepImp(SCMApp.db))
-                            ), ServerActionsRepo::class.java, requireArguments().getLong("ELEMENT_ID")
-                    )).get(ActionViewModel::class.java)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if(savedInstanceState == null){
+            actionViewModel.setActiveId(requireArguments().getLong("ELEMENT_ID"))
         }
-
-        return inflater.inflate(R.layout.fragment_server_tab_actions, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,7 +34,7 @@ class ServerTabActionsFragment(
 
         server_actions_list.layoutManager = LinearLayoutManager(context)
 
-        mActionViewModel.actionsLiveData.observe(viewLifecycleOwner, Observer { actions: List<Action> -> updateServerActionData(actions) })
+        actionViewModel.actionsLiveData.observe(viewLifecycleOwner, Observer { actions: List<Action> -> updateServerActionData(actions) })
     }
 
     override fun getTitle(): String {
@@ -63,15 +46,11 @@ class ServerTabActionsFragment(
     }
 
     private fun updateServerActionData(actions: List<Action>) {
-        mActionListAdapter.setContentData(actions)
+        actionListAdapter.setContentData(actions)
         if (server_actions_list.adapter == null) {
-            server_actions_list.adapter = mActionListAdapter
+            server_actions_list.adapter = actionListAdapter
         } else {
-            mActionListAdapter.notifyDataSetChanged()
+            actionListAdapter.notifyDataSetChanged()
         }
-    }
-
-    companion object {
-        private val TAG = ServerTabActionsFragment::class.java.simpleName
     }
 }

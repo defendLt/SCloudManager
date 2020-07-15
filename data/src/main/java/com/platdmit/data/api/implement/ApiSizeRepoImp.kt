@@ -1,16 +1,14 @@
 package com.platdmit.data.api.implement
 
-import com.platdmit.data.api.ApiManager.getApiPoint
 import com.platdmit.data.api.ApiSizeRepo
 import com.platdmit.data.api.models.ApiSize
 import com.platdmit.data.api.rest.RestSize
-import com.platdmit.data.helpers.ActualApiKeyService
 import io.reactivex.rxjava3.core.Single
 
-class ApiSizeRepoImp(private val mActualApiKeyService: ActualApiKeyService) : ApiSizeRepo {
-    //always gets the actual key
-    private val restSize: RestSize
-        get() = getApiPoint(RestSize::class.java, mActualApiKeyService.apiKey)
+class ApiSizeRepoImp(
+        private val restSize: RestSize
+) : ApiSizeRepo {
+    private val TAG = ApiSizeRepoImp::class.java.simpleName
 
     override fun getSizes(): Single<List<ApiSize>> {
         return Single.create {
@@ -26,10 +24,6 @@ class ApiSizeRepoImp(private val mActualApiKeyService: ActualApiKeyService) : Ap
                 it.onError(e)
             }
         }
-    }
-
-    companion object {
-        private val TAG = ApiSizeRepoImp::class.java.simpleName
     }
 
 }

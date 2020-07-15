@@ -5,52 +5,35 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.platdmit.simplecloudmanager.R
 import com.platdmit.simplecloudmanager.adapters.LoadAverageListAdapter
 import com.platdmit.simplecloudmanager.vm.LoadAverageViewModel
-import com.platdmit.simplecloudmanager.vm.factory.SingleElementViewModelFactory
-import com.platdmit.data.api.implement.ApiServerRepoImp
-import com.platdmit.simplecloudmanager.SCMApp
-import com.platdmit.domain.converters.implement.LoadAverageConvertImp
-import com.platdmit.domain.helpers.ContentUpdateService
 import com.platdmit.domain.models.LoadAverage
-import com.platdmit.domain.repo.ServerLoadAveragesRepo
-import com.platdmit.domain.repo.implement.ServerRepoImp
-import com.platdmit.domain.repo.implement.UpdateScheduleRepImp
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_server_tab_main.*
 
+@AndroidEntryPoint
 class ServerTabMainFragment(
         private val mTitle: String = "empty"
-) : Fragment(), ServerTabFragment<ServerTabMainFragment> {
-    private lateinit var mLoadAverageViewModel: LoadAverageViewModel
-    private val mLoadAverageListAdapter: LoadAverageListAdapter = LoadAverageListAdapter()
+) : Fragment(R.layout.fragment_server_tab_main), ServerTabFragment<ServerTabMainFragment> {
+    private val loadAverageViewModel: LoadAverageViewModel by viewModels()
+    private val loadAverageListAdapter = LoadAverageListAdapter()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mLoadAverageViewModel = if (savedInstanceState != null) {
-            ViewModelProvider(this).get(LoadAverageViewModel::class.java)
-        } else {
-            ViewModelProvider(this,
-                    SingleElementViewModelFactory(
-                            ServerRepoImp(
-                                    ApiServerRepoImp(SCMApp.actualApiKeyService),
-                                    SCMApp.db,
-                                    LoadAverageConvertImp(),
-                                    ContentUpdateService(UpdateScheduleRepImp(SCMApp.db))
-                            ), ServerLoadAveragesRepo::class.java, requireArguments().getLong("ELEMENT_ID")
-                    )).get(LoadAverageViewModel::class.java)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if(savedInstanceState == null){
+            loadAverageViewModel.setActiveId(requireArguments().getLong("ELEMENT_ID"))
         }
-
-        return inflater.inflate(R.layout.fragment_server_tab_main, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         server_load_average.layoutManager = LinearLayoutManager(context)
-        mLoadAverageViewModel.loadAveragesLiveData.observe(viewLifecycleOwner, Observer { updateServerActionData(it) })
+        loadAverageViewModel.loadAveragesLiveData.observe(viewLifecycleOwner, Observer { updateServerActionData(it) })
     }
 
     override fun getTitle(): String {
@@ -62,15 +45,11 @@ class ServerTabMainFragment(
     }
 
     private fun updateServerActionData(actions: List<LoadAverage>) {
-        mLoadAverageListAdapter.setContentData(actions)
+        loadAverageListAdapter.setContentData(actions)
         if (server_load_average.adapter == null) {
-            server_load_average.adapter = mLoadAverageListAdapter
+            server_load_average.adapter = loadAverageListAdapter
         } else {
-            mLoadAverageListAdapter.notifyDataSetChanged()
+            loadAverageListAdapter.notifyDataSetChanged()
         }
-    }
-
-    companion object {
-        private val TAG = ServerTabMainFragment::class.java.simpleName
     }
 }

@@ -1,32 +1,39 @@
 package com.platdmit.simplecloudmanager.vm
 
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import com.platdmit.domain.models.LoadAverage
 import com.platdmit.domain.repo.ServerLoadAveragesRepo
 import io.reactivex.rxjava3.processors.BehaviorProcessor
 
-class LoadAverageViewModel(
-        private val mLoadAveragesRepo: ServerLoadAveragesRepo,
-        serverId: Long
+class LoadAverageViewModel
+@ViewModelInject
+constructor(
+        private val serverLoadAveragesRepo: ServerLoadAveragesRepo,
+        @Assisted private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
     val loadAveragesLiveData: LiveData<List<LoadAverage>>
-    val resultMassage = MutableLiveData<String>()
-    private val mContentProvider = BehaviorProcessor.create<List<LoadAverage>>()
+    val messageLiveData = LiveDataReactiveStreams.fromPublisher(messageProvider)
+
+    private val contentProvider = BehaviorProcessor.create<List<LoadAverage>>()
 
     init {
+        loadAveragesLiveData = LiveDataReactiveStreams.fromPublisher(contentProvider)
+    }
+
+    fun setActiveId(id: Long){
         //Fast fix for prevent overSubscription after resize
-        mCompositeDisposable.add(mLoadAveragesRepo.getServerLoadAverages(serverId).subscribe {mContentProvider.onNext(it)})
-        loadAveragesLiveData = LiveDataReactiveStreams.fromPublisher(mContentProvider)
+        compositeDisposable.add(
+                serverLoadAveragesRepo.getServerLoadAverages(id)
+                        .subscribe {contentProvider.onNext(it)}
+        )
     }
 
     override fun onCleared() {
         super.onCleared()
-        mContentProvider.onComplete()
-    }
-
-    companion object {
-        private val TAG = LoadAverageViewModel::class.java.simpleName
+        contentProvider.onComplete()
     }
 }

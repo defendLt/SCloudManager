@@ -6,50 +6,33 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.tabs.TabLayoutMediator.TabConfigurationStrategy
 import com.platdmit.simplecloudmanager.R
 import com.platdmit.simplecloudmanager.adapters.ServerViewStateAdapter
 import com.platdmit.simplecloudmanager.vm.ServerViewModel
-import com.platdmit.simplecloudmanager.vm.factory.SingleElementViewModelFactory
-import com.platdmit.data.api.implement.ApiServerRepoImp
-import com.platdmit.simplecloudmanager.SCMApp
-import com.platdmit.domain.converters.implement.ServerConvertImp
-import com.platdmit.domain.helpers.ContentUpdateService
 import com.platdmit.domain.models.Server
-import com.platdmit.domain.repo.ServerBaseRepo
-import com.platdmit.domain.repo.implement.ServerRepoImp
-import com.platdmit.domain.repo.implement.UpdateScheduleRepImp
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_server.*
 
-class ServerFragment : Fragment() {
-    private lateinit var mServerViewModel: ServerViewModel
+@AndroidEntryPoint
+class ServerFragment : Fragment(R.layout.fragment_server) {
+    private val serverViewModel: ServerViewModel by viewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mServerViewModel = if (savedInstanceState != null) {
-            ViewModelProvider(this).get(ServerViewModel::class.java)
-        } else {
-            ViewModelProvider(this,
-                    SingleElementViewModelFactory(
-                            ServerRepoImp(
-                                    ApiServerRepoImp(SCMApp.actualApiKeyService),
-                                    SCMApp.db,
-                                    ServerConvertImp(),
-                                    ContentUpdateService(UpdateScheduleRepImp(SCMApp.db))
-                            ), ServerBaseRepo::class.java, requireArguments().getLong("ELEMENT_ID")
-                    )).get(ServerViewModel::class.java)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if(savedInstanceState == null){
+            serverViewModel.setActiveId(requireArguments().getLong("ELEMENT_ID"))
         }
-
-        return inflater.inflate(R.layout.fragment_server, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mServerViewModel.serverLiveData.observe(viewLifecycleOwner, Observer { initData(it) })
+        serverViewModel.serverLiveData.observe(viewLifecycleOwner, Observer { initData(it) })
 
         val serverViewPagerAdapter = ServerViewStateAdapter
                 .add(ServerTabMainFragment(resources.getString(R.string.server_tab_main)))
@@ -75,9 +58,5 @@ class ServerFragment : Fragment() {
         server_price.text = server.paymentPrice
         server_paymentDate.text = server.paymentDate
         activity?.actionBar?.title = server.name
-    }
-
-    companion object {
-        private val TAG = ServerFragment::class.java.simpleName
     }
 }

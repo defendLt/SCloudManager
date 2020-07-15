@@ -1,12 +1,8 @@
 package com.platdmit.domain.converters
 
-import com.platdmit.data.api.models.ApiSize
-import com.platdmit.data.database.entity.DbSize
-import com.platdmit.domain.models.Size
-
-interface SizeConverter {
-    fun fromApiToDb(apiSize: ApiSize): DbSize
-    fun fromDbToDomain(dbSize: DbSize): Size
-    fun fromDbToDomainList(dbList: List<DbSize>): List<Size>
-    fun fromApiToDbList(apiList: List<ApiSize>): List<DbSize>
+interface SizeConverter <ApiModel, DomainModel, DbModel> {
+    fun fromApiToDb(apiSize: ApiModel): DbModel
+    fun fromDbToDomain(dbSize: DbModel): DomainModel
+    fun fromDbToDomainList(dbList: List<DbModel>): List<DomainModel>
+    fun fromApiToDbList(apiList: List<ApiModel>): List<DbModel>
 }

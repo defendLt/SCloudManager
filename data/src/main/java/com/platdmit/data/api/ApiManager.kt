@@ -5,6 +5,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+@Deprecated("Implementation updated, moved to di")
 object ApiManager {
     private val TAG = ApiManager::class.java.simpleName
     private const val BASE_URL = "https://api.simplecloud.ru/v3/"

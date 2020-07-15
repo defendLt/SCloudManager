@@ -1,12 +1,12 @@
 package com.platdmit.domain.repo.implement
 
 import com.platdmit.data.api.ApiAccountRepo
-import com.platdmit.data.database.DbManager
+import com.platdmit.data.api.models.ApiAccount
 import com.platdmit.data.database.dao.AccountDao
+import com.platdmit.data.database.entity.DbAccount
 import com.platdmit.domain.converters.AccountConverter
 import com.platdmit.domain.models.UserAccount
 import com.platdmit.domain.repo.AccountRepo
-import com.platdmit.domain.repo.implement.DomainRepoImp
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
@@ -14,16 +14,16 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import org.mindrot.BCrypt
 
 class AccountRepoImp(
-        private val mApiAccountRepo: ApiAccountRepo,
-        dbManager: DbManager,
-        private val mAccountConverter: AccountConverter
+        private val apiAccountRepo: ApiAccountRepo,
+        private val accountDao: AccountDao,
+        private val accountConverter: AccountConverter<ApiAccount, UserAccount, DbAccount>
 ) : AccountRepo {
-    private val mDbAccountRepo: AccountDao = dbManager.mAccountDao()
+
     override fun getActiveAccount(): Single<UserAccount> {
         return Single.create {
-            val dbAccount = mDbAccountRepo.getBaseAccount()
+            val dbAccount = accountDao.getBaseAccount()
             if (dbAccount != null) {
-                val userAccount = mAccountConverter.fromDbToDomain(dbAccount)
+                val userAccount = accountConverter.fromDbToDomain(dbAccount)
                 userAccount.pin = dbAccount.pin.toString()
                 it.onSuccess(userAccount)
             } else {
@@ -33,10 +33,10 @@ class AccountRepoImp(
     }
 
     override fun getPrepareAccountInfo(login: String, pass: String): Single<UserAccount> {
-        return mApiAccountRepo.getApiKey(login, pass)
+        return apiAccountRepo.getApiKey(login, pass)
                 .subscribeOn(Schedulers.newThread())
                 .flatMap {
-                    val userAccount = mAccountConverter.fromApiToDomain(it.account.account, pass)
+                    val userAccount = accountConverter.fromApiToDomain(it.account.account, pass)
                     userAccount.apiKey = it.sessionKey
                     Single.just(userAccount)
                 }
@@ -46,15 +46,11 @@ class AccountRepoImp(
 
     override fun addAccountPin(account: UserAccount): Completable {
         return Completable.create {
-            val dbAccount = mAccountConverter.fromDomainToDb(account)
+            val dbAccount = accountConverter.fromDomainToDb(account)
             dbAccount.isMain = true
             dbAccount.pin = BCrypt.hashpw(account.pin, BCrypt.gensalt())
-            mDbAccountRepo.insert(dbAccount)
+            accountDao.insert(dbAccount)
             it.onComplete()
         }.doOnError {println(it.message) }
-    }
-
-    companion object {
-        private val TAG = DomainRepoImp::class.java.simpleName
     }
 }

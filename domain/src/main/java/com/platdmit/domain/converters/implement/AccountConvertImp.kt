@@ -4,8 +4,11 @@ import com.platdmit.data.api.models.ApiAccount
 import com.platdmit.data.database.entity.DbAccount
 import com.platdmit.domain.converters.AccountConverter
 import com.platdmit.domain.models.UserAccount
+import javax.inject.Inject
 
-class AccountConvertImp : AccountConverter {
+class AccountConvertImp
+@Inject
+constructor() : AccountConverter<ApiAccount, UserAccount, DbAccount> {
     override fun fromApiToDb(apiAccount: ApiAccount, password: String): DbAccount {
         return DbAccount(
                 apiAccount.uuid.toLong(),

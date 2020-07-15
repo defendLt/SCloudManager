@@ -1,59 +1,51 @@
 package com.platdmit.domain.repo.implement
 
 import com.platdmit.data.api.ApiDomainRepo
-import com.platdmit.data.database.DbManager
+import com.platdmit.data.api.models.ApiDomain
+import com.platdmit.data.api.models.ApiDomainRecord
 import com.platdmit.data.database.dao.DomainDao
 import com.platdmit.data.database.dao.DomainRecordDao
+import com.platdmit.data.database.entity.DbDomain
+import com.platdmit.data.database.entity.DbDomainRecord
 import com.platdmit.domain.converters.DomainConverter
 import com.platdmit.domain.converters.DomainRecordConverter
 import com.platdmit.domain.helpers.UpdateScheduleService
 import com.platdmit.domain.models.Domain
+import com.platdmit.domain.models.DomainRecord
 import com.platdmit.domain.repo.DomainBaseRepo
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.PublishSubject
 
-class DomainRepoImp : DomainBaseRepo {
+class DomainRepoImp
+    constructor(
+            private val apiDomainRepo: ApiDomainRepo,
+            private val domainDao: DomainDao,
+            private val domainConverter: DomainConverter<ApiDomain, Domain, DbDomain>,
+            private val updateScheduleService: UpdateScheduleService,
+            private val domainRecordDao: DomainRecordDao? = null,
+            private val domainRecordConverter: DomainRecordConverter<ApiDomainRecord, DomainRecord, DbDomainRecord>? = null
+    )
+    : DomainBaseRepo {
+
+    private val TAG = DomainRepoImp::class.java.simpleName
     private val handCall = PublishSubject.create<Boolean>()
-    private val mApiDomainRepo: ApiDomainRepo
-    private val mDbDomainRepo: DomainDao
-    private val mDomainConverter: DomainConverter
-    private val mUpdateScheduleService: UpdateScheduleService
-
-    private lateinit var mDbDomainRecordRepo: DomainRecordDao
-    private lateinit var mDomainRecordConverter: DomainRecordConverter
-
-    constructor(apiDomainRepo: ApiDomainRepo, dbManager: DbManager, domainConverter: DomainConverter, updateScheduleService: UpdateScheduleService) {
-        mApiDomainRepo = apiDomainRepo
-        mDbDomainRepo = dbManager.mDomainDao()
-        mDomainConverter = domainConverter
-        mUpdateScheduleService = updateScheduleService
-    }
-
-    constructor(apiDomainRepo: ApiDomainRepo, dbManager: DbManager, domainConverter: DomainConverter, domainRecordConverter: DomainRecordConverter, updateScheduleService: UpdateScheduleService) {
-        mApiDomainRepo = apiDomainRepo
-        mDbDomainRepo = dbManager.mDomainDao()
-        mDbDomainRecordRepo = dbManager.mDomainRecordDao()
-        mDomainConverter = domainConverter
-        mDomainRecordConverter = domainRecordConverter
-        mUpdateScheduleService = updateScheduleService
-    }
 
     override fun getDomains(): Observable<List<Domain>> {
         return Observable.defer {
-            if (mUpdateScheduleService.getActualStatus(TAG)) {
-                return@defer Observable.just(mDbDomainRepo.getAllElement())
+            if (updateScheduleService.getActualStatus(TAG)) {
+                return@defer Observable.just(domainDao.getAllElement())
             } else {
-                return@defer mApiDomainRepo.getDomains().flatMapObservable {
-                    val dbDomains = mDomainConverter.fromApiToDbList(it)
-                    mDbDomainRepo.insertList(dbDomains)
+                return@defer apiDomainRepo.getDomains().flatMapObservable {
+                    val dbDomains = domainConverter.fromApiToDbList(it)
+                    domainDao.insertList(dbDomains)
                     Observable.just(dbDomains)
-                }.doOnComplete { mUpdateScheduleService.setDefaultUpdateTime(TAG) }
+                }.doOnComplete { updateScheduleService.setDefaultUpdateTime(TAG) }
             }
         }
                 .subscribeOn(Schedulers.newThread())
-                .flatMap { Observable.just(mDomainConverter.fromDbToDomainList(it!!)) }
+                .flatMap { Observable.just(domainConverter.fromDbToDomainList(it!!)) }
                 .onErrorComplete {
                     println(it.message)
                     true
@@ -63,22 +55,24 @@ class DomainRepoImp : DomainBaseRepo {
 
     override fun getDomain(id: Long): Observable<Domain> {
         return Observable.defer {
-            if (mUpdateScheduleService.getActualStatus( TAG + id)) {
-                return@defer Observable.just(mDbDomainRecordRepo.getRecordsForDomain(id))
+            if (updateScheduleService.getActualStatus( TAG + id)) {
+                return@defer Observable.just(domainRecordDao?.getRecordsForDomain(id))
             } else {
-                return@defer mApiDomainRepo.getDomainRecords(id)
+                return@defer apiDomainRepo.getDomainRecords(id)
                         .flatMapObservable {
-                            val recordsDb = mDomainRecordConverter.fromApiToDbList(it, id)
-                            mDbDomainRecordRepo.insertList(recordsDb)
-                            Observable.just(recordsDb)
-                        }.doOnComplete { mUpdateScheduleService.setDefaultUpdateTime(TAG + id) }
+                            val recordsDb = domainRecordConverter?.fromApiToDbList(it, id)
+                            recordsDb?.let { record ->
+                                domainRecordDao?.insertList(record)
+                                Observable.just(record)
+                            }
+                        }.doOnComplete { updateScheduleService.setDefaultUpdateTime(TAG + id) }
             }
         }
                 .subscribeOn(Schedulers.newThread())
                 .flatMap {
-                    val dbDomain = mDbDomainRepo.getElement(id)
-                    val domain = mDomainConverter.fromDbToDomain(dbDomain!!)
-                    domain.domainRecords = mDomainRecordConverter.fromDbToDomainList(it!!)
+                    val dbDomain = domainDao.getElement(id)
+                    val domain = domainConverter.fromDbToDomain(dbDomain!!)
+                    domain.domainRecords = domainRecordConverter?.fromDbToDomainList(it!!)
                     Observable.just(domain)
                 }
                 .onErrorComplete {
@@ -90,9 +84,5 @@ class DomainRepoImp : DomainBaseRepo {
 
     override fun nextUpdate() {
         handCall.onNext(true)
-    }
-
-    companion object {
-        private val TAG = DomainRepoImp::class.java.simpleName
     }
 }
