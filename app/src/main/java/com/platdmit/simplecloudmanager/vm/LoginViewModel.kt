@@ -45,7 +45,9 @@ constructor(
                 .subscribe({
                     userAccount = it
                     regStatus.postValue(LoginFormStatus.NEED_SET_PIN)
-                }, {regStatus.postValue(LoginFormStatus.AUTH_INVALID) })
+                }, {
+                    regStatus.postValue(LoginFormStatus.AUTH_INVALID)
+                })
         )
     }
 
@@ -89,6 +91,13 @@ constructor(
     }
 
     enum class LoginFormStatus {
-        YES_ACTIVE_USER, NOT_ACTIVE_USER, PIN_INVALID, AUTH_INVALID, NEED_SET_PIN, LOAD_DATA, ON_DEMO, SUCCESS
+        YES_ACTIVE_USER,
+        NOT_ACTIVE_USER,
+        PIN_INVALID,
+        AUTH_INVALID,
+        NEED_SET_PIN,
+        LOAD_DATA,
+        ON_DEMO,
+        SUCCESS
     }
 }

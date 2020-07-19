@@ -2,7 +2,6 @@ package com.platdmit.domain.repo.implement
 
 import com.platdmit.data.api.ApiServerRepo
 import com.platdmit.data.api.models.*
-import com.platdmit.data.database.DbManager
 import com.platdmit.data.database.dao.*
 import com.platdmit.data.database.entity.*
 import com.platdmit.domain.converters.*
@@ -128,9 +127,9 @@ class ServerRepoImp : ServerBaseRepo, ServerActionsRepo, ServerStatisticsRepo, S
     override fun getServerActions(id: Long): Observable<List<Action>> {
         return Observable.defer {
             if (updateScheduleService.getActualStatus(UPDATE_ACTION_TAG + id)) {
-                return@defer Observable.just(dbActionRepo.getActionForServer(id))
+                Observable.just(dbActionRepo.getActionForServer(id))
             } else {
-                return@defer apiServerRepo.getServerActions(id)
+                apiServerRepo.getServerActions(id)
                         .flatMapObservable {
                             val dbActions = actionConverter.fromApiToDbList(it)
                             dbActionRepo.insertList(dbActions)
@@ -151,9 +150,9 @@ class ServerRepoImp : ServerBaseRepo, ServerActionsRepo, ServerStatisticsRepo, S
     override fun getServerBackups(id: Long): Observable<List<Backup>> {
         return Observable.defer {
             if (updateScheduleService.getActualStatus(UPDATE_BACKUP_TAG + id)) {
-                return@defer Observable.just(dbBackupRepo.getBackupsForServer(id))
+                 Observable.just(dbBackupRepo.getBackupsForServer(id))
             } else {
-                return@defer apiServerRepo.getServerBackups(id)
+                 apiServerRepo.getServerBackups(id)
                         .flatMapObservable {
                             val dbBackups = backupConverter.fromApiToDbList(it, id)
                             dbBackupRepo.insertList(dbBackups)
@@ -175,9 +174,9 @@ class ServerRepoImp : ServerBaseRepo, ServerActionsRepo, ServerStatisticsRepo, S
     override fun getServerLoadAverages(id: Long): Observable<List<LoadAverage>> {
         return Observable.defer {
             if (updateScheduleService.getActualStatus(UPDATE_LOAD_AVERAGE_TAG + id)) {
-                return@defer Observable.just(dbLoadAverageRepo.getLoadAverageForServer(id))
+                Observable.just(dbLoadAverageRepo.getLoadAverageForServer(id))
             } else {
-                return@defer apiServerRepo.getServerLoadAverage(id)
+                apiServerRepo.getServerLoadAverage(id)
                         .flatMapObservable {
                             val dbLoadAverages = loadAverageConverter.fromApiToDb(it, id)
                             dbLoadAverageRepo.insertList(dbLoadAverages)
@@ -198,9 +197,9 @@ class ServerRepoImp : ServerBaseRepo, ServerActionsRepo, ServerStatisticsRepo, S
     override fun getServerStatistics(id: Long): Observable<List<Statistic>> {
         return Observable.defer {
             if (updateScheduleService.getActualStatus(UPDATE_STATISTICS_TAG + id)) {
-                return@defer Observable.just(dbStatisticDao.getStatisticsForServer(id))
+                Observable.just(dbStatisticDao.getStatisticsForServer(id))
             } else {
-                return@defer apiServerRepo.getServerStatistics(id)
+                apiServerRepo.getServerStatistics(id)
                         .flatMapObservable {
                             val dbStatistics = statisticConverter.fromApiToDbList(it, id)
                             dbStatisticDao.deleteAll(id)

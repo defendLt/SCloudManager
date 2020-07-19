@@ -26,8 +26,7 @@ class DomainRepoImp
             private val updateScheduleService: UpdateScheduleService,
             private val domainRecordDao: DomainRecordDao? = null,
             private val domainRecordConverter: DomainRecordConverter<ApiDomainRecord, DomainRecord, DbDomainRecord>? = null
-    )
-    : DomainBaseRepo {
+    ) : DomainBaseRepo {
 
     private val TAG = DomainRepoImp::class.java.simpleName
     private val handCall = PublishSubject.create<Boolean>()

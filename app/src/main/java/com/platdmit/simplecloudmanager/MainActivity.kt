@@ -16,21 +16,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), UiVisibilityStatus {
+class MainActivity : AppCompatActivity(R.layout.activity_main), UiVisibilityStatus {
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-//        mMainViewModel = if (savedInstanceState != null) {
-//            ViewModelProvider(this).get(MainViewModel::class.java)
-//        } else {
-//            ViewModelProvider(this,
-//                    MainActivityViewModelFactory(SCMApp.actualApiKeyService)
-//            ).get(MainViewModel::class.java)
-//        }
         toolbarInit()
         navigationInit()
     }
@@ -53,12 +45,7 @@ class MainActivity : AppCompatActivity(), UiVisibilityStatus {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return super.onOptionsItemSelected(item)
-    }
-
     override fun onSupportNavigateUp(): Boolean {
-        val navController = Navigation.findNavController(this, R.id.hostFragment)
         return (NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp())
     }
