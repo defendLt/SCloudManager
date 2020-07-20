@@ -16,24 +16,35 @@ constructor(
         private val domainBaseRepo: DomainBaseRepo,
         @Assisted private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel<DomainState>() {
-    val domainLiveData: LiveData<Domain>
+    val domainStateLiveData = LiveDataReactiveStreams.fromPublisher(stateProvider)
     val messageLiveData = LiveDataReactiveStreams.fromPublisher(messageProvider)
 
-    private val contentProvider = BehaviorProcessor.create<Domain>()
-
     init {
-        domainLiveData = LiveDataReactiveStreams.fromPublisher(contentProvider)
+        stateProvider.onNext(DomainState.Loading)
     }
 
-    fun setActiveId(id: Long){
+    fun setStateIntent(stateIntent: StateIntent){
+        when(stateIntent){
+            is StateIntent.SetDomainId -> {
+                setActiveId(stateIntent.id)
+            }
+            is StateIntent.RefreshResult -> {}
+        }
+    }
+
+    private fun setActiveId(id: Long){
         //Fast fix for prevent overSubscription after resize
         compositeDisposable.add(
-                domainBaseRepo.getDomain(id).subscribe { contentProvider.onNext(it) }
+                domainBaseRepo.getDomain(id).subscribe ({
+                    stateProvider.onNext(DomainState.Success(it))
+                },{
+                    stateProvider.onNext(DomainState.Error)
+                })
         )
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        contentProvider.onComplete()
+    sealed class StateIntent {
+        data class SetDomainId(val id: Long) : StateIntent()
+        object RefreshResult : StateIntent()
     }
 }
