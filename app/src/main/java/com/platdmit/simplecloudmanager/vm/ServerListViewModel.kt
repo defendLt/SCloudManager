@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.SavedStateHandle
 import com.platdmit.domain.models.Server
 import com.platdmit.domain.repo.ServerBaseRepo
+import com.platdmit.simplecloudmanager.states.ServerListState
 import io.reactivex.rxjava3.processors.BehaviorProcessor
 
 class ServerListViewModel
@@ -14,7 +15,7 @@ class ServerListViewModel
 constructor(
         private val mServerRepo: ServerBaseRepo,
         @Assisted private val savedStateHandle: SavedStateHandle
-) : BaseViewModel() {
+) : BaseViewModel<ServerListState>() {
     val serversLiveData: LiveData<List<Server>>
     val messageLiveData = LiveDataReactiveStreams.fromPublisher(messageProvider)
     private val contentProvider = BehaviorProcessor.create<List<Server>>()

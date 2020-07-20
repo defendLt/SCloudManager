@@ -1,14 +1,12 @@
 package com.platdmit.simplecloudmanager.fragments
 
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -17,8 +15,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding4.widget.textChanges
 import com.platdmit.simplecloudmanager.R
 import com.platdmit.simplecloudmanager.helpers.UiVisibilityStatus
+import com.platdmit.simplecloudmanager.states.LoginState
 import com.platdmit.simplecloudmanager.vm.LoginViewModel
-import com.platdmit.simplecloudmanager.vm.LoginViewModel.LoginFormStatus
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -28,7 +26,7 @@ import kotlinx.android.synthetic.main.fragment_login.*
 @AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.fragment_login) {
     private val loginViewModel: LoginViewModel by viewModels()
-    private lateinit var inputMethodManager: InputMethodManager
+    private val inputMethodManager: InputMethodManager? = context?.getSystemService()
     private val compositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,17 +38,21 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        loginViewModel.authStatus.observe(viewLifecycleOwner, Observer { authStatusHandler(it) })
-        loginViewModel.regStatus.observe(viewLifecycleOwner, Observer { regStatusHandler(it) })
+        loginViewModel.loginStateLiveData.observe(viewLifecycleOwner, Observer { stateHandler(it) })
 
         //On demo mode
-        form_demo_submit.setOnClickListener { loginViewModel.onDemoAccount() }
+        form_demo_submit.setOnClickListener {
+            setStateInstance(
+                    LoginViewModel.StateInstance.OnDemoMode
+            )
+        }
 
         //On check auth
         form_submit.setOnClickListener {
             it.isEnabled = false
-            loginViewModel.addNewAccount(user_login.text.toString(), user_pass.text.toString())
+            setStateInstance(
+                    LoginViewModel.StateInstance.NewAccount(user_login.text.toString(), user_pass.text.toString())
+            )
         }
     }
 
@@ -60,34 +62,42 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         setUiVisibleStatus(true)
     }
 
-    private fun regStatusHandler(status: LoginFormStatus) {
-        when (status) {
-            LoginFormStatus.AUTH_INVALID -> {
-                showTextAlert(R.string.login_submit_not_found)
-                showVibratorAlert()
+    private fun stateHandler(loginState: LoginState){
+        when(loginState){
+            is LoginState.ActiveUserYes -> {
+                loader_layout.visibility = View.GONE
+                pinFormInit(false)
             }
-            LoginFormStatus.NEED_SET_PIN -> {
+            is LoginState.ActiveUserNo -> {
+                loader_layout.visibility = View.GONE
+                loginFormInit()
+            }
+            is LoginState.UserNeedPin -> {
                 showTextAlert(R.string.login_submit_correct)
                 login_layout.visibility = View.GONE
                 pinFormInit(true)
             }
+            is LoginState.PinInvalid -> {
+                authFall()
+            }
+            is LoginState.AuthInvalid -> {
+                showTextAlert(R.string.login_submit_not_found)
+                showVibratorAlert()
+            }
+            is LoginState.OnDemo -> {
+                authDemo()
+            }
+            is LoginState.Success -> {
+                authSuccess()
+            }
+            is LoginState.Loading -> {
+                authDemo()
+            }
         }
     }
 
-    private fun authStatusHandler(status: LoginFormStatus) {
-        when (status) {
-            LoginFormStatus.YES_ACTIVE_USER -> {
-                loader_layout.visibility = View.GONE
-                pinFormInit(false)
-            }
-            LoginFormStatus.NOT_ACTIVE_USER -> {
-                loader_layout.visibility = View.GONE
-                loginFormInit()
-            }
-            LoginFormStatus.PIN_INVALID -> authFall()
-            LoginFormStatus.ON_DEMO -> authDemo()
-            LoginFormStatus.SUCCESS -> authSuccess()
-        }
+    private fun setStateInstance(stateInstance: LoginViewModel.StateInstance){
+        loginViewModel.setStateInstance(stateInstance)
     }
 
     private fun pinFormInit(isNew: Boolean) {
@@ -97,19 +107,27 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                     user_pin_code.textChanges()
                             .filter { it.toString().length == 4 }
                             .map { it.toString() }
-                            .subscribe { loginViewModel.addNewAccountPin(it) }
+                            .subscribe {
+                                setStateInstance(
+                                        LoginViewModel.StateInstance.NewAccountPin(it)
+                                )
+                            }
             )
         } else {
             compositeDisposable.add(
                     user_pin_code.textChanges()
                             .filter { it.toString().length == 4 }
                             .map { it.toString() }
-                            .subscribe { loginViewModel.checkAccountPin(it) }
+                            .subscribe {
+                                setStateInstance(
+                                        LoginViewModel.StateInstance.CheckAccountPin(it)
+                                )
+                            }
             )
         }
         pin_layout.visibility = View.VISIBLE
         user_pin_code.requestFocus()
-        inputMethodManager.showSoftInput(user_pin_code, InputMethodManager.SHOW_IMPLICIT)
+        inputMethodManager?.showSoftInput(user_pin_code, InputMethodManager.SHOW_IMPLICIT)
     }
 
     private fun loginFormInit() {
@@ -124,7 +142,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
     private fun authSuccess() {
         try {
-            inputMethodManager.hideSoftInputFromWindow(requireView().windowToken, 0)
+            inputMethodManager?.hideSoftInputFromWindow(requireView().windowToken, 0)
             Navigation.findNavController(requireView()).popBackStack()
             Navigation.findNavController(requireView()).navigate(R.id.serverListFragment)
         } catch (ignored: NullPointerException) {
@@ -139,7 +157,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
     private fun authDemo() {
         try {
-            inputMethodManager.hideSoftInputFromWindow(requireView().windowToken, 0)
+            inputMethodManager?.hideSoftInputFromWindow(requireView().windowToken, 0)
             this.viewModelStore.clear()
             Navigation.findNavController(requireView()).navigate(R.id.serverListFragment)
             setUiVisibleStatus(true)
@@ -161,12 +179,14 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
     private fun showVibratorAlert() {
         try {
-            val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            if (vibrator.hasVibrator()) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
-                } else {
-                    vibrator.vibrate(200)
+            val vibrator : Vibrator? = context?.getSystemService()
+            vibrator?.let {
+                if (vibrator.hasVibrator()) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+                    } else {
+                        vibrator.vibrate(200)
+                    }
                 }
             }
         } catch (ignored: NullPointerException) {

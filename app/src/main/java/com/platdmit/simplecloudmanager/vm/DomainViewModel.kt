@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.SavedStateHandle
 import com.platdmit.domain.models.Domain
 import com.platdmit.domain.repo.DomainBaseRepo
+import com.platdmit.simplecloudmanager.states.DomainState
 import io.reactivex.rxjava3.processors.BehaviorProcessor
 
 class DomainViewModel
@@ -14,7 +15,7 @@ class DomainViewModel
 constructor(
         private val domainBaseRepo: DomainBaseRepo,
         @Assisted private val savedStateHandle: SavedStateHandle
-) : BaseViewModel() {
+) : BaseViewModel<DomainState>() {
     val domainLiveData: LiveData<Domain>
     val messageLiveData = LiveDataReactiveStreams.fromPublisher(messageProvider)
 

@@ -2,11 +2,13 @@ package com.platdmit.simplecloudmanager.vm
 
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import com.platdmit.domain.helpers.ActualApiKeyServiceManager
 import com.platdmit.domain.models.UserAccount
 import com.platdmit.domain.repo.AccountRepo
+import com.platdmit.simplecloudmanager.states.LoginState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -18,13 +20,13 @@ constructor(
         private val accountRepo: AccountRepo,
         private val actualApiKeyServiceManager: ActualApiKeyServiceManager,
         @Assisted private val savedStateHandle: SavedStateHandle
-) : BaseViewModel() {
+) : BaseViewModel<LoginState>() {
 
-    val authStatus = MutableLiveData<LoginFormStatus>()
-    val regStatus = MutableLiveData<LoginFormStatus>()
+    val loginStateLiveData = LiveDataReactiveStreams.fromPublisher(stateProvider)
     private lateinit var userAccount: UserAccount
 
     init {
+        stateProvider.onNext(LoginState.Loading)
         compositeDisposable.add(
                 accountRepo.getActiveAccount()
                         .subscribeOn(Schedulers.newThread())
@@ -32,26 +34,45 @@ constructor(
                         .subscribe({
                             if (it.pin.isEmpty()) {
                                 userAccount = it
-                                authStatus.postValue(LoginFormStatus.YES_ACTIVE_USER)
+                                stateProvider.onNext(LoginState.ActiveUserYes)
                             } else {
-                                authStatus.postValue(LoginFormStatus.NEED_SET_PIN)
+                                stateProvider.onNext(LoginState.UserNeedPin)
                             }
-                        }, {authStatus.postValue(LoginFormStatus.NOT_ACTIVE_USER) })
+                        }, {
+                            stateProvider.onNext(LoginState.ActiveUserNo)
+                        })
         )
     }
 
-    fun addNewAccount(login: String, pass: String) {
+    fun setStateInstance(stateInstance: StateInstance){
+        when(stateInstance){
+            is StateInstance.NewAccount -> {
+                addNewAccount(stateInstance.login, stateInstance.pass)
+            }
+            is StateInstance.NewAccountPin -> {
+                addNewAccountPin(stateInstance.pin)
+            }
+            is StateInstance.CheckAccountPin -> {
+                checkAccountPin(stateInstance.pin)
+            }
+            is StateInstance.OnDemoMode -> {
+                onDemoAccount()
+            }
+        }
+    }
+
+    private fun addNewAccount(login: String, pass: String) {
         compositeDisposable.add(accountRepo.getPrepareAccountInfo(login, pass)
                 .subscribe({
                     userAccount = it
-                    regStatus.postValue(LoginFormStatus.NEED_SET_PIN)
+                    stateProvider.onNext(LoginState.UserNeedPin)
                 }, {
-                    regStatus.postValue(LoginFormStatus.AUTH_INVALID)
+                    stateProvider.onNext(LoginState.AuthInvalid)
                 })
         )
     }
 
-    fun addNewAccountPin(pin: String) {
+    private fun addNewAccountPin(pin: String) {
         userAccount.pin = pin
         compositeDisposable.add(
                 accountRepo.addAccountPin(userAccount)
@@ -59,19 +80,19 @@ constructor(
                         .subscribeOn(Schedulers.newThread())
                         .subscribe {
                             actualApiKeyServiceManager.startAutoUpdate(userAccount)
-                            authStatus.postValue(LoginFormStatus.SUCCESS)
+                            stateProvider.onNext(LoginState.Success)
                         }
         )
     }
 
-    fun checkAccountPin(pin: String?) {
+    private fun checkAccountPin(pin: String?) {
         Completable.fromAction {
             if (BCrypt.checkpw(pin, userAccount.pin)) {
-                authStatus.postValue(LoginFormStatus.LOAD_DATA)
+                stateProvider.onNext(LoginState.Loading)
                 actualApiKeyServiceManager.startAutoUpdate(userAccount)
                 successAuth()
             } else {
-                authStatus.postValue(LoginFormStatus.PIN_INVALID)
+                stateProvider.onNext(LoginState.PinInvalid)
             }
         }.observeOn(Schedulers.newThread()).subscribe()
     }
@@ -81,23 +102,21 @@ constructor(
                 actualApiKeyServiceManager.getAccountStatus()
                         .observeOn(Schedulers.newThread())
                         .onErrorComplete()
-                        .subscribe {if (it) authStatus.postValue(LoginFormStatus.SUCCESS) }
+                        .subscribe {
+                            if (it) stateProvider.onNext(LoginState.Success)
+                        }
         )
     }
 
-    fun onDemoAccount() {
+    private fun onDemoAccount() {
         actualApiKeyServiceManager.startDemoMode()
-        authStatus.postValue(LoginFormStatus.ON_DEMO)
+        stateProvider.onNext(LoginState.OnDemo)
     }
 
-    enum class LoginFormStatus {
-        YES_ACTIVE_USER,
-        NOT_ACTIVE_USER,
-        PIN_INVALID,
-        AUTH_INVALID,
-        NEED_SET_PIN,
-        LOAD_DATA,
-        ON_DEMO,
-        SUCCESS
+    sealed class StateInstance {
+        data class NewAccount(val login: String, val pass: String) : StateInstance()
+        data class NewAccountPin(val pin: String) : StateInstance()
+        data class CheckAccountPin(val pin: String?) : StateInstance()
+        object OnDemoMode : StateInstance()
     }
 }

@@ -13,6 +13,7 @@ import com.platdmit.simplecloudmanager.helpers.charts.ServerValueFormatter
 import com.platdmit.domain.models.ComplexChartsData
 import com.platdmit.domain.models.Statistic
 import com.platdmit.domain.repo.ServerStatisticsRepo
+import com.platdmit.simplecloudmanager.states.StatisticsState
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*
@@ -23,7 +24,7 @@ class StatisticsViewModel
 constructor(
         private val serverStatisticsRepo: ServerStatisticsRepo,
         @Assisted private val savedStateHandle: SavedStateHandle
-) : BaseViewModel() {
+) : BaseViewModel<StatisticsState>() {
     val cpuDataLiveData = MutableLiveData<ComplexChartsData>()
     val ramDataLiveData = MutableLiveData<ComplexChartsData>()
 

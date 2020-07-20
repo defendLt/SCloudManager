@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.SavedStateHandle
 import com.platdmit.domain.models.Action
 import com.platdmit.domain.repo.ServerActionsRepo
+import com.platdmit.simplecloudmanager.states.ActionState
 import io.reactivex.rxjava3.processors.BehaviorProcessor
 
 class ActionViewModel
@@ -14,7 +15,7 @@ class ActionViewModel
 constructor(
         private val serverActionsRepo: ServerActionsRepo,
         @Assisted private val savedStateHandle: SavedStateHandle
-) : BaseViewModel() {
+) : BaseViewModel<ActionState>() {
     val actionsLiveData: LiveData<List<Action>>
     val messageLiveData = LiveDataReactiveStreams.fromPublisher(messageProvider)
 

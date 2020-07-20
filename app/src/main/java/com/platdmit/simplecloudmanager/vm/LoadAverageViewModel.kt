@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.SavedStateHandle
 import com.platdmit.domain.models.LoadAverage
 import com.platdmit.domain.repo.ServerLoadAveragesRepo
+import com.platdmit.simplecloudmanager.states.LoadAverageState
 import io.reactivex.rxjava3.processors.BehaviorProcessor
 
 class LoadAverageViewModel
@@ -14,7 +15,7 @@ class LoadAverageViewModel
 constructor(
         private val serverLoadAveragesRepo: ServerLoadAveragesRepo,
         @Assisted private val savedStateHandle: SavedStateHandle
-) : BaseViewModel() {
+) : BaseViewModel<LoadAverageState>() {
     val loadAveragesLiveData: LiveData<List<LoadAverage>>
     val messageLiveData = LiveDataReactiveStreams.fromPublisher(messageProvider)
 
