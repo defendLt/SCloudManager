@@ -1,16 +1,14 @@
 package com.platdmit.simplecloudmanager.fragments
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.github.mikephil.charting.charts.LineChart
-import com.platdmit.simplecloudmanager.R
-import com.platdmit.simplecloudmanager.vm.StatisticsViewModel
 import com.platdmit.domain.models.ComplexChartsData
+import com.platdmit.simplecloudmanager.R
+import com.platdmit.simplecloudmanager.states.StatisticsState
+import com.platdmit.simplecloudmanager.vm.StatisticsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_server_tab_statistics.*
 
@@ -23,7 +21,7 @@ class ServerTabStatisticsFragment(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if(savedInstanceState == null){
-            statisticsViewModel.setActiveId(requireArguments().getLong("ELEMENT_ID"))
+            setStateIntent(StatisticsViewModel.StateIntent.SetServerId(requireArguments().getLong("ELEMENT_ID")))
         }
     }
 
@@ -34,8 +32,7 @@ class ServerTabStatisticsFragment(
         cpu_chart.setScaleEnabled(false)
         ram_chart.setScaleEnabled(false)
 
-        statisticsViewModel.cpuDataLiveData.observe(viewLifecycleOwner, Observer { updateCpuData(it) })
-        statisticsViewModel.ramDataLiveData.observe(viewLifecycleOwner, Observer { updateRamData(it) })
+        statisticsViewModel.statisticsStateLiveData.observe(viewLifecycleOwner, Observer { stateHandler(it) })
     }
 
     override fun getTitle(): String {
@@ -44,6 +41,22 @@ class ServerTabStatisticsFragment(
 
     override fun getInstance(): ServerTabStatisticsFragment {
         return ServerTabStatisticsFragment()
+    }
+
+    private fun stateHandler(statisticsState: StatisticsState){
+        when(statisticsState){
+            is StatisticsState.Loading -> {}
+            is StatisticsState.Success -> {
+                updateCpuData(statisticsState.cpuData)
+                updateRamData(statisticsState.ramData)
+            }
+            is StatisticsState.Empty -> {}
+            is StatisticsState.Error -> {}
+        }
+    }
+
+    private fun setStateIntent(stateIntent: StatisticsViewModel.StateIntent){
+        statisticsViewModel.setStateIntent(stateIntent)
     }
 
     private fun updateCpuData(cpuData: ComplexChartsData) {
