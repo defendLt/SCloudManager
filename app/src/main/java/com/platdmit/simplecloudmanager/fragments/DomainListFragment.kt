@@ -1,9 +1,7 @@
 package com.platdmit.simplecloudmanager.fragments
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -12,6 +10,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.platdmit.domain.models.Domain
 import com.platdmit.simplecloudmanager.R
 import com.platdmit.simplecloudmanager.adapters.DomainListAdapter
+import com.platdmit.simplecloudmanager.states.DomainListState
 import com.platdmit.simplecloudmanager.vm.DomainListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_domains_list.*
@@ -25,10 +24,27 @@ class DomainListFragment : Fragment(R.layout.fragment_domains_list) {
         super.onViewCreated(view, savedInstanceState)
 
         fragments_list.layoutManager = LinearLayoutManager(context)
-        update_swipe.setOnRefreshListener{domainListViewModel.reloadDomainList()}
+        update_swipe.setOnRefreshListener{
+            setStateInstance(DomainListViewModel.StateIntent.RefreshResult)
+        }
 
-        domainListViewModel.domainsLiveData.observe(viewLifecycleOwner, Observer {updateAdapterData(it)})
+        domainListViewModel.domainsStateLiveData.observe(viewLifecycleOwner, Observer {stateHandler(it)})
         domainListViewModel.messageLiveData.observe(viewLifecycleOwner, Observer {showResultMassage(it)})
+    }
+
+    private fun stateHandler(domainListState: DomainListState){
+        when(domainListState){
+            is DomainListState.Loading -> {}
+            is DomainListState.Success -> {
+                updateAdapterData(domainListState.domains)
+            }
+            is DomainListState.Empty -> {}
+            is DomainListState.Error -> {}
+        }
+    }
+
+    private fun setStateInstance(stateInstance: DomainListViewModel.StateIntent){
+        domainListViewModel.setStateIntent(stateInstance)
     }
 
     private fun showResultMassage(massage: String) {
