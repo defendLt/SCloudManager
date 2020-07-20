@@ -42,16 +42,16 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
         //On demo mode
         form_demo_submit.setOnClickListener {
-            setStateInstance(
-                    LoginViewModel.StateInstance.OnDemoMode
+            setStateIntent(
+                    LoginViewModel.StateIntent.OnDemoMode
             )
         }
 
         //On check auth
         form_submit.setOnClickListener {
             it.isEnabled = false
-            setStateInstance(
-                    LoginViewModel.StateInstance.NewAccount(user_login.text.toString(), user_pass.text.toString())
+            setStateIntent(
+                    LoginViewModel.StateIntent.NewAccount(user_login.text.toString(), user_pass.text.toString())
             )
         }
     }
@@ -96,8 +96,8 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         }
     }
 
-    private fun setStateInstance(stateInstance: LoginViewModel.StateInstance){
-        loginViewModel.setStateInstance(stateInstance)
+    private fun setStateIntent(stateInstance: LoginViewModel.StateIntent){
+        loginViewModel.setStateIntent(stateInstance)
     }
 
     private fun pinFormInit(isNew: Boolean) {
@@ -108,8 +108,8 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                             .filter { it.toString().length == 4 }
                             .map { it.toString() }
                             .subscribe {
-                                setStateInstance(
-                                        LoginViewModel.StateInstance.NewAccountPin(it)
+                                setStateIntent(
+                                        LoginViewModel.StateIntent.NewAccountPin(it)
                                 )
                             }
             )
@@ -119,8 +119,8 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                             .filter { it.toString().length == 4 }
                             .map { it.toString() }
                             .subscribe {
-                                setStateInstance(
-                                        LoginViewModel.StateInstance.CheckAccountPin(it)
+                                setStateIntent(
+                                        LoginViewModel.StateIntent.CheckAccountPin(it)
                                 )
                             }
             )

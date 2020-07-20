@@ -3,7 +3,6 @@ package com.platdmit.simplecloudmanager.vm
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveDataReactiveStreams
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import com.platdmit.domain.helpers.ActualApiKeyServiceManager
 import com.platdmit.domain.models.UserAccount
@@ -44,18 +43,18 @@ constructor(
         )
     }
 
-    fun setStateInstance(stateInstance: StateInstance){
-        when(stateInstance){
-            is StateInstance.NewAccount -> {
-                addNewAccount(stateInstance.login, stateInstance.pass)
+    fun setStateIntent(stateIntent: StateIntent){
+        when(stateIntent){
+            is StateIntent.NewAccount -> {
+                addNewAccount(stateIntent.login, stateIntent.pass)
             }
-            is StateInstance.NewAccountPin -> {
-                addNewAccountPin(stateInstance.pin)
+            is StateIntent.NewAccountPin -> {
+                addNewAccountPin(stateIntent.pin)
             }
-            is StateInstance.CheckAccountPin -> {
-                checkAccountPin(stateInstance.pin)
+            is StateIntent.CheckAccountPin -> {
+                checkAccountPin(stateIntent.pin)
             }
-            is StateInstance.OnDemoMode -> {
+            is StateIntent.OnDemoMode -> {
                 onDemoAccount()
             }
         }
@@ -113,10 +112,10 @@ constructor(
         stateProvider.onNext(LoginState.OnDemo)
     }
 
-    sealed class StateInstance {
-        data class NewAccount(val login: String, val pass: String) : StateInstance()
-        data class NewAccountPin(val pin: String) : StateInstance()
-        data class CheckAccountPin(val pin: String?) : StateInstance()
-        object OnDemoMode : StateInstance()
+    sealed class StateIntent {
+        data class NewAccount(val login: String, val pass: String) : StateIntent()
+        data class NewAccountPin(val pin: String) : StateIntent()
+        data class CheckAccountPin(val pin: String?) : StateIntent()
+        object OnDemoMode : StateIntent()
     }
 }

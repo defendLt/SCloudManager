@@ -12,6 +12,8 @@ import com.platdmit.simplecloudmanager.R
 import com.platdmit.simplecloudmanager.adapters.BackupListAdapter
 import com.platdmit.simplecloudmanager.vm.BackupsViewModel
 import com.platdmit.domain.models.Backup
+import com.platdmit.simplecloudmanager.states.ActionState
+import com.platdmit.simplecloudmanager.states.BackupsState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_server_tab_backups.*
 
@@ -25,7 +27,7 @@ class ServerTabBackupsFragment(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if(savedInstanceState == null){
-            backupsViewModel.setActiveId(requireArguments().getLong("ELEMENT_ID"))
+            setStateIntent(BackupsViewModel.StateIntent.SetServerId(requireArguments().getLong("ELEMENT_ID")))
         }
     }
 
@@ -34,7 +36,7 @@ class ServerTabBackupsFragment(
 
         server_backup_list.layoutManager = LinearLayoutManager(context)
 
-        backupsViewModel.backupsLiveData.observe(viewLifecycleOwner, Observer { updateServerActionData(it) })
+        backupsViewModel.backupsStateLiveData.observe(viewLifecycleOwner, Observer { stateHandler(it) })
     }
 
     override fun getTitle(): String {
@@ -43,6 +45,21 @@ class ServerTabBackupsFragment(
 
     override fun getInstance(): ServerTabBackupsFragment {
         return ServerTabBackupsFragment()
+    }
+
+    private fun stateHandler(backupsState: BackupsState){
+        when(backupsState){
+            is BackupsState.Loading -> {}
+            is BackupsState.Success -> {
+                updateServerActionData(backupsState.backups)
+            }
+            is BackupsState.Empty -> {}
+            is BackupsState.Error -> {}
+        }
+    }
+
+    private fun setStateIntent(stateIntent: BackupsViewModel.StateIntent){
+        backupsViewModel.setStateIntent(stateIntent)
     }
 
     private fun updateServerActionData(backups: List<Backup>) {

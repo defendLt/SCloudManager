@@ -2,13 +2,10 @@ package com.platdmit.simplecloudmanager.vm
 
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.SavedStateHandle
-import com.platdmit.domain.models.Action
 import com.platdmit.domain.repo.ServerActionsRepo
 import com.platdmit.simplecloudmanager.states.ActionState
-import io.reactivex.rxjava3.processors.BehaviorProcessor
 
 class ActionViewModel
 @ViewModelInject
@@ -23,12 +20,12 @@ constructor(
         stateProvider.onNext(ActionState.Loading)
     }
 
-    fun setStateInstance(stateInstance: StateInstance){
-        when(stateInstance){
-            is StateInstance.SetServerId -> {
-                setActiveId(stateInstance.id)
+    fun setStateIntent(stateIntent: StateIntent){
+        when(stateIntent){
+            is StateIntent.SetServerId -> {
+                setActiveId(stateIntent.id)
             }
-            is StateInstance.RefreshResult -> {}
+            is StateIntent.RefreshResult -> {}
         }
     }
 
@@ -43,8 +40,8 @@ constructor(
         )
     }
 
-    sealed class StateInstance {
-        data class SetServerId(val id: Long) : StateInstance()
-        object RefreshResult : StateInstance()
+    sealed class StateIntent {
+        data class SetServerId(val id: Long) : StateIntent()
+        object RefreshResult : StateIntent()
     }
 }

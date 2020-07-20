@@ -24,7 +24,7 @@ class ServerTabActionsFragment(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if(savedInstanceState == null){
-            setStateInstance(ActionViewModel.StateInstance.SetServerId(requireArguments().getLong("ELEMENT_ID")))
+            setStateInstance(ActionViewModel.StateIntent.SetServerId(requireArguments().getLong("ELEMENT_ID")))
         }
     }
 
@@ -47,8 +47,8 @@ class ServerTabActionsFragment(
         }
     }
 
-    private fun setStateInstance(stateInstance: ActionViewModel.StateInstance){
-        actionViewModel.setStateInstance(stateInstance)
+    private fun setStateInstance(stateInstance: ActionViewModel.StateIntent){
+        actionViewModel.setStateIntent(stateInstance)
     }
 
     override fun getTitle(): String {
