@@ -2,13 +2,10 @@ package com.platdmit.simplecloudmanager.vm
 
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.SavedStateHandle
-import com.platdmit.domain.models.LoadAverage
 import com.platdmit.domain.repo.ServerLoadAveragesRepo
 import com.platdmit.simplecloudmanager.states.LoadAverageState
-import io.reactivex.rxjava3.processors.BehaviorProcessor
 
 class LoadAverageViewModel
 @ViewModelInject
@@ -16,25 +13,36 @@ constructor(
         private val serverLoadAveragesRepo: ServerLoadAveragesRepo,
         @Assisted private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel<LoadAverageState>() {
-    val loadAveragesLiveData: LiveData<List<LoadAverage>>
+    val loadAverageStateLiveData = LiveDataReactiveStreams.fromPublisher(stateProvider)
     val messageLiveData = LiveDataReactiveStreams.fromPublisher(messageProvider)
 
-    private val contentProvider = BehaviorProcessor.create<List<LoadAverage>>()
-
     init {
-        loadAveragesLiveData = LiveDataReactiveStreams.fromPublisher(contentProvider)
+        stateProvider.onNext(LoadAverageState.Loading)
     }
 
-    fun setActiveId(id: Long){
+    fun setStateIntent(stateIntent: StateIntent){
+        when(stateIntent){
+            is StateIntent.SetServerId -> {
+                setActiveId(stateIntent.id)
+            }
+            is StateIntent.RefreshResult -> {}
+        }
+    }
+
+    private fun setActiveId(id: Long){
         //Fast fix for prevent overSubscription after resize
         compositeDisposable.add(
                 serverLoadAveragesRepo.getServerLoadAverages(id)
-                        .subscribe {contentProvider.onNext(it)}
+                        .subscribe ({
+                            stateProvider.onNext(LoadAverageState.Success(it))
+                        },{
+                            stateProvider.onNext(LoadAverageState.Error)
+                        })
         )
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        contentProvider.onComplete()
+    sealed class StateIntent {
+        data class SetServerId(val id: Long) : StateIntent()
+        object RefreshResult : StateIntent()
     }
 }

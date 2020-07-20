@@ -51,7 +51,7 @@ class ServerTabBackupsFragment(
         when(backupsState){
             is BackupsState.Loading -> {}
             is BackupsState.Success -> {
-                updateServerActionData(backupsState.backups)
+                updateServerBackupsData(backupsState.backups)
             }
             is BackupsState.Empty -> {}
             is BackupsState.Error -> {}
@@ -62,7 +62,7 @@ class ServerTabBackupsFragment(
         backupsViewModel.setStateIntent(stateIntent)
     }
 
-    private fun updateServerActionData(backups: List<Backup>) {
+    private fun updateServerBackupsData(backups: List<Backup>) {
         backupListAdapter.setContentData(backups)
         if (server_backup_list.adapter == null) {
             server_backup_list.adapter = backupListAdapter
