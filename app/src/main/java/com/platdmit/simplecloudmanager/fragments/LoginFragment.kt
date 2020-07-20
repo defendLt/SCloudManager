@@ -91,7 +91,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 authSuccess()
             }
             is LoginState.Loading -> {
-                authDemo()
+
             }
         }
     }
