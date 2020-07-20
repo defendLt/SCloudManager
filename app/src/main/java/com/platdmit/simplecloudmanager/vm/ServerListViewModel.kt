@@ -2,13 +2,10 @@ package com.platdmit.simplecloudmanager.vm
 
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.SavedStateHandle
-import com.platdmit.domain.models.Server
 import com.platdmit.domain.repo.ServerBaseRepo
 import com.platdmit.simplecloudmanager.states.ServerListState
-import io.reactivex.rxjava3.processors.BehaviorProcessor
 
 class ServerListViewModel
 @ViewModelInject
@@ -16,22 +13,34 @@ constructor(
         private val mServerRepo: ServerBaseRepo,
         @Assisted private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel<ServerListState>() {
-    val serversLiveData: LiveData<List<Server>>
+    val serversStateLiveData = LiveDataReactiveStreams.fromPublisher(stateProvider)
     val messageLiveData = LiveDataReactiveStreams.fromPublisher(messageProvider)
-    private val contentProvider = BehaviorProcessor.create<List<Server>>()
 
     init {
+        stateProvider.onNext(ServerListState.Loading)
         //Fast fix for prevent overSubscription after resize
-        compositeDisposable.add(mServerRepo.getServers().subscribe { contentProvider.onNext(it) })
-        serversLiveData = LiveDataReactiveStreams.fromPublisher(contentProvider)
+        compositeDisposable.add(mServerRepo.getServers()
+                .subscribe({
+                    stateProvider.onNext(ServerListState.Success(it))
+                }, {
+                    stateProvider.onNext(ServerListState.Error)
+                })
+        )
     }
 
-    fun reloadServerList() {
+    fun setStateIntent(stateIntent: StateIntent){
+        when(stateIntent){
+            is StateIntent.RefreshResult -> {
+                reloadServerList()
+            }
+        }
+    }
+
+    private fun reloadServerList() {
         mServerRepo.nextUpdate()
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        contentProvider.onComplete()
+    sealed class StateIntent {
+        object RefreshResult : StateIntent()
     }
 }
