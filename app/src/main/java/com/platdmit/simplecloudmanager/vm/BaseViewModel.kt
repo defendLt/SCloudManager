@@ -11,6 +11,7 @@ abstract class BaseViewModel<T> : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
+        stateProvider.onComplete()
         messageProvider.onComplete()
         compositeDisposable.clear()
     }

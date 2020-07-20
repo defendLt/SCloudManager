@@ -16,25 +16,35 @@ constructor(
         private val serverActionsRepo: ServerActionsRepo,
         @Assisted private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel<ActionState>() {
-    val actionsLiveData: LiveData<List<Action>>
+    val actionStateLiveData = LiveDataReactiveStreams.fromPublisher(stateProvider)
     val messageLiveData = LiveDataReactiveStreams.fromPublisher(messageProvider)
 
-    private val mContentProvider = BehaviorProcessor.create<List<Action>>()
-
     init {
-        //Fast fix for prevent overSubscription after resize
-        actionsLiveData = LiveDataReactiveStreams.fromPublisher(mContentProvider)
+        stateProvider.onNext(ActionState.Loading)
     }
 
-    fun setActiveId(id: Long){
+    fun setStateInstance(stateInstance: StateInstance){
+        when(stateInstance){
+            is StateInstance.SetServerId -> {
+                setActiveId(stateInstance.id)
+            }
+            is StateInstance.RefreshResult -> {}
+        }
+    }
+
+    private fun setActiveId(id: Long){
         compositeDisposable.add(
                 serverActionsRepo.getServerActions(id)
-                        .subscribe { mContentProvider.onNext(it) }
+                        .subscribe({
+                            stateProvider.onNext(ActionState.Success(it))
+                        }, {
+                            stateProvider.onNext(ActionState.Error)
+                        })
         )
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        mContentProvider.onComplete()
+    sealed class StateInstance {
+        data class SetServerId(val id: Long) : StateInstance()
+        object RefreshResult : StateInstance()
     }
 }
