@@ -2,19 +2,18 @@ package com.platdmit.simplecloudmanager.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.tabs.TabLayoutMediator.TabConfigurationStrategy
+import com.platdmit.domain.models.Server
 import com.platdmit.simplecloudmanager.R
 import com.platdmit.simplecloudmanager.adapters.ServerViewStateAdapter
+import com.platdmit.simplecloudmanager.states.ServerState
 import com.platdmit.simplecloudmanager.vm.ServerViewModel
-import com.platdmit.domain.models.Server
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_server.*
 
@@ -25,14 +24,14 @@ class ServerFragment : Fragment(R.layout.fragment_server) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if(savedInstanceState == null){
-            serverViewModel.setActiveId(requireArguments().getLong("ELEMENT_ID"))
+            setStateInstance(ServerViewModel.StateIntent.SetServerId(requireArguments().getLong("ELEMENT_ID")))
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        serverViewModel.serverLiveData.observe(viewLifecycleOwner, Observer { initData(it) })
+        serverViewModel.serverStateLiveData.observe(viewLifecycleOwner, Observer { stateHandler(it) })
 
         val serverViewPagerAdapter = ServerViewStateAdapter
                 .add(ServerTabMainFragment(resources.getString(R.string.server_tab_main)))
@@ -48,6 +47,21 @@ class ServerFragment : Fragment(R.layout.fragment_server) {
             }).attach()
         }
      }
+
+    private fun stateHandler(serverState: ServerState){
+        when(serverState){
+            is ServerState.Loading -> {}
+            is ServerState.Success -> {
+                initData(serverState.server)
+            }
+            is ServerState.Empty -> {}
+            is ServerState.Error -> {}
+        }
+    }
+
+    private fun setStateInstance(stateInstance: ServerViewModel.StateIntent){
+        serverViewModel.setStateIntent(stateInstance)
+    }
 
     @SuppressLint("SetTextI18n")
     private fun initData(server: Server) {

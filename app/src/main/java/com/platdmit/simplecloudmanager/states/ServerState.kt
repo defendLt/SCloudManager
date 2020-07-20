@@ -1,4 +1,10 @@
 package com.platdmit.simplecloudmanager.states
 
-enum class ServerState {
+import com.platdmit.domain.models.Server
+
+sealed class ServerState {
+    data class Success(val server: Server) : ServerState()
+    object Empty : ServerState()
+    object Loading : ServerState()
+    object Error : ServerState()
 }

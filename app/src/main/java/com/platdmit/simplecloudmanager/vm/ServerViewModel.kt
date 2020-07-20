@@ -19,16 +19,23 @@ constructor(
         private val serverBaseRepo: ServerBaseRepo,
         @Assisted private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel<ServerState>() {
-    val serverLiveData: LiveData<Server>
+    val serverStateLiveData = LiveDataReactiveStreams.fromPublisher(stateProvider)
     val messageLiveData = LiveDataReactiveStreams.fromPublisher(messageProvider)
 
-    private val contentProvider = BehaviorProcessor.create<Server>()
-
     init {
-        serverLiveData = LiveDataReactiveStreams.fromPublisher(contentProvider)
+        stateProvider.onNext(ServerState.Loading)
     }
 
-    fun setActiveId(id: Long){
+    fun setStateIntent(stateIntent: StateIntent){
+        when(stateIntent){
+            is StateIntent.SetServerId -> {
+                setActiveId(stateIntent.id)
+            }
+            is StateIntent.RefreshResult -> {}
+        }
+    }
+
+    private fun setActiveId(id: Long){
         //Fast fix for prevent overSubscription after resize
         compositeDisposable.add(
                 serverBaseRepo.getServer(id)
@@ -38,12 +45,16 @@ constructor(
                             true
                         }
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe {contentProvider.onNext(it)}
+                        .subscribe ({
+                            stateProvider.onNext(ServerState.Success(it))
+                        },{
+                            stateProvider.onNext(ServerState.Error)
+                        })
         )
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        contentProvider.onComplete()
+    sealed class StateIntent {
+        data class SetServerId(val id: Long) : StateIntent()
+        object RefreshResult : StateIntent()
     }
 }
