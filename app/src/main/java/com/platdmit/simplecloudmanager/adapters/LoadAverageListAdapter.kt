@@ -10,7 +10,7 @@ import com.platdmit.simplecloudmanager.adapters.LoadAverageListAdapter.LoadAvera
 import com.platdmit.domain.models.LoadAverage
 
 class LoadAverageListAdapter : RecyclerView.Adapter<LoadAverageListHolder>() {
-    private lateinit var elementList: List<LoadAverage>
+    private val elementList: MutableList<LoadAverage> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LoadAverageListHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -27,7 +27,8 @@ class LoadAverageListAdapter : RecyclerView.Adapter<LoadAverageListHolder>() {
     }
 
     fun setContentData(elements: List<LoadAverage>) {
-        elementList = elements
+        elementList.clear()
+        elementList.addAll(elements)
     }
 
     inner class LoadAverageListHolder(inflater: LayoutInflater, parent: ViewGroup?, layoutType: Int) : RecyclerView.ViewHolder(inflater.inflate(layoutType, parent, false)) {

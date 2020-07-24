@@ -12,7 +12,7 @@ import com.platdmit.simplecloudmanager.adapters.ServerListAdapter.ServerListHold
 import com.platdmit.domain.models.Server
 
 class ServerListAdapter : RecyclerView.Adapter<ServerListHolder>() {
-    private lateinit var elementList: List<Server>
+    private val elementList: MutableList<Server> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ServerListHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -29,7 +29,8 @@ class ServerListAdapter : RecyclerView.Adapter<ServerListHolder>() {
     }
 
     fun setContentData(elements: List<Server>) {
-        elementList = elements
+        elementList.clear()
+        elementList.addAll(elements)
     }
 
     inner class ServerListHolder(inflater: LayoutInflater, parent: ViewGroup?, layoutType: Int) : RecyclerView.ViewHolder(inflater.inflate(layoutType, parent, false)) {

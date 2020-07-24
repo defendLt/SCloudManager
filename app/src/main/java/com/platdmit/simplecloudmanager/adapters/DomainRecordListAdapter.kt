@@ -9,7 +9,7 @@ import com.platdmit.simplecloudmanager.adapters.DomainRecordListAdapter.DomainRe
 import com.platdmit.domain.models.DomainRecord
 
 class DomainRecordListAdapter : RecyclerView.Adapter<DomainRecordListHolder>() {
-    private lateinit var elementList: List<DomainRecord>
+    private val elementList: MutableList<DomainRecord> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DomainRecordListHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -26,7 +26,8 @@ class DomainRecordListAdapter : RecyclerView.Adapter<DomainRecordListHolder>() {
     }
 
     fun setContentData(elements: List<DomainRecord>) {
-        elementList = elements
+        elementList.clear()
+        elementList.addAll(elements)
     }
 
     inner class DomainRecordListHolder(inflater: LayoutInflater, parent: ViewGroup?, layoutType: Int) : RecyclerView.ViewHolder(inflater.inflate(layoutType, parent, false)) {

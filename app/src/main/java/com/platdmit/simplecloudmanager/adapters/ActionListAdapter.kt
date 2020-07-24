@@ -10,7 +10,7 @@ import com.platdmit.simplecloudmanager.adapters.ActionListAdapter.ActionListHold
 import com.platdmit.domain.models.Action
 
 class ActionListAdapter : RecyclerView.Adapter<ActionListHolder>() {
-    private lateinit var elementList: List<Action>
+    private val elementList: MutableList<Action> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActionListHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -27,7 +27,8 @@ class ActionListAdapter : RecyclerView.Adapter<ActionListHolder>() {
     }
 
     fun setContentData(elements: List<Action>) {
-        elementList = elements
+        elementList.clear()
+        elementList.addAll(elements)
     }
 
     inner class ActionListHolder(inflater: LayoutInflater, parent: ViewGroup?, layoutType: Int) : RecyclerView.ViewHolder(inflater.inflate(layoutType, parent, false)) {

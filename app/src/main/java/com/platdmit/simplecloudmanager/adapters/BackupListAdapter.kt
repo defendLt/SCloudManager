@@ -9,7 +9,7 @@ import com.platdmit.simplecloudmanager.adapters.BackupListAdapter.BackupListHold
 import com.platdmit.domain.models.Backup
 
 class BackupListAdapter : RecyclerView.Adapter<BackupListHolder>() {
-    private lateinit var elementList: List<Backup>
+    private val elementList: MutableList<Backup> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BackupListHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -26,7 +26,8 @@ class BackupListAdapter : RecyclerView.Adapter<BackupListHolder>() {
     }
 
     fun setContentData(elements: List<Backup>) {
-        elementList = elements
+        elementList.clear()
+        elementList.addAll(elements)
     }
 
     inner class BackupListHolder(inflater: LayoutInflater, parent: ViewGroup?, layoutType: Int) : RecyclerView.ViewHolder(inflater.inflate(layoutType, parent, false)) {
