@@ -21,13 +21,6 @@ import kotlinx.android.synthetic.main.fragment_server.*
 class ServerFragment : Fragment(R.layout.fragment_server) {
     private val serverViewModel: ServerViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if(savedInstanceState == null){
-            setStateInstance(ServerViewModel.StateIntent.SetServerId(requireArguments().getLong("ELEMENT_ID")))
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

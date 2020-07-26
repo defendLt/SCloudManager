@@ -24,13 +24,6 @@ class ServerTabBackupsFragment(
     private val backupsViewModel: BackupsViewModel by viewModels()
     private val backupListAdapter = BackupListAdapter()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if(savedInstanceState == null){
-            setStateIntent(BackupsViewModel.StateIntent.SetServerId(requireArguments().getLong("ELEMENT_ID")))
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

@@ -24,6 +24,9 @@ constructor(
 
     init {
         stateProvider.onNext(ServerState.Loading)
+        savedStateHandle.get<Long>("ELEMENT_ID")?.let {
+            setStateIntent(StateIntent.SetServerId(it))
+        }
     }
 
     fun setStateIntent(stateIntent: StateIntent){

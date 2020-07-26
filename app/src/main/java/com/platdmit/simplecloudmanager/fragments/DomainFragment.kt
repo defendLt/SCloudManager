@@ -19,15 +19,6 @@ class DomainFragment : Fragment(R.layout.fragment_domain) {
     private val domainViewModel: DomainViewModel by viewModels()
     private val domainRecordListAdapter = DomainRecordListAdapter()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if(savedInstanceState == null){
-            setStateInstance(
-                    DomainViewModel.StateIntent.SetDomainId(requireArguments().getLong("ELEMENT_ID"))
-            )
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         domain_record_list.layoutManager = LinearLayoutManager(context)

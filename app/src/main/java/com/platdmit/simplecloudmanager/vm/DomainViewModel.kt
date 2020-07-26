@@ -21,6 +21,9 @@ constructor(
 
     init {
         stateProvider.onNext(DomainState.Loading)
+        savedStateHandle.get<Long>("ELEMENT_ID")?.let {
+            setStateIntent(StateIntent.SetDomainId(it))
+        }
     }
 
     fun setStateIntent(stateIntent: StateIntent){

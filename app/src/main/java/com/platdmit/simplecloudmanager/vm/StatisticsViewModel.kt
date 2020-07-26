@@ -28,6 +28,9 @@ constructor(
 
     init {
         stateProvider.onNext(StatisticsState.Loading)
+        savedStateHandle.get<Long>("ELEMENT_ID")?.let {
+            setStateIntent(StateIntent.SetServerId(it))
+        }
     }
 
     fun setStateIntent(stateIntent: StateIntent){

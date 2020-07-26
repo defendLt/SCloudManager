@@ -21,15 +21,6 @@ class ServerTabMainFragment(
     private val loadAverageViewModel: LoadAverageViewModel by viewModels()
     private val loadAverageListAdapter = LoadAverageListAdapter()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if(savedInstanceState == null){
-            setStateInstance(
-                    LoadAverageViewModel.StateIntent.SetServerId(requireArguments().getLong("ELEMENT_ID"))
-            )
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

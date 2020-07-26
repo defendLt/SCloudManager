@@ -18,13 +18,6 @@ class ServerTabStatisticsFragment(
 ) : Fragment(R.layout.fragment_server_tab_statistics), ServerTabFragment<ServerTabStatisticsFragment> {
     private val statisticsViewModel: StatisticsViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if(savedInstanceState == null){
-            setStateIntent(StatisticsViewModel.StateIntent.SetServerId(requireArguments().getLong("ELEMENT_ID")))
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

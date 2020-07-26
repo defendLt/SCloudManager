@@ -21,13 +21,6 @@ class ServerTabActionsFragment(
     private val actionViewModel: ActionViewModel by viewModels()
     private val actionListAdapter = ActionListAdapter()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if(savedInstanceState == null){
-            setStateInstance(ActionViewModel.StateIntent.SetServerId(requireArguments().getLong("ELEMENT_ID")))
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
