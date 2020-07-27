@@ -1,8 +1,8 @@
 package com.platdmit.simplecloudmanager.di
 
 import com.platdmit.data.api.*
-import com.platdmit.data.api.implement.*
 import com.platdmit.data.api.rest.*
+import com.platdmit.domain.repositories.api.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -108,7 +108,7 @@ object RetrofitModule {
     @Provides
     fun provideApiAccountRepo(
             restAccount : RestAccount
-    ) : ApiAccountRepo {
+    ) : ApiAccountRepoImp {
         return ApiAccountRepoImp(restAccount)
     }
 
@@ -116,7 +116,7 @@ object RetrofitModule {
     @Provides
     fun provideApiDomainRepo(
             restDomain: RestDomain
-    ) : ApiDomainRepo {
+    ) : ApiDomainRepoImp {
         return ApiDomainRepoImp(restDomain)
     }
 
@@ -124,7 +124,7 @@ object RetrofitModule {
     @Provides
     fun provideApiImageRepo(
             restImage: RestImage
-    ) : ApiImageRepo {
+    ) : ApiImageRepoImp {
         return ApiImageRepoImp(restImage)
     }
 
@@ -132,7 +132,7 @@ object RetrofitModule {
     @Provides
     fun provideApiServerRepo(
             restServer: RestServer
-    ) : ApiServerRepo {
+    ) : ApiServerRepoImp {
         return ApiServerRepoImp(restServer)
     }
 
@@ -140,7 +140,7 @@ object RetrofitModule {
     @Provides
     fun provideApiSizeRepo(
             restSize: RestSize
-    ) : ApiSizeRepo {
+    ) : ApiSizeRepoImp {
         return ApiSizeRepoImp(restSize)
     }
 }

@@ -1,12 +1,11 @@
 package com.platdmit.domain.helpers
 
-import com.platdmit.data.database.entity.DbUpdateSchedule
-import com.platdmit.domain.repo.UpdateScheduleRepo
+import com.platdmit.domain.repositories.UpdateScheduleRepo
 import org.joda.time.DateTime
 import java.util.*
 
 class ContentUpdateService(
-        private val updateScheduleRepo: UpdateScheduleRepo<DbUpdateSchedule>,
+        private val updateScheduleRepo: UpdateScheduleRepo,
         private val lifeTime: Int = 900000
 ) : UpdateScheduleService  {
     private val activeTypes: MutableMap<String, DateTime> = HashMap()

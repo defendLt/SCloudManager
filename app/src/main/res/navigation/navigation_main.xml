@@ -6,15 +6,15 @@
     app:startDestination="@id/loginFragment">
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.platdmit.simplecloudmanager.fragments.LoginFragment"
+        android:name="com.platdmit.simplecloudmanager.screens.login.LoginFragment"
         android:label="@string/navigation_login" />
 <!--    <fragment-->
 <!--        android:id="@+id/loginFragment"-->
-<!--        android:name="com.platdmit.simplecloudmanager.fragments.LoginFragment"-->
+<!--        android:name="com.platdmit.simplecloudmanager.screens.login.LoginFragment"-->
 <!--        android:label="@string/navigation_profile" />-->
     <fragment
         android:id="@+id/domainListFragment"
-        android:name="com.platdmit.simplecloudmanager.fragments.DomainListFragment"
+        android:name="com.platdmit.simplecloudmanager.screens.domains.DomainListFragment"
         android:label="@string/navigation_domains" >
         <action
             android:id="@+id/action_domainListFragment_to_domainFragment"
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/domainFragment"
-        android:name="com.platdmit.simplecloudmanager.fragments.DomainFragment"
+        android:name="com.platdmit.simplecloudmanager.screens.domain.DomainFragment"
         android:label="DomainFragment" >
         <argument
             android:name="ID"
@@ -30,7 +30,7 @@
     </fragment>
     <fragment
         android:id="@+id/serverListFragment"
-        android:name="com.platdmit.simplecloudmanager.fragments.ServerListFragment"
+        android:name="com.platdmit.simplecloudmanager.screens.servers.ServerListFragment"
         android:label="@string/navigation_servers" >
         <action
             android:id="@+id/action_serverListFragment_to_serverFragment"
@@ -38,7 +38,7 @@
     </fragment>
     <fragment
         android:id="@+id/serverFragment"
-        android:name="com.platdmit.simplecloudmanager.fragments.ServerFragment"
+        android:name="com.platdmit.simplecloudmanager.screens.server.ServerFragment"
         android:label="" >
         <argument
             android:name="ID"

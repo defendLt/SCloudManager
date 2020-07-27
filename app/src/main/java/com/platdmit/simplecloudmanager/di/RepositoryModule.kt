@@ -1,16 +1,16 @@
 package com.platdmit.simplecloudmanager.di
 
-import com.platdmit.data.api.ApiAccountRepo
-import com.platdmit.data.api.ApiDomainRepo
-import com.platdmit.data.api.ApiServerRepo
+import com.platdmit.data.AccountRepoImp
+import com.platdmit.data.DomainRepoImp
+import com.platdmit.data.ServerRepoImp
+import com.platdmit.data.UpdateScheduleRepImp
+import com.platdmit.data.api.ApiAccountRepoImp
+import com.platdmit.data.api.ApiDomainRepoImp
+import com.platdmit.data.api.ApiServerRepoImp
+import com.platdmit.data.converters.*
 import com.platdmit.data.database.dao.*
-import com.platdmit.domain.converters.implement.*
 import com.platdmit.domain.helpers.UpdateScheduleService
-import com.platdmit.domain.repo.*
-import com.platdmit.domain.repo.implement.AccountRepoImp
-import com.platdmit.domain.repo.implement.DomainRepoImp
-import com.platdmit.domain.repo.implement.ServerRepoImp
-import com.platdmit.domain.repo.implement.UpdateScheduleRepImp
+import com.platdmit.domain.repositories.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,7 +22,7 @@ object RepositoryModule {
 
     @Provides
     fun provideAccountRepo(
-            apiAccountRepo: ApiAccountRepo,
+            apiAccountRepo: ApiAccountRepoImp,
             accountDao: AccountDao,
             accountConverter: AccountConvertImp
     ): AccountRepo {
@@ -31,7 +31,7 @@ object RepositoryModule {
 
     @Provides
     fun provideDomainRepo(
-            apiDomainRepo: ApiDomainRepo,
+            apiDomainRepo: ApiDomainRepoImp,
             domainDao: DomainDao,
             domainConverter: DomainConvertImp,
             updateScheduleService: UpdateScheduleService
@@ -41,7 +41,7 @@ object RepositoryModule {
 
     @Provides
     fun provideServerBaseRepo(
-            apiServerRepo: ApiServerRepo,
+            apiServerRepo: ApiServerRepoImp,
             serverDao: ServerDao,
             serverConverter: ServerConvertImp,
             updateScheduleService: UpdateScheduleService
@@ -51,48 +51,49 @@ object RepositoryModule {
 
     @Provides
     fun provideServerActionsRepo(
-            apiServerRepo: ApiServerRepo,
+            apiServerRepo: ApiServerRepoImp,
             actionDao: ActionDao,
             actionConverter: ActionConvertImp,
             updateScheduleService: UpdateScheduleService
-    ) : ServerActionsRepo{
+    ) : ServerActionsRepo {
         return ServerRepoImp(apiServerRepo, actionDao, actionConverter, updateScheduleService)
     }
 
     @Provides
     fun provideServerStatisticsRepo(
-            apiServerRepo: ApiServerRepo,
+            apiServerRepo: ApiServerRepoImp,
             statisticDao: StatisticDao,
             statisticConverter: StatisticConvertImp,
             updateScheduleService: UpdateScheduleService
-    ) : ServerStatisticsRepo{
+    ) : ServerStatisticsRepo {
         return ServerRepoImp(apiServerRepo, statisticDao, statisticConverter, updateScheduleService)
     }
 
     @Provides
     fun provideServerBackupRepo(
-            apiServerRepo: ApiServerRepo,
+            apiServerRepo: ApiServerRepoImp,
             backupDao: BackupDao,
             backupConverter: BackupConvertImp,
             updateScheduleService: UpdateScheduleService
-    ) : ServerBackupRepo{
+    ) : ServerBackupRepo {
         return ServerRepoImp(apiServerRepo, backupDao, backupConverter, updateScheduleService)
     }
 
     @Provides
     fun provideServerLoadAveragesRepo(
-            apiServerRepo: ApiServerRepo,
+            apiServerRepo: ApiServerRepoImp,
             loadAverageDao: LoadAverageDao,
             loadAverageConverter: LoadAverageConvertImp,
             updateScheduleService: UpdateScheduleService
-    ) : ServerLoadAveragesRepo{
+    ) : ServerLoadAveragesRepo {
         return ServerRepoImp(apiServerRepo, loadAverageDao, loadAverageConverter, updateScheduleService)
     }
 
     @Provides
     fun provideUpdateScheduleRepo(
-            updateScheduleDao : UpdateScheduleDao
+            updateScheduleDao : UpdateScheduleDao,
+            updateScheduleConvert: UpdateScheduleConvertImp
     ): UpdateScheduleRepImp {
-        return UpdateScheduleRepImp(updateScheduleDao)
+        return UpdateScheduleRepImp(updateScheduleDao, updateScheduleConvert)
     }
 }

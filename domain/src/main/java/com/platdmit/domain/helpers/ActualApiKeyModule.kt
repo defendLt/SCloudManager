@@ -1,7 +1,6 @@
 package com.platdmit.domain.helpers
 
-import com.platdmit.data.api.ApiAccountRepo
-import com.platdmit.data.helpers.ActualApiKeyService
+import com.platdmit.domain.repositories.api.ApiAccountRepo
 import com.platdmit.domain.models.UserAccount
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -9,7 +8,7 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject
 import java.util.concurrent.TimeUnit
 
 class ActualApiKeyModule(
-        private val mApiAccountRepo: ApiAccountRepo
+//        private val mApiAccountRepo: ApiAccountRepo
 ) : ActualApiKeyServiceManager {
     private val DEMO_API_KEY = "kdDZDD9pNgv1jiakld784riyjiAtXzQj"
     private val mCompositeDisposable = CompositeDisposable()
@@ -42,17 +41,17 @@ class ActualApiKeyModule(
     }
 
     private fun startAutoUpdater() {
-        mCompositeDisposable.add(
-                mApiAccountRepo.getApiKey(mUserAccount.login, mUserAccount.pass)
-                        .subscribeOn(Schedulers.newThread())
-                        .onErrorComplete {
-                            mValidAccount.onNext(false)
-                            true
-                        }
-                        .doOnSuccess {mValidAccount.onNext(true) }
-                        .repeatWhen { it.filter { mValidAccount.value }.delay(25, TimeUnit.MINUTES).onErrorComplete() }
-                        .subscribe { apiKey = it.sessionKey }
-        )
+//        mCompositeDisposable.add(
+//                mApiAccountRepo.getApiKey(mUserAccount.login, mUserAccount.pass)
+//                        .subscribeOn(Schedulers.newThread())
+//                        .onErrorComplete {
+//                            mValidAccount.onNext(false)
+//                            true
+//                        }
+//                        .doOnSuccess {mValidAccount.onNext(true) }
+//                        .repeatWhen { it.filter { mValidAccount.value }.delay(25, TimeUnit.MINUTES).onErrorComplete() }
+//                        .subscribe { apiKey = it.sessionKey }
+//        )
     }
 
 }
