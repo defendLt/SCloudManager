@@ -139,12 +139,9 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     }
 
     private fun authSuccess() {
-        try {
-            inputMethodManager?.hideSoftInputFromWindow(requireView().windowToken, 0)
-            Navigation.findNavController(requireView()).popBackStack()
-            Navigation.findNavController(requireView()).navigate(R.id.serverListFragment)
-        } catch (ignored: NullPointerException) {
-        }
+        inputMethodManager?.hideSoftInputFromWindow(requireView().windowToken, 0)
+        Navigation.findNavController(requireView()).popBackStack()
+        Navigation.findNavController(requireView()).navigate(R.id.serverListFragment)
     }
 
     private fun authFall() {
@@ -154,21 +151,15 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     }
 
     private fun authDemo() {
-        try {
-            inputMethodManager?.hideSoftInputFromWindow(requireView().windowToken, 0)
-            this.viewModelStore.clear()
-            Navigation.findNavController(requireView()).navigate(R.id.serverListFragment)
-            setUiVisibleStatus(true)
-        } catch (ignored: NullPointerException) {
-        }
+        inputMethodManager?.hideSoftInputFromWindow(requireView().windowToken, 0)
+        this.viewModelStore.clear()
+        Navigation.findNavController(requireView()).navigate(R.id.serverListFragment)
+        setUiVisibleStatus(true)
     }
 
     private fun setUiVisibleStatus(status: Boolean) {
-        try {
-            (activity as? UiVisibilityStatus)?.setVisibilityToolbar(status)
-            (activity as? UiVisibilityStatus)?.setVisibilityNavigation(status)
-        } catch (ignored: NullPointerException) {
-        }
+        (activity as? UiVisibilityStatus)?.setVisibilityToolbar(status)
+        (activity as? UiVisibilityStatus)?.setVisibilityNavigation(status)
     }
 
     private fun showTextAlert(stringId: Int) {
@@ -176,18 +167,15 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     }
 
     private fun showVibratorAlert() {
-        try {
-            val vibrator : Vibrator? = context?.getSystemService()
-            vibrator?.let {
-                if (vibrator.hasVibrator()) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
-                    } else {
-                        vibrator.vibrate(200)
-                    }
+        val vibrator : Vibrator? = context?.getSystemService()
+        vibrator?.let {
+            if (vibrator.hasVibrator()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+                } else {
+                    vibrator.vibrate(200)
                 }
             }
-        } catch (ignored: NullPointerException) {
         }
     }
 }
