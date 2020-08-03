@@ -10,7 +10,7 @@ import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding4.widget.textChanges
 import com.platdmit.simplecloudmanager.R
@@ -140,8 +140,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
     private fun authSuccess() {
         inputMethodManager?.hideSoftInputFromWindow(requireView().windowToken, 0)
-        Navigation.findNavController(requireView()).popBackStack()
-        Navigation.findNavController(requireView()).navigate(R.id.serverListFragment)
+        view?.findNavController()?.navigate(R.id.action_loginFragment_to_serverListFragment)
     }
 
     private fun authFall() {
@@ -153,7 +152,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     private fun authDemo() {
         inputMethodManager?.hideSoftInputFromWindow(requireView().windowToken, 0)
         this.viewModelStore.clear()
-        Navigation.findNavController(requireView()).navigate(R.id.serverListFragment)
+        view?.findNavController()?.navigate(R.id.serverListFragment)
         setUiVisibleStatus(true)
     }
 

@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
-import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.platdmit.domain.models.Server
 import com.platdmit.simplecloudmanager.R
 import com.platdmit.simplecloudmanager.screens.servers.ServerListAdapter.ServerListHolder
-import com.platdmit.domain.models.Server
 
 class ServerListAdapter : RecyclerView.Adapter<ServerListHolder>() {
     private val elementList: MutableList<Server> = mutableListOf()
@@ -45,7 +45,7 @@ class ServerListAdapter : RecyclerView.Adapter<ServerListHolder>() {
             mId.text = data.id.toString()
             mStatus.text = data.status
             itemView.setOnClickListener {
-                Navigation.findNavController(it).navigate(R.id.serverFragment, bundleOf("ELEMENT_ID" to data.id))
+                it.findNavController().navigate(R.id.serverFragment, bundleOf("ELEMENT_ID" to data.id))
             }
         }
     }

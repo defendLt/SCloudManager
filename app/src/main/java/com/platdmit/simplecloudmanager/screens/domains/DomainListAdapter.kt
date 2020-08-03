@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.os.bundleOf
-import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.platdmit.domain.models.Domain
 import com.platdmit.simplecloudmanager.R
 import com.platdmit.simplecloudmanager.screens.domains.DomainListAdapter.DomainListHolder
-import com.platdmit.domain.models.Domain
 
 class DomainListAdapter : RecyclerView.Adapter<DomainListHolder>() {
     private val elementList: MutableList<Domain> = mutableListOf()
@@ -39,7 +39,7 @@ class DomainListAdapter : RecyclerView.Adapter<DomainListHolder>() {
             mName.text = data.name
             mType.text = data.type
             itemView.setOnClickListener {
-                Navigation.findNavController(it).navigate(R.id.domainFragment, bundleOf("ELEMENT_ID" to data.id))
+                it.findNavController().navigate(R.id.domainFragment, bundleOf("ELEMENT_ID" to data.id))
             }
         }
     }
