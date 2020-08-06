@@ -1,12 +1,12 @@
-package com.platdmit.simplecloudmanager.screens.login
+package com.platdmit.mod_login.screens.login
 
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.SavedStateHandle
 import com.platdmit.domain.helpers.ActualApiKeyServiceManager
-import com.platdmit.domain.models.UserAccount
-import com.platdmit.domain.repositories.AccountRepo
+import com.platdmit.mod_login.domain.models.UserAccount
+import com.platdmit.mod_login.domain.repositories.AccountRepo
 import com.platdmit.simplecloudmanager.vm.BaseViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable

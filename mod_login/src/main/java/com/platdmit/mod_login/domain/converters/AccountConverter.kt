@@ -1,4 +1,4 @@
-package com.platdmit.domain.converters
+package com.platdmit.mod_login.domain.converters
 
 interface AccountConverter <ApiModel, DomainModel, DbModel> {
     fun fromApiToDb(apiAccount: ApiModel, password: String): DbModel

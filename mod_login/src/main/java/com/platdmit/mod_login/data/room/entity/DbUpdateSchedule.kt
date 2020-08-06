@@ -1,4 +1,4 @@
-package com.platdmit.data.database.entity
+package com.platdmit.mod_login.data.room.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

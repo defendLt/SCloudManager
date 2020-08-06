@@ -1,8 +1,8 @@
-package com.platdmit.data.database.dao
+package com.platdmit.mod_login.data.room.dao
 
 import androidx.room.Dao
 import androidx.room.Query
-import com.platdmit.data.database.entity.DbAccount
+import com.platdmit.mod_login.data.room.entity.DbAccount
 
 @Dao
 interface AccountDao : BaseDao<DbAccount> {

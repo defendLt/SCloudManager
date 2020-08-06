@@ -1,6 +1,6 @@
-package com.platdmit.domain.repositories
+package com.platdmit.mod_login.domain.repositories
 
-import com.platdmit.domain.models.UserAccount
+import com.platdmit.mod_login.domain.models.UserAccount
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 

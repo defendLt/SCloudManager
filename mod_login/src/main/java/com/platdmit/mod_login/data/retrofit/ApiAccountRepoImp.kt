@@ -1,9 +1,9 @@
-package com.platdmit.data.api
+package com.platdmit.mod_login.data.retrofit
 
-import com.platdmit.domain.repositories.api.ApiAccountRepo
-import com.platdmit.data.api.models.ApiAccount
-import com.platdmit.data.api.models.ApiAuth
-import com.platdmit.data.api.rest.RestAccount
+import com.platdmit.mod_login.domain.repositories.api.ApiAccountRepo
+import com.platdmit.mod_login.data.retrofit.models.ApiAccount
+import com.platdmit.mod_login.data.retrofit.models.ApiAuth
+import com.platdmit.mod_login.data.retrofit.rest.RestAccount
 import io.reactivex.rxjava3.core.Single
 
 class ApiAccountRepoImp(
@@ -29,7 +29,7 @@ class ApiAccountRepoImp(
             try {
                 val response = restAccount.getAccount().execute()
                 if (response.isSuccessful) {
-                    val apiRequestBody = response.body()!!.account
+                    val apiRequestBody = response.body()!!.requestBody
                     it.onSuccess(apiRequestBody.account)
                 } else {
                     throw Throwable(response.message())

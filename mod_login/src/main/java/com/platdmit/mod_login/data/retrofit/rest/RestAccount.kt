@@ -1,6 +1,6 @@
-package com.platdmit.data.api.rest
+package com.platdmit.mod_login.data.retrofit.rest
 
-import com.platdmit.data.api.models.ApiAuth
+import com.platdmit.mod_login.data.retrofit.models.ApiAuth
 import retrofit2.Call
 import retrofit2.http.POST
 import retrofit2.http.Query

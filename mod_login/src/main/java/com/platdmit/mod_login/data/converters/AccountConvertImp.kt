@@ -1,9 +1,9 @@
-package com.platdmit.data.converters
+package com.platdmit.mod_login.data.converters
 
-import com.platdmit.data.api.models.ApiAccount
-import com.platdmit.data.database.entity.DbAccount
-import com.platdmit.domain.converters.AccountConverter
-import com.platdmit.domain.models.UserAccount
+import com.platdmit.mod_login.data.retrofit.models.ApiAccount
+import com.platdmit.mod_login.domain.converters.AccountConverter
+import com.platdmit.mod_login.domain.models.UserAccount
+import com.platdmit.mod_login.data.room.entity.DbAccount
 import javax.inject.Inject
 
 class AccountConvertImp
@@ -24,24 +24,26 @@ constructor() : AccountConverter<ApiAccount, UserAccount, DbAccount> {
     override fun fromApiToDomain(apiAccount: ApiAccount, password: String): UserAccount {
         return UserAccount(
                 apiAccount.uuid.toLong(),
-                apiAccount.isSubaccount,
                 apiAccount.login,
                 password,
                 apiAccount.balance,
-                apiAccount.vpsLimit
+                apiAccount.vpsLimit,
+                apiAccount.isSubaccount,
+                "",
+                false
         )
     }
 
     override fun fromDbToDomain(dbAccount: DbAccount): UserAccount {
         return UserAccount(
                 dbAccount.id,
-                dbAccount.isSubAccount,
                 dbAccount.login,
                 dbAccount.pass,
                 dbAccount.balance,
                 dbAccount.vpsLimit,
-                dbAccount.isMain,
-                dbAccount.pin.orEmpty()
+                dbAccount.isSubAccount,
+                dbAccount.pin.orEmpty(),
+                dbAccount.isMain
         )
     }
 

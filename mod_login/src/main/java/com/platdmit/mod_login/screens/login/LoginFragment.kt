@@ -1,4 +1,4 @@
-package com.platdmit.simplecloudmanager.screens.login
+package com.platdmit.mod_login.screens.login
 
 import android.os.Build
 import android.os.Bundle

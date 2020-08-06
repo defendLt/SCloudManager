@@ -1,13 +1,13 @@
-package com.platdmit.data
+package com.platdmit.mod_login.data
 
-import com.platdmit.domain.repositories.api.ApiAccountRepo
-import com.platdmit.data.api.models.ApiAccount
-import com.platdmit.data.api.models.ApiAuth
-import com.platdmit.data.database.dao.AccountDao
-import com.platdmit.data.database.entity.DbAccount
-import com.platdmit.domain.converters.AccountConverter
-import com.platdmit.domain.models.UserAccount
-import com.platdmit.domain.repositories.AccountRepo
+import com.platdmit.mod_login.domain.repositories.api.ApiAccountRepo
+import com.platdmit.mod_login.data.retrofit.models.ApiAccount
+import com.platdmit.mod_login.data.retrofit.models.ApiAuth
+import com.platdmit.mod_login.data.room.dao.AccountDao
+import com.platdmit.mod_login.data.room.entity.DbAccount
+import com.platdmit.mod_login.domain.converters.AccountConverter
+import com.platdmit.mod_login.domain.models.UserAccount
+import com.platdmit.mod_login.domain.repositories.AccountRepo
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
@@ -37,7 +37,7 @@ class AccountRepoImp(
         return apiAccountRepo.getApiKey(login, pass)
                 .subscribeOn(Schedulers.newThread())
                 .flatMap {
-                    val userAccount = accountConverter.fromApiToDomain(it.account.account, pass)
+                    val userAccount = accountConverter.fromApiToDomain(it.requestBody.account, pass)
                     userAccount.apiKey = it.sessionKey
                     Single.just(userAccount)
                 }

@@ -1,4 +1,4 @@
-package com.platdmit.domain.repositories.api
+package com.platdmit.mod_login.domain.repositories.api
 
 import io.reactivex.rxjava3.core.Single
 
