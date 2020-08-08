@@ -1,10 +1,10 @@
 package com.platdmit.data
 
 import com.platdmit.domain.repositories.api.ApiAccountRepo
-import com.platdmit.data.api.models.ApiAccount
-import com.platdmit.data.api.models.ApiAuth
-import com.platdmit.data.database.dao.AccountDao
-import com.platdmit.data.database.entity.DbAccount
+import com.platdmit.data.retrofit.models.ApiAccount
+import com.platdmit.data.retrofit.models.ApiAuth
+import com.platdmit.data.room.dao.AccountDao
+import com.platdmit.data.room.entity.DbAccount
 import com.platdmit.domain.converters.AccountConverter
 import com.platdmit.domain.models.UserAccount
 import com.platdmit.domain.repositories.AccountRepo

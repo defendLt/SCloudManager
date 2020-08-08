@@ -1,6 +1,6 @@
 package com.platdmit.data.converters
 
-import com.platdmit.data.database.entity.DbUpdateSchedule
+import com.platdmit.data.room.entity.DbUpdateSchedule
 import com.platdmit.domain.converters.UpdateScheduleConverter
 import com.platdmit.domain.models.UpdateSchedule
 import javax.inject.Inject

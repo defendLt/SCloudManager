@@ -1,7 +1,7 @@
 package com.platdmit.data
 
-import com.platdmit.data.database.dao.UpdateScheduleDao
-import com.platdmit.data.database.entity.DbUpdateSchedule
+import com.platdmit.data.room.dao.UpdateScheduleDao
+import com.platdmit.data.room.entity.DbUpdateSchedule
 import com.platdmit.domain.converters.UpdateScheduleConverter
 import com.platdmit.domain.models.UpdateSchedule
 import com.platdmit.domain.repositories.UpdateScheduleRepo

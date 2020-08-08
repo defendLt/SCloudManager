@@ -1,7 +1,7 @@
 package com.platdmit.data.converters
 
-import com.platdmit.data.api.models.ApiLoadAverage
-import com.platdmit.data.database.entity.DbLoadAverage
+import com.platdmit.data.retrofit.models.ApiLoadAverage
+import com.platdmit.data.room.entity.DbLoadAverage
 import com.platdmit.domain.converters.LoadAverageConverter
 import com.platdmit.domain.models.LoadAverage
 import javax.inject.Inject

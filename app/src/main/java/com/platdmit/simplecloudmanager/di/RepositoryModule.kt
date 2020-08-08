@@ -4,11 +4,11 @@ import com.platdmit.data.AccountRepoImp
 import com.platdmit.data.DomainRepoImp
 import com.platdmit.data.ServerRepoImp
 import com.platdmit.data.UpdateScheduleRepImp
-import com.platdmit.data.api.ApiAccountRepoImp
-import com.platdmit.data.api.ApiDomainRepoImp
-import com.platdmit.data.api.ApiServerRepoImp
+import com.platdmit.data.retrofit.ApiAccountRepoImp
+import com.platdmit.data.retrofit.ApiDomainRepoImp
+import com.platdmit.data.retrofit.ApiServerRepoImp
 import com.platdmit.data.converters.*
-import com.platdmit.data.database.dao.*
+import com.platdmit.data.room.dao.*
 import com.platdmit.domain.helpers.UpdateScheduleService
 import com.platdmit.domain.repositories.*
 import dagger.Module

@@ -1,8 +1,8 @@
 package com.platdmit.data.converters
 
 import android.util.Log
-import com.platdmit.data.api.models.ApiAction
-import com.platdmit.data.database.entity.DbAction
+import com.platdmit.data.retrofit.models.ApiAction
+import com.platdmit.data.room.entity.DbAction
 import com.platdmit.domain.converters.ActionConverter
 import com.platdmit.domain.models.Action
 import org.joda.time.DateTime

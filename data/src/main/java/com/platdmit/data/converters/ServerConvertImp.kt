@@ -1,7 +1,7 @@
 package com.platdmit.data.converters
 
-import com.platdmit.data.api.models.ApiServer
-import com.platdmit.data.database.entity.DbServer
+import com.platdmit.data.retrofit.models.ApiServer
+import com.platdmit.data.room.entity.DbServer
 import com.platdmit.domain.converters.ServerConverter
 import com.platdmit.domain.models.Server
 import org.joda.time.DateTime

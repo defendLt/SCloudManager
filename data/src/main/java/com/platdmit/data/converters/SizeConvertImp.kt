@@ -1,7 +1,7 @@
 package com.platdmit.data.converters
 
-import com.platdmit.data.api.models.ApiSize
-import com.platdmit.data.database.entity.DbSize
+import com.platdmit.data.retrofit.models.ApiSize
+import com.platdmit.data.room.entity.DbSize
 import com.platdmit.domain.converters.SizeConverter
 import com.platdmit.domain.models.Size
 import javax.inject.Inject

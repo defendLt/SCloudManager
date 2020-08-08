@@ -1,7 +1,7 @@
 package com.platdmit.data.converters
 
-import com.platdmit.data.api.models.ApiBackup
-import com.platdmit.data.database.entity.DbBackup
+import com.platdmit.data.retrofit.models.ApiBackup
+import com.platdmit.data.room.entity.DbBackup
 import com.platdmit.domain.converters.BackupConverter
 import com.platdmit.domain.models.Backup
 import javax.inject.Inject

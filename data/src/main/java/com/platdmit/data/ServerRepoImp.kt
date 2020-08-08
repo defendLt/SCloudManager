@@ -1,9 +1,9 @@
 package com.platdmit.data
 
 import com.platdmit.domain.repositories.api.ApiServerRepo
-import com.platdmit.data.api.models.*
-import com.platdmit.data.database.dao.*
-import com.platdmit.data.database.entity.*
+import com.platdmit.data.retrofit.models.*
+import com.platdmit.data.room.dao.*
+import com.platdmit.data.room.entity.*
 import com.platdmit.domain.converters.*
 import com.platdmit.domain.helpers.UpdateScheduleService
 import com.platdmit.domain.models.*

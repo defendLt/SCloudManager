@@ -1,7 +1,7 @@
 package com.platdmit.data.converters
 
-import com.platdmit.data.api.models.ApiStatistic
-import com.platdmit.data.database.entity.DbStatistic
+import com.platdmit.data.retrofit.models.ApiStatistic
+import com.platdmit.data.room.entity.DbStatistic
 import com.platdmit.domain.converters.StatisticConverter
 import com.platdmit.domain.models.Statistic
 import org.joda.time.format.DateTimeFormat

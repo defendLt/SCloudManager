@@ -1,7 +1,7 @@
 package com.platdmit.data.converters
 
-import com.platdmit.data.api.models.ApiDomainRecord
-import com.platdmit.data.database.entity.DbDomainRecord
+import com.platdmit.data.retrofit.models.ApiDomainRecord
+import com.platdmit.data.room.entity.DbDomainRecord
 import com.platdmit.domain.converters.DomainRecordConverter
 import com.platdmit.domain.models.DomainRecord
 import javax.inject.Inject

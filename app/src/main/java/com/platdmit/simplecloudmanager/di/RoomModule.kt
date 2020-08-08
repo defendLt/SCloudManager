@@ -2,8 +2,8 @@ package com.platdmit.simplecloudmanager.di
 
 import android.content.Context
 import androidx.room.Room
-import com.platdmit.data.database.DbManager
-import com.platdmit.data.database.dao.*
+import com.platdmit.data.room.DbManager
+import com.platdmit.data.room.dao.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
