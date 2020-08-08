@@ -1,4 +1,4 @@
-package com.platdmit.domain.helpers
+package com.platdmit.domain.utilities
 
 import com.platdmit.domain.repositories.UpdateScheduleRepo
 import org.joda.time.DateTime

@@ -4,7 +4,7 @@ import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.platdmit.domain.helpers.ActualApiKeyServiceManager
+import com.platdmit.domain.utilities.ActualApiKeyServiceManager
 
 class MainViewModel
 @ViewModelInject

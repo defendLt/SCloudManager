@@ -1,7 +1,7 @@
 package com.platdmit.simplecloudmanager.di
 
 import com.platdmit.data.UpdateScheduleRepImp
-import com.platdmit.domain.helpers.*
+import com.platdmit.domain.utilities.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

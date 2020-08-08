@@ -8,7 +8,7 @@ import com.platdmit.data.room.entity.DbDomain
 import com.platdmit.data.room.entity.DbDomainRecord
 import com.platdmit.domain.converters.DomainConverter
 import com.platdmit.domain.converters.DomainRecordConverter
-import com.platdmit.domain.helpers.UpdateScheduleService
+import com.platdmit.domain.utilities.UpdateScheduleService
 import com.platdmit.domain.models.Domain
 import com.platdmit.domain.models.DomainRecord
 import com.platdmit.domain.repositories.DomainBaseRepo

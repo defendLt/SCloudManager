@@ -5,7 +5,7 @@ import com.platdmit.data.retrofit.models.*
 import com.platdmit.data.room.dao.*
 import com.platdmit.data.room.entity.*
 import com.platdmit.domain.converters.*
-import com.platdmit.domain.helpers.UpdateScheduleService
+import com.platdmit.domain.utilities.UpdateScheduleService
 import com.platdmit.domain.models.*
 import com.platdmit.domain.repositories.*
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers

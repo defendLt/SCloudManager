@@ -1,4 +1,4 @@
-package com.platdmit.domain.helpers
+package com.platdmit.domain.utilities
 
 import com.platdmit.domain.models.UserAccount
 import io.reactivex.rxjava3.subjects.BehaviorSubject

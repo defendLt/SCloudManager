@@ -1,4 +1,4 @@
-package com.platdmit.domain.helpers
+package com.platdmit.domain.utilities
 
 interface ActualApiKeyService {
     var apiKey: String

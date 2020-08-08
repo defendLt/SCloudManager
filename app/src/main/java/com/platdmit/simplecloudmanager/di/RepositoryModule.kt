@@ -9,7 +9,7 @@ import com.platdmit.data.retrofit.ApiDomainRepoImp
 import com.platdmit.data.retrofit.ApiServerRepoImp
 import com.platdmit.data.converters.*
 import com.platdmit.data.room.dao.*
-import com.platdmit.domain.helpers.UpdateScheduleService
+import com.platdmit.domain.utilities.UpdateScheduleService
 import com.platdmit.domain.repositories.*
 import dagger.Module
 import dagger.Provides
