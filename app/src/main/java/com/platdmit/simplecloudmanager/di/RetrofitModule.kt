@@ -2,6 +2,7 @@ package com.platdmit.simplecloudmanager.di
 
 import com.platdmit.data.retrofit.*
 import com.platdmit.data.retrofit.rest.*
+import com.platdmit.domain.utilities.ActualApiKeyService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,11 +11,28 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
 @InstallIn(ApplicationComponent::class)
 object RetrofitModule {
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class AuthOkHttpInstance
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class BaseOkHttpInstance
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class AuthRetrofit
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class BaseRetrofit
 
     @Singleton
     @Provides
@@ -24,10 +42,23 @@ object RetrofitModule {
         return httpLoggingInterceptor
     }
 
+    @AuthOkHttpInstance
     @Singleton
     @Provides
-    fun provideOkHttpInstance(
+    fun provideAuthOkHttpInstance(
             httpLoggingInterceptor: HttpLoggingInterceptor
+    ) : OkHttpClient {
+        return OkHttpClient.Builder()
+                .addInterceptor(httpLoggingInterceptor)
+                .build()
+    }
+
+    @BaseOkHttpInstance
+    @Singleton
+    @Provides
+    fun provideBaseOkHttpInstance(
+            httpLoggingInterceptor: HttpLoggingInterceptor,
+            actualApiKeyService: ActualApiKeyService
     ) : OkHttpClient {
         return OkHttpClient.Builder()
                 .addInterceptor{
@@ -35,17 +66,30 @@ object RetrofitModule {
                             .newBuilder()
                             .header(
                                     "Authorization",
-                                    "Bearer kdDZDD9pNgv1jiakld784riyjiAtXzQj"
+                                    "Bearer ${actualApiKeyService.apiKey}"
                             ).build()
                     it.proceed(newRequest)
                 }
                 .addInterceptor(httpLoggingInterceptor).build()
     }
 
+    @AuthRetrofit
     @Singleton
     @Provides
-    fun provideRetrofit(
-            okHttpClient: OkHttpClient
+    fun provideAuthRetrofit(
+            @AuthOkHttpInstance okHttpClient: OkHttpClient
+    ) : Retrofit.Builder {
+        return Retrofit.Builder()
+                .baseUrl("https://api.simplecloud.ru/v3/")
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+    }
+
+    @BaseRetrofit
+    @Singleton
+    @Provides
+    fun provideBaseRetrofit(
+            @BaseOkHttpInstance okHttpClient: OkHttpClient
     ) : Retrofit.Builder {
         return Retrofit.Builder()
                 .baseUrl("https://api.simplecloud.ru/v3/")
@@ -56,7 +100,7 @@ object RetrofitModule {
     @Singleton
     @Provides
     fun provideAccountRest(
-            retrofit: Retrofit.Builder
+            @AuthRetrofit retrofit: Retrofit.Builder
     ) : RestAccount {
         return retrofit
                 .build()
@@ -66,7 +110,7 @@ object RetrofitModule {
     @Singleton
     @Provides
     fun provideDomainRest(
-            retrofit: Retrofit.Builder
+            @BaseRetrofit retrofit: Retrofit.Builder
     ) : RestDomain {
         return retrofit
                 .build()
@@ -76,7 +120,7 @@ object RetrofitModule {
     @Singleton
     @Provides
     fun provideImageRest(
-            retrofit: Retrofit.Builder
+            @BaseRetrofit retrofit: Retrofit.Builder
     ) : RestImage {
         return retrofit
                 .build()
@@ -86,7 +130,7 @@ object RetrofitModule {
     @Singleton
     @Provides
     fun provideServerRest(
-            retrofit: Retrofit.Builder
+            @BaseRetrofit retrofit: Retrofit.Builder
     ) : RestServer {
         return retrofit
                 .build()
@@ -96,7 +140,7 @@ object RetrofitModule {
     @Singleton
     @Provides
     fun provideSizeRest(
-            retrofit: Retrofit.Builder
+            @BaseRetrofit retrofit: Retrofit.Builder
     ) : RestSize {
         return retrofit
                 .build()

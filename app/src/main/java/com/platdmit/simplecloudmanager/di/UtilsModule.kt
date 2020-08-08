@@ -1,6 +1,7 @@
 package com.platdmit.simplecloudmanager.di
 
 import com.platdmit.data.UpdateScheduleRepImp
+import com.platdmit.data.retrofit.ApiAccountRepoImp
 import com.platdmit.domain.utilities.*
 import dagger.Module
 import dagger.Provides
@@ -22,7 +23,7 @@ object UtilsModule {
     @Singleton
     @Provides
     fun provideActualApiKeyService(
-//            apiAccountRepo: ApiAccountRepoImp
+            apiAccountRepo: ApiAccountRepoImp
     ) : ActualApiKeyService {
         return ActualApiKeyModule()
     }
