@@ -1,0 +1,47 @@
+package com.platdmit.feature_domains.screens.domains
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.core.os.bundleOf
+import androidx.navigation.findNavController
+import androidx.recyclerview.widget.RecyclerView
+import com.platdmit.feature_domains.R
+import com.platdmit.feature_domains.domain.models.Domain
+
+class DomainListAdapter : RecyclerView.Adapter<DomainListAdapter.DomainListHolder>() {
+    private val elementList: MutableList<Domain> = mutableListOf()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DomainListHolder {
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val layoutType = R.layout.fragment_domains_item
+        return DomainListHolder(layoutInflater, parent, layoutType)
+    }
+
+    override fun onBindViewHolder(holder: DomainListHolder, position: Int) {
+        holder.bindData(elementList[position])
+    }
+
+    override fun getItemCount(): Int {
+        return elementList.size
+    }
+
+    fun setContentData(elements: List<Domain>) {
+        elementList.clear()
+        elementList.addAll(elements)
+        notifyDataSetChanged()
+    }
+
+    inner class DomainListHolder(inflater: LayoutInflater, parent: ViewGroup?, layoutType: Int
+    ) : RecyclerView.ViewHolder(inflater.inflate(layoutType, parent, false)) {
+        private val mName = itemView.findViewById<TextView>(R.id.domain_name)
+        private val mType = itemView.findViewById<TextView>(R.id.domain_type)
+        fun bindData(data: Domain) {
+            mName.text = data.name
+            mType.text = data.type
+            itemView.setOnClickListener {
+                it.findNavController().navigate(R.id.domainFragment, bundleOf("ELEMENT_ID" to data.id))
+            }
+        }
+    }
+}
