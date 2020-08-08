@@ -37,7 +37,7 @@ class AccountRepoImp(
         return apiAccountRepo.getApiKey(login, pass)
                 .subscribeOn(Schedulers.newThread())
                 .flatMap {
-                    val userAccount = accountConverter.fromApiToDomain(it.account.account, pass)
+                    val userAccount = accountConverter.fromApiToDomain(it.requestBody.account, pass)
                     userAccount.apiKey = it.sessionKey
                     Single.just(userAccount)
                 }

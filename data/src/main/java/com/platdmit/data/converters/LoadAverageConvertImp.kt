@@ -14,21 +14,23 @@ constructor() : LoadAverageConverter<ApiLoadAverage, LoadAverage, DbLoadAverage>
         loadAverageList.add(DbLoadAverage(
                 CPU_NAME,
                 serverId,
-                apiLoadAverage.cPU.getTotal(), apiLoadAverage.cPU.getHourly().toString() + VAL_PERCENT,
-                apiLoadAverage.cPU.getHourly()
+                apiLoadAverage.cPU.total,
+                "${apiLoadAverage.cPU.hourly} $VAL_PERCENT",
+                apiLoadAverage.cPU.hourly
         ))
         loadAverageList.add(DbLoadAverage(
                 RAM_NAME,
                 serverId,
-                apiLoadAverage.rAM.getTotal(), apiLoadAverage.rAM.getHourly().toString() + VAL_PERCENT,
-                apiLoadAverage.rAM.getHourly()
+                apiLoadAverage.rAM.total,
+                "${apiLoadAverage.rAM.hourly} $VAL_PERCENT",
+                apiLoadAverage.rAM.hourly
         ))
         loadAverageList.add(DbLoadAverage(
                 ROM_NAME,
                 serverId,
-                apiLoadAverage.disk.getTotal(),
-                apiLoadAverage.disk.getFree() + VAL_SIZE,
-                getFreePercent(apiLoadAverage.disk.getTotal(), apiLoadAverage.disk.getFree())
+                apiLoadAverage.disk.total,
+                "${apiLoadAverage.disk.free} $VAL_SIZE",
+                getFreePercent(apiLoadAverage.disk.total, apiLoadAverage.disk.free)
         ))
         return loadAverageList
     }
@@ -37,19 +39,21 @@ constructor() : LoadAverageConverter<ApiLoadAverage, LoadAverage, DbLoadAverage>
         val loadAverageList: MutableList<LoadAverage> = emptyList<LoadAverage>().toMutableList();
         loadAverageList.add(LoadAverage(
                 CPU_NAME,
-                apiLoadAverage.cPU.getTotal(), apiLoadAverage.cPU.getHourly().toString() + VAL_PERCENT,
-                apiLoadAverage.cPU.getHourly()
+                apiLoadAverage.cPU.total,
+                "${apiLoadAverage.cPU.hourly} $VAL_PERCENT",
+                apiLoadAverage.cPU.hourly
         ))
         loadAverageList.add(LoadAverage(
                 RAM_NAME,
-                apiLoadAverage.rAM.getTotal(), apiLoadAverage.rAM.getHourly().toString() + VAL_PERCENT,
-                apiLoadAverage.rAM.getHourly()
+                apiLoadAverage.rAM.total,
+                "${apiLoadAverage.rAM.hourly} $VAL_PERCENT",
+                apiLoadAverage.rAM.hourly
         ))
         loadAverageList.add(LoadAverage(
                 ROM_NAME,
-                apiLoadAverage.disk.getTotal(),
-                apiLoadAverage.disk.getFree() + VAL_SIZE,
-                getFreePercent(apiLoadAverage.disk.getTotal(), apiLoadAverage.disk.getFree())
+                apiLoadAverage.disk.total,
+                "${apiLoadAverage.disk.free} $VAL_SIZE",
+                getFreePercent(apiLoadAverage.disk.total, apiLoadAverage.disk.free)
         ))
         return loadAverageList
     }

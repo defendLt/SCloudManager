@@ -21,15 +21,15 @@ constructor() : SizeConverter<ApiSize, Size, DbSize> {
                 apiSize.priceHourly,
                 apiSize.linked,
                 apiSize.main,
-                apiSize.isTest,
-                apiSize.isArchive
+                apiSize.test,
+                apiSize.archive
         )
     }
 
     override fun fromDbToDomain(dbSize: DbSize): Size {
         return Size(
                 dbSize.id,
-                dbSize.id.toString(),
+                "${dbSize.id}",
                 dbSize.slug,
                 dbSize.memory,
                 dbSize.vcpus,

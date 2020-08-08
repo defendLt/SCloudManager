@@ -27,16 +27,16 @@ constructor() : ServerConverter<ApiServer, Server, DbServer> {
                 apiServer.billing.paymentPeriod,
                 apiServer.billing.totalHours,
                 apiServer.billing.workedHours,
-                apiServer.isLocked,
+                apiServer.locked,
                 apiServer.status,
                 apiServer.createdAt,
                 apiServer.startedFirstAt,
                 apiServer.startedAt,
-                apiServer.isIsInstall,
-                apiServer.isIsError,
+                apiServer.isInstall,
+                apiServer.isError,
                 apiServer.password,
-                apiServer.networks.v4.ipAddress,
-                apiServer.isMbit200
+                apiServer.networks.v4?.ipAddress?:"",
+                apiServer.mbit200
         )
     }
 
@@ -88,7 +88,7 @@ constructor() : ServerConverter<ApiServer, Server, DbServer> {
         } else if (upTimeHours > 0) {
             "$UPTIME: $upTimeHours$HOUR"
         } else {
-            UPTIME + ":" + dateTime.minuteOfHour + MINUTE
+            "$UPTIME: ${dateTime.minuteOfHour}$MINUTE"
         }
     }
 
@@ -97,11 +97,11 @@ constructor() : ServerConverter<ApiServer, Server, DbServer> {
     }
 
     private fun pricePeriodConverter(price: String, period: String): String {
-        return priceConverter(price) + "/" + periodConverter(period)
+        return "${priceConverter(price)}/${periodConverter(period)}"
     }
 
     private fun priceConverter(price: String): String {
-        return java.lang.Double.valueOf(price).toString() + CURRENCY_RU
+        return "$price$CURRENCY_RU"
     }
 
     private fun periodConverter(period: String): String {

@@ -26,7 +26,7 @@ data class ApiBackup(
 
         @SerializedName("public")
         @Expose
-        val _public: Boolean,
+        val is_public: Boolean,
 
         @SerializedName("created_at")
         @Expose
