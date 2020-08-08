@@ -10,8 +10,8 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.platdmit.domain.models.ComplexChartsData
 import com.platdmit.domain.models.Statistic
 import com.platdmit.domain.repositories.ServerStatisticsRepo
-import com.platdmit.simplecloudmanager.helpers.charts.ServerValueFormatter
-import com.platdmit.simplecloudmanager.vm.BaseViewModel
+import com.platdmit.simplecloudmanager.utilities.charts.ServerValueFormatter
+import com.platdmit.simplecloudmanager.base.BaseViewModel
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*

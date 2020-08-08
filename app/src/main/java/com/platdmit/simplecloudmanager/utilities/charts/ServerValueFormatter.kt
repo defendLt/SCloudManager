@@ -1,4 +1,4 @@
-package com.platdmit.simplecloudmanager.helpers.charts
+package com.platdmit.simplecloudmanager.utilities.charts
 
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.formatter.ValueFormatter

@@ -7,7 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.platdmit.domain.helpers.ActualApiKeyServiceManager
 import com.platdmit.domain.models.UserAccount
 import com.platdmit.domain.repositories.AccountRepo
-import com.platdmit.simplecloudmanager.vm.BaseViewModel
+import com.platdmit.simplecloudmanager.base.BaseViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.schedulers.Schedulers

@@ -1,4 +1,4 @@
-package com.platdmit.simplecloudmanager.screens.main
+package com.platdmit.simplecloudmanager
 
 import android.os.Bundle
 import android.view.Menu
@@ -9,13 +9,13 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import com.platdmit.simplecloudmanager.R
-import com.platdmit.simplecloudmanager.helpers.UiVisibilityStatus
+import com.platdmit.simplecloudmanager.screens.main.MainViewModel
+import com.platdmit.simplecloudmanager.utilities.UiVisibilityStatus
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(R.layout.activity_main), UiVisibilityStatus {
+class NavHostActivity : AppCompatActivity(R.layout.activity_main), UiVisibilityStatus {
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val mainViewModel: MainViewModel by viewModels()

@@ -5,7 +5,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.SavedStateHandle
 import com.platdmit.domain.repositories.ServerActionsRepo
-import com.platdmit.simplecloudmanager.vm.BaseViewModel
+import com.platdmit.simplecloudmanager.base.BaseViewModel
 
 class ActionViewModel
 @ViewModelInject

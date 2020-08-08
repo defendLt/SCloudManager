@@ -11,11 +11,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_sc_manager_launcher_round"
         android:supportsRtl="true"
-        android:name=".SCMApp"
+        android:name=".SCManagerApp"
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".screens.main.MainActivity"
+            android:name=".NavHostActivity"
             android:windowSoftInputMode="adjustResize|stateVisible|stateUnchanged">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

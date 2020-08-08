@@ -5,7 +5,7 @@ import dagger.hilt.android.HiltAndroidApp
 import net.danlew.android.joda.JodaTimeAndroid
 
 @HiltAndroidApp
-class SCMApp : Application() {
+class SCManagerApp : Application() {
 
     override fun onCreate() {
         super.onCreate()

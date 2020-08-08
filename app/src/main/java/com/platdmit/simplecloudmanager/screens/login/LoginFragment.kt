@@ -14,7 +14,7 @@ import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding4.widget.textChanges
 import com.platdmit.simplecloudmanager.R
-import com.platdmit.simplecloudmanager.helpers.UiVisibilityStatus
+import com.platdmit.simplecloudmanager.utilities.UiVisibilityStatus
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
