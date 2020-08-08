@@ -2,8 +2,12 @@ package com.platdmit.simplecloudmanager.di
 
 import android.content.Context
 import androidx.room.Room
-import com.platdmit.data.database.DbManager
-import com.platdmit.data.database.dao.*
+import com.platdmit.base_db.data.room.DbManager
+import com.platdmit.base_utils.update_service.data.room.dao.UpdateScheduleDao
+import com.platdmit.feature_domains.data.room.dao.DomainDao
+import com.platdmit.feature_domains.data.room.dao.DomainRecordDao
+import com.platdmit.feature_login.data.room.dao.AccountDao
+import com.platdmit.feature_servers.data.room.dao.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,55 +33,55 @@ object RoomModule {
 
     @Singleton
     @Provides
-    fun provideAccountDao( dbManager: DbManager ) : AccountDao {
+    fun provideAccountDao(dbManager: DbManager): AccountDao {
         return dbManager.accountDao()
     }
 
     @Singleton
     @Provides
-    fun provideDomainDao( dbManager: DbManager ) : DomainDao {
+    fun provideDomainDao(dbManager: DbManager): DomainDao {
         return dbManager.domainDao()
     }
 
     @Singleton
     @Provides
-    fun provideDomainRecordDao( dbManager: DbManager ) : DomainRecordDao {
+    fun provideDomainRecordDao(dbManager: DbManager): DomainRecordDao {
         return dbManager.domainRecordDao()
     }
 
     @Singleton
     @Provides
-    fun provideServerDao( dbManager: DbManager ) : ServerDao {
+    fun provideServerDao(dbManager: DbManager): ServerDao {
         return dbManager.serverDao()
     }
 
     @Singleton
     @Provides
-    fun provideActionDao( dbManager: DbManager ) : ActionDao {
+    fun provideActionDao(dbManager: DbManager): ActionDao {
         return dbManager.actionDao()
     }
 
     @Singleton
     @Provides
-    fun provideBackupDao( dbManager: DbManager ) : BackupDao {
+    fun provideBackupDao(dbManager: DbManager): BackupDao {
         return dbManager.backupDao()
     }
 
     @Singleton
     @Provides
-    fun provideLoadAverageDao( dbManager: DbManager ) : LoadAverageDao {
+    fun provideLoadAverageDao(dbManager: DbManager): LoadAverageDao {
         return dbManager.loadAverageDao()
     }
 
     @Singleton
     @Provides
-    fun provideStatisticDao( dbManager: DbManager ) : StatisticDao {
+    fun provideStatisticDao(dbManager: DbManager): StatisticDao {
         return dbManager.statisticDao()
     }
 
     @Singleton
     @Provides
-    fun provideUpdateScheduleDao( dbManager: DbManager ) : UpdateScheduleDao {
+    fun provideUpdateScheduleDao(dbManager: DbManager): UpdateScheduleDao {
         return dbManager.updateScheduleDao()
     }
 }

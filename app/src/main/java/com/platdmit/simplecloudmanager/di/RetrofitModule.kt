@@ -1,8 +1,15 @@
 package com.platdmit.simplecloudmanager.di
 
-import com.platdmit.data.api.*
-import com.platdmit.data.api.rest.*
-import com.platdmit.domain.repositories.api.*
+import com.platdmit.feature_domains.data.retrofit.ApiDomainRepoImp
+import com.platdmit.feature_domains.data.retrofit.rest.RestDomain
+import com.platdmit.feature_login.data.retrofit.ApiAccountRepoImp
+import com.platdmit.feature_login.data.retrofit.rest.RestAccount
+import com.platdmit.feature_servers.data.retrofit.ApiImageRepoImp
+import com.platdmit.feature_servers.data.retrofit.ApiServerRepoImp
+import com.platdmit.feature_servers.data.retrofit.ApiSizeRepoImp
+import com.platdmit.feature_servers.data.retrofit.rest.RestImage
+import com.platdmit.feature_servers.data.retrofit.rest.RestServer
+import com.platdmit.feature_servers.data.retrofit.rest.RestSize
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

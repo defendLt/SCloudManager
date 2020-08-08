@@ -6,7 +6,7 @@
     app:startDestination="@id/loginFragment">
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.platdmit.simplecloudmanager.screens.login.LoginFragment"
+        android:name="com.platdmit.feature_login.screens.login.LoginFragment"
         android:label="@string/navigation_login" >
         <action
             android:id="@+id/action_loginFragment_to_serverListFragment"
@@ -16,11 +16,11 @@
     </fragment>
 <!--    <fragment-->
 <!--        android:id="@+id/loginFragment"-->
-<!--        android:name="com.platdmit.simplecloudmanager.screens.login.LoginFragment"-->
+<!--        android:name="com.platdmit.mod_login.screens.login.LoginFragment"-->
 <!--        android:label="@string/navigation_profile" />-->
     <fragment
         android:id="@+id/domainListFragment"
-        android:name="com.platdmit.simplecloudmanager.screens.domains.DomainListFragment"
+        android:name="com.platdmit.feature_domains.screens.domains.DomainListFragment"
         android:label="@string/navigation_domains" >
         <action
             android:id="@+id/action_domainListFragment_to_domainFragment"
@@ -28,7 +28,7 @@
     </fragment>
     <fragment
         android:id="@+id/domainFragment"
-        android:name="com.platdmit.simplecloudmanager.screens.domain.DomainFragment"
+        android:name="com.platdmit.feature_domains.screens.domain.DomainFragment"
         android:label="DomainFragment" >
         <argument
             android:name="ID"
@@ -36,7 +36,7 @@
     </fragment>
     <fragment
         android:id="@+id/serverListFragment"
-        android:name="com.platdmit.simplecloudmanager.screens.servers.ServerListFragment"
+        android:name="com.platdmit.mod_servers.screens.servers.ServerListFragment"
         android:label="@string/navigation_servers" >
         <action
             android:id="@+id/action_serverListFragment_to_serverFragment"
@@ -44,7 +44,7 @@
     </fragment>
     <fragment
         android:id="@+id/serverFragment"
-        android:name="com.platdmit.simplecloudmanager.screens.server.ServerFragment"
+        android:name="com.platdmit.feature_servers.screens.server.ServerFragment"
         android:label="" >
         <argument
             android:name="ID"

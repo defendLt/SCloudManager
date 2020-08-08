@@ -1,7 +1,8 @@
 package com.platdmit.simplecloudmanager.di
 
-import com.platdmit.data.UpdateScheduleRepImp
-import com.platdmit.domain.helpers.*
+import com.platdmit.base_utils.apikey_service.domain.ActualApiKeyModule
+import com.platdmit.base_utils.apikey_service.domain.ActualApiKeyService
+import com.platdmit.base_utils.apikey_service.domain.ActualApiKeyServiceManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,9 +15,9 @@ object UtilsModule {
 
     @Provides
     fun provideUpdateScheduleService(
-            updateScheduleRepo : UpdateScheduleRepImp
-    ) : UpdateScheduleService {
-        return ContentUpdateService(updateScheduleRepo)
+            updateScheduleRepo : com.platdmit.base_utils.update_service.data.UpdateScheduleRepImp
+    ) : com.platdmit.base_utils.update_service.domain.UpdateScheduleService {
+        return com.platdmit.base_utils.update_service.domain.ContentUpdateService(updateScheduleRepo)
     }
 
     @Singleton
