@@ -4,27 +4,28 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.platdmit.simplecloudmanager.R
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.platdmit.domain.models.Backup
+import com.platdmit.simplecloudmanager.R
+import com.platdmit.simplecloudmanager.databinding.FragmentServerTabBackupsBinding
 import com.platdmit.simplecloudmanager.screens.server.ServerTabFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_server_tab_backups.*
 
 @AndroidEntryPoint
 class ServerTabBackupsFragment(
         private val mTitle: String = "empty"
 ) : Fragment(R.layout.fragment_server_tab_backups), ServerTabFragment<ServerTabBackupsFragment> {
     private val backupsViewModel: BackupsViewModel by viewModels()
+    private val backupsViewBindings: FragmentServerTabBackupsBinding by viewBinding()
     private val backupListAdapter = BackupListAdapter()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        server_backup_list.layoutManager = LinearLayoutManager(context)
+        backupsViewBindings.serverBackupList.layoutManager = LinearLayoutManager(context)
 
-        backupsViewModel.backupsStateLiveData.observe(viewLifecycleOwner, Observer { stateHandler(it) })
+        backupsViewModel.backupsStateLiveData.observe(viewLifecycleOwner, { stateHandler(it) })
     }
 
     override fun getTitle(): String {
@@ -52,8 +53,8 @@ class ServerTabBackupsFragment(
 
     private fun updateServerBackupsData(backups: List<Backup>) {
         backupListAdapter.setContentData(backups)
-        if (server_backup_list.adapter == null) {
-            server_backup_list.adapter = backupListAdapter
+        if (backupsViewBindings.serverBackupList.adapter == null) {
+            backupsViewBindings.serverBackupList.adapter = backupListAdapter
         } else {
             backupListAdapter.notifyDataSetChanged()
         }
