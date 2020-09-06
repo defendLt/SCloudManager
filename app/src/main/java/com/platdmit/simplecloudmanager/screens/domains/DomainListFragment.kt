@@ -4,39 +4,46 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.platdmit.domain.models.Domain
 import com.platdmit.simplecloudmanager.R
+import com.platdmit.simplecloudmanager.base.extensions.setLoaderStatus
+import com.platdmit.simplecloudmanager.base.extensions.showResultMessage
+import com.platdmit.simplecloudmanager.databinding.FragmentDomainsListBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_domains_list.*
 
 @AndroidEntryPoint
-class DomainListFragment : Fragment(R.layout.fragment_domains_list) {
+class DomainListFragment : Fragment(R.layout.fragment_domains_list){
     private val domainListViewModel: DomainListViewModel by viewModels()
+    private val domainListViewBinding: FragmentDomainsListBinding by viewBinding()
     private val domainListAdapter: DomainListAdapter = DomainListAdapter()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fragments_list.layoutManager = LinearLayoutManager(context)
-        update_swipe.setOnRefreshListener{
+        domainListViewBinding.fragmentsList.layoutManager = LinearLayoutManager(context)
+        domainListViewBinding.updateSwipe.setOnRefreshListener{
             setStateInstance(DomainListViewModel.StateIntent.RefreshResult)
         }
 
-        domainListViewModel.domainsStateLiveData.observe(viewLifecycleOwner, Observer {stateHandler(it)})
-        domainListViewModel.messageLiveData.observe(viewLifecycleOwner, Observer {showResultMassage(it)})
+        domainListViewModel.domainsStateLiveData.observe(viewLifecycleOwner, {stateHandler(it)})
+        domainListViewModel.messageLiveData.observe(viewLifecycleOwner, {showResultMessage(it)})
     }
 
     private fun stateHandler(domainListState: DomainListState){
         when(domainListState){
-            is DomainListState.Loading -> {}
+            is DomainListState.Loading -> {
+                setLoaderStatus(true)
+            }
             is DomainListState.Success -> {
                 updateAdapterData(domainListState.domains)
+                setLoaderStatus(false)
             }
             is DomainListState.Empty -> {}
-            is DomainListState.Error -> {}
+            is DomainListState.Error -> {
+                setLoaderStatus(false)
+            }
         }
     }
 
@@ -44,16 +51,12 @@ class DomainListFragment : Fragment(R.layout.fragment_domains_list) {
         domainListViewModel.setStateIntent(stateInstance)
     }
 
-    private fun showResultMassage(massage: String) {
-        Snackbar.make(requireView(), massage, Snackbar.LENGTH_SHORT).show()
-    }
-
     private fun updateAdapterData(domains: List<Domain>) {
         domainListAdapter.setContentData(domains)
-        update_swipe.isRefreshing = false
+        domainListViewBinding.updateSwipe.isRefreshing = false
 
-        if (fragments_list.adapter == null) {
-            fragments_list.adapter = domainListAdapter
+        if (domainListViewBinding.fragmentsList.adapter == null) {
+            domainListViewBinding.fragmentsList.adapter = domainListAdapter
         } else {
             domainListAdapter.notifyDataSetChanged()
         }
