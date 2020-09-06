@@ -4,29 +4,30 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.platdmit.domain.models.Server
 import com.platdmit.simplecloudmanager.R
+import com.platdmit.simplecloudmanager.base.extensions.showResultMessage
+import com.platdmit.simplecloudmanager.databinding.FragmentServersListBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_servers_list.*
 
 @AndroidEntryPoint
 class ServerListFragment : Fragment(R.layout.fragment_servers_list) {
     private val serverListViewModel: ServerListViewModel by viewModels()
+    private val serverListViewBinding: FragmentServersListBinding by viewBinding()
     private val serverListAdapter: ServerListAdapter = ServerListAdapter()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        update_swipe.setOnRefreshListener {
+        serverListViewBinding.updateSwipe.setOnRefreshListener {
             setStateInstance(ServerListViewModel.StateIntent.RefreshResult)
         }
-        fragments_list.layoutManager = LinearLayoutManager(context)
+        serverListViewBinding.fragmentsList.layoutManager = LinearLayoutManager(context)
 
-        serverListViewModel.serversStateLiveData.observe(viewLifecycleOwner, Observer { stateHandler(it) })
-        serverListViewModel.messageLiveData.observe(viewLifecycleOwner, Observer { showResultMassage(it) })
+        serverListViewModel.serversStateLiveData.observe(viewLifecycleOwner, { stateHandler(it) })
+        serverListViewModel.messageLiveData.observe(viewLifecycleOwner, { showResultMessage(it) })
     }
 
 
@@ -45,16 +46,11 @@ class ServerListFragment : Fragment(R.layout.fragment_servers_list) {
         serverListViewModel.setStateIntent(stateInstance)
     }
 
-
-    private fun showResultMassage(massage: String) {
-        Snackbar.make(requireView(), massage, Snackbar.LENGTH_SHORT).show()
-    }
-
     private fun updateAdapterData(servers: List<Server>) {
         serverListAdapter.setContentData(servers)
-        update_swipe.isRefreshing = false
-        if (fragments_list.adapter == null) {
-            fragments_list.adapter = serverListAdapter
+        serverListViewBinding.updateSwipe.isRefreshing = false
+        if (serverListViewBinding.fragmentsList.adapter == null) {
+            serverListViewBinding.fragmentsList.adapter = serverListAdapter
         } else {
             serverListAdapter.notifyDataSetChanged()
         }
