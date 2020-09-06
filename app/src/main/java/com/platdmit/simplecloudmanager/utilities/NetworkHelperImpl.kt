@@ -15,18 +15,17 @@ class NetworkHelperImpl @Inject constructor(
         var result = true
         val connectivityManager: ConnectivityManager? = context.getSystemService()
 
-        connectivityManager?.let {
+        connectivityManager?.run {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val capabilities = it.getNetworkCapabilities(it.activeNetwork)
+                val capabilities = getNetworkCapabilities(activeNetwork)
                 if (capabilities == null) {
                     result = false
                 }
             } else {
-                val activeNetwork = it.activeNetworkInfo
+                val activeNetwork = activeNetworkInfo
                 if (activeNetwork?.isConnectedOrConnecting == false) {
                     result = false
                 }
-
             }
         }
 
