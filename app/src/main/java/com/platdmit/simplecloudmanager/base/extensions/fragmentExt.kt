@@ -8,11 +8,15 @@ import com.platdmit.simplecloudmanager.utilities.UiVisibilityStatus
  * Base handler for alert messages
 **/
 fun Fragment.showResultMessage(message: String) {
-    Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
+    view?.let {
+        Snackbar.make(it, message, Snackbar.LENGTH_SHORT).show()
+    }
 }
 
 fun Fragment.showResultMessage(messageId: Int) {
-    Snackbar.make(requireView(), messageId, Snackbar.LENGTH_SHORT).show()
+    view?.let {
+        Snackbar.make(it, messageId, Snackbar.LENGTH_SHORT).show()
+    }
 }
 
 /**
