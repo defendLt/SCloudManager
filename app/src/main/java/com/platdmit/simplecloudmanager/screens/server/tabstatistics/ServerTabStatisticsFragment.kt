@@ -4,27 +4,28 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.platdmit.domain.models.ComplexChartsData
 import com.platdmit.simplecloudmanager.R
+import com.platdmit.simplecloudmanager.databinding.FragmentServerTabStatisticsBinding
 import com.platdmit.simplecloudmanager.screens.server.ServerTabFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_server_tab_statistics.*
 
 @AndroidEntryPoint
 class ServerTabStatisticsFragment(
         private val mTitle: String = "empty"
 ) : Fragment(R.layout.fragment_server_tab_statistics), ServerTabFragment<ServerTabStatisticsFragment> {
     private val statisticsViewModel: StatisticsViewModel by viewModels()
+    private val statisticsViewBinding: FragmentServerTabStatisticsBinding by viewBinding()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         chartStyleInit()
-        cpu_chart.setScaleEnabled(false)
-        ram_chart.setScaleEnabled(false)
+        statisticsViewBinding.cpuChart.setScaleEnabled(false)
+        statisticsViewBinding.ramChart.setScaleEnabled(false)
 
-        statisticsViewModel.statisticsStateLiveData.observe(viewLifecycleOwner, Observer { stateHandler(it) })
+        statisticsViewModel.statisticsStateLiveData.observe(viewLifecycleOwner, { stateHandler(it) })
     }
 
     override fun getTitle(): String {
@@ -53,18 +54,18 @@ class ServerTabStatisticsFragment(
 
     private fun updateCpuData(cpuData: ComplexChartsData) {
         try {
-            cpu_chart.data = cpuData.lineData
-            cpu_chart.xAxis.valueFormatter = cpuData.valueFormatter
-            cpu_chart.invalidate()
+            statisticsViewBinding.cpuChart.data = cpuData.lineData
+            statisticsViewBinding.cpuChart.xAxis.valueFormatter = cpuData.valueFormatter
+            statisticsViewBinding.cpuChart.invalidate()
         } catch (e: NullPointerException) {
         }
     }
 
     private fun updateRamData(ramData: ComplexChartsData) {
         try {
-            ram_chart.data = ramData.lineData
-            ram_chart.xAxis.valueFormatter = ramData.valueFormatter
-            ram_chart.invalidate()
+            statisticsViewBinding.ramChart.data = ramData.lineData
+            statisticsViewBinding.ramChart.xAxis.valueFormatter = ramData.valueFormatter
+            statisticsViewBinding.ramChart.invalidate()
         } catch (e: NullPointerException) {
         }
     }
@@ -74,21 +75,23 @@ class ServerTabStatisticsFragment(
             val chartDataColor = requireContext().getColor(R.color.colorBaseLight)
             val chartDescString = resources.getString(R.string.chart_cpu_desc)
 
-            cpu_chart.description.text = chartDescString
-            cpu_chart.description.textColor = chartDataColor
-            cpu_chart.legend.isEnabled = false
-            cpu_chart.xAxis.textColor = chartDataColor
-            cpu_chart.axisLeft.textColor = chartDataColor
+            statisticsViewBinding.cpuChart.run {
+                description.text = chartDescString
+                description.textColor = chartDataColor
+                legend.isEnabled = false
+                xAxis.textColor = chartDataColor
+                axisLeft.textColor = chartDataColor
+                animateXY(3000, 3000)
+            }
 
-            ram_chart.description.text = chartDescString
-            ram_chart.description.textColor = chartDataColor
-            ram_chart.legend.isEnabled = false
-            ram_chart.xAxis.textColor = chartDataColor
-            ram_chart.axisLeft.textColor = chartDataColor
-
-            cpu_chart.animateXY(3000, 3000)
-            ram_chart.animateXY(3000, 3000)
-
+            statisticsViewBinding.ramChart.run {
+                description.text = chartDescString
+                description.textColor = chartDataColor
+                legend.isEnabled = false
+                xAxis.textColor = chartDataColor
+                axisLeft.textColor = chartDataColor
+                animateXY(3000, 3000)
+            }
         } catch (e: NullPointerException) {
         }
     }
