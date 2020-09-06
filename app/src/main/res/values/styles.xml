@@ -79,6 +79,12 @@
         <item name="android:layout_marginEnd">10dp</item>
     </style>
 
+    <style name="BaseListItem.Profile">
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginEnd">10dp</item>
+    </style>
+
 
     <style name="DomainRecordListTitle">
         <item name="android:textColor">@color/colorBaseWhite</item>

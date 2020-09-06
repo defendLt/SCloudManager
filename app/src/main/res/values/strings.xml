@@ -59,5 +59,10 @@
     <string name="data_empty_la_title">Дисковое хранилище</string>
     <string name="data_empty_name">server_name</string>
     <string name="data_empty_uptime">"Uptime: 3555д. 7ч. "</string>
-    <string name="top_menu_settings">Параметры аккаунта</string>
+    <string name="top_menu_settings">Настройки</string>
+    <string name="top_menu_account">Профиль</string>
+    <string name="error_empty">Нет данных</string>
+    <string name="error_fall_connect">Нет доступа к сети</string>
+    <string name="error_fall_auth">Ошибка авторизации</string>
+    <string name="error_fall_request">Ошибка ответа сервера</string>
 </resources>
