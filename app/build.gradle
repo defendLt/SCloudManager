@@ -33,6 +33,10 @@ android {
         }
     }
 
+    buildFeatures {
+        viewBinding = true
+    }
+
 }
 
 dependencies {
@@ -110,6 +114,9 @@ dependencies {
 
     // Charts
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    //View Binding Delegate
+    implementation 'com.kirich1409.viewbindingpropertydelegate:viewbindingpropertydelegate:1.0.0'
 
     // jBCrypt
     implementation 'com.github.jeremyh:jBCrypt:jbcrypt-0.4'
