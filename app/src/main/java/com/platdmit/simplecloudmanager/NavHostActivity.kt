@@ -3,7 +3,6 @@ package com.platdmit.simplecloudmanager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -11,6 +10,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.platdmit.simplecloudmanager.base.extensions.visibleStat
 import com.platdmit.simplecloudmanager.databinding.ActivityMainBinding
 import com.platdmit.simplecloudmanager.screens.main.MainViewModel
 import com.platdmit.simplecloudmanager.utilities.UiVisibilityStatus
@@ -66,20 +66,14 @@ class NavHostActivity : AppCompatActivity(R.layout.activity_main), UiVisibilityS
     }
 
     override fun setVisibilityToolbar(status: Boolean) {
-        if (status) {
-            viewBinding.toolbar.visibility = View.VISIBLE
-        } else viewBinding.toolbar.visibility = View.GONE
+        viewBinding.toolbar.visibleStat(status)
     }
 
     override fun setVisibilityNavigation(status: Boolean) {
-        if (status) {
-            viewBinding.bottomNav.visibility = View.VISIBLE
-        } else viewBinding.bottomNav.visibility = View.GONE
+        viewBinding.bottomNav.visibleStat(status)
     }
 
     override fun setVisibilityLoader(status: Boolean) {
-        if (status) {
-            viewBinding.loaderHover.visibility = View.VISIBLE
-        } else viewBinding.loaderHover.visibility = View.GONE
+        viewBinding.loaderHover.visibleStat(status)
     }
 }
