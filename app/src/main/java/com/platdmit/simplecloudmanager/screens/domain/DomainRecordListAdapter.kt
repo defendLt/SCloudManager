@@ -2,19 +2,18 @@ package com.platdmit.simplecloudmanager.screens.domain
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.platdmit.simplecloudmanager.R
-import com.platdmit.simplecloudmanager.screens.domain.DomainRecordListAdapter.DomainRecordListHolder
 import com.platdmit.domain.models.DomainRecord
+import com.platdmit.simplecloudmanager.databinding.FragmentDrecordListItemBinding
+import com.platdmit.simplecloudmanager.screens.domain.DomainRecordListAdapter.DomainRecordListHolder
 
 class DomainRecordListAdapter : RecyclerView.Adapter<DomainRecordListHolder>() {
     private val elementList: MutableList<DomainRecord> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DomainRecordListHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val layoutType = R.layout.fragment_drecord_list_item
-        return DomainRecordListHolder(layoutInflater, parent, layoutType)
+        val viewBinding = FragmentDrecordListItemBinding.inflate(layoutInflater, parent, false)
+        return DomainRecordListHolder(viewBinding)
     }
 
     override fun onBindViewHolder(holder: DomainRecordListHolder, position: Int) {
@@ -30,18 +29,13 @@ class DomainRecordListAdapter : RecyclerView.Adapter<DomainRecordListHolder>() {
         elementList.addAll(elements)
     }
 
-    inner class DomainRecordListHolder(inflater: LayoutInflater, parent: ViewGroup?, layoutType: Int) : RecyclerView.ViewHolder(inflater.inflate(layoutType, parent, false)) {
-        private val mHost = itemView.findViewById<TextView>(R.id.record_host)
-        private val mType = itemView.findViewById<TextView>(R.id.record_type)
-        private val mTtl = itemView.findViewById<TextView>(R.id.record_ttl)
-        private val mPriority = itemView.findViewById<TextView>(R.id.record_priority)
-        private val mData = itemView.findViewById<TextView>(R.id.record_data)
+    inner class DomainRecordListHolder(private val viewBinding: FragmentDrecordListItemBinding) : RecyclerView.ViewHolder(viewBinding.root) {
         fun bindData(data: DomainRecord) {
-            mHost.text = data.name
-            mType.text = data.type
-            mData.text = data.data
-            mPriority.text = data.priority
-            mTtl.text = data.ttl
+            viewBinding.recordHost.text = data.name
+            viewBinding.recordType.text = data.type
+            viewBinding.recordData.text = data.data
+            viewBinding.recordPriority.text = data.priority
+            viewBinding.recordData.text = data.ttl
         }
     }
 }

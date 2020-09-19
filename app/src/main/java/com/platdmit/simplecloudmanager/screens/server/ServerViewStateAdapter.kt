@@ -9,7 +9,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 class ServerViewStateAdapter(
         fragmentManager: FragmentManager,
         val lifecycle: Lifecycle,
-        val serverId: Long,
+        private val serverId: Long,
         private val serverTabFragments: List<ServerTabFragment<out Fragment>>
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 

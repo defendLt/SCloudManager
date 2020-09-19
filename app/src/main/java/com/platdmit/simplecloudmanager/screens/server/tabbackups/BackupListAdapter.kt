@@ -2,19 +2,18 @@ package com.platdmit.simplecloudmanager.screens.server.tabbackups
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.platdmit.simplecloudmanager.R
-import com.platdmit.simplecloudmanager.screens.server.tabbackups.BackupListAdapter.BackupListHolder
 import com.platdmit.domain.models.Backup
+import com.platdmit.simplecloudmanager.databinding.FragmentBackupItemBinding
+import com.platdmit.simplecloudmanager.screens.server.tabbackups.BackupListAdapter.BackupListHolder
 
 class BackupListAdapter : RecyclerView.Adapter<BackupListHolder>() {
     private val elementList: MutableList<Backup> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BackupListHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val layoutType = R.layout.fragment_backup_item
-        return BackupListHolder(layoutInflater, parent, layoutType)
+        val viewBinding = FragmentBackupItemBinding.inflate(layoutInflater, parent, false)
+        return BackupListHolder(viewBinding)
     }
 
     override fun onBindViewHolder(holder: BackupListHolder, position: Int) {
@@ -30,19 +29,17 @@ class BackupListAdapter : RecyclerView.Adapter<BackupListHolder>() {
         elementList.addAll(elements)
     }
 
-    inner class BackupListHolder(inflater: LayoutInflater, parent: ViewGroup?, layoutType: Int) : RecyclerView.ViewHolder(inflater.inflate(layoutType, parent, false)) {
-        private val mId = itemView.findViewById<TextView>(R.id.backup_id)
-        private val mDate = itemView.findViewById<TextView>(R.id.backup_date)
-        private val mOs = itemView.findViewById<TextView>(R.id.backup_oc)
-        private val mSize = itemView.findViewById<TextView>(R.id.backup_size)
-        private val mPrice = itemView.findViewById<TextView>(R.id.backup_price)
-
+    inner class BackupListHolder(
+            val viewBinding: FragmentBackupItemBinding
+    ) : RecyclerView.ViewHolder(viewBinding.root) {
         fun bindData(data: Backup) {
-            mId.text = data.id.toString()
-            mDate.text = data.createdAt
-            mOs.text = data.distribution
-            mSize.text = data.minDiskSize
-            mPrice.text = data.priceHourly
+            viewBinding.run {
+                backupId.text = data.id.toString()
+                backupDate.text = data.createdAt
+                backupOc.text = data.distribution
+                backupSize.text = data.minDiskSize
+                backupPrice.text = data.priceHourly
+            }
         }
     }
 }
