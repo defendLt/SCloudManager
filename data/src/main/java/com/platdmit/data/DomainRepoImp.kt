@@ -12,7 +12,7 @@ import com.platdmit.domain.utilities.UpdateScheduleService
 import com.platdmit.domain.models.Domain
 import com.platdmit.domain.models.DomainRecord
 import com.platdmit.domain.repositories.DomainBaseRepo
-import com.platdmit.domain.repositories.api.ApiDomainRepo
+import com.platdmit.data.retrofit.ApiDomainRepo
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers

@@ -1,6 +1,6 @@
 package com.platdmit.data
 
-import com.platdmit.domain.repositories.api.ApiServerRepo
+import com.platdmit.data.retrofit.ApiServerRepo
 import com.platdmit.data.retrofit.models.*
 import com.platdmit.data.room.dao.*
 import com.platdmit.data.room.entity.*

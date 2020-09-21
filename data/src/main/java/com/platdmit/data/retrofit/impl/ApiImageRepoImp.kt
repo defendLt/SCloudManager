@@ -1,6 +1,6 @@
-package com.platdmit.data.retrofit
+package com.platdmit.data.retrofit.impl
 
-import com.platdmit.domain.repositories.api.ApiImageRepo
+import com.platdmit.data.retrofit.ApiImageRepo
 import com.platdmit.data.retrofit.models.ApiImage
 import com.platdmit.data.retrofit.rest.RestImage
 import io.reactivex.rxjava3.core.Single

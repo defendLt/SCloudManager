@@ -1,6 +1,6 @@
-package com.platdmit.data.retrofit
+package com.platdmit.data.retrofit.impl
 
-import com.platdmit.domain.repositories.api.ApiAccountRepo
+import com.platdmit.data.retrofit.ApiAccountRepo
 import com.platdmit.data.retrofit.models.ApiAccount
 import com.platdmit.data.retrofit.models.ApiAuth
 import com.platdmit.data.retrofit.rest.RestAccount

@@ -1,6 +1,6 @@
-package com.platdmit.data.retrofit
+package com.platdmit.data.retrofit.impl
 
-import com.platdmit.domain.repositories.api.ApiSizeRepo
+import com.platdmit.data.retrofit.ApiSizeRepo
 import com.platdmit.data.retrofit.models.ApiSize
 import com.platdmit.data.retrofit.rest.RestSize
 import io.reactivex.rxjava3.core.Single

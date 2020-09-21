@@ -4,9 +4,9 @@ import com.platdmit.data.AccountRepoImp
 import com.platdmit.data.DomainRepoImp
 import com.platdmit.data.ServerRepoImp
 import com.platdmit.data.UpdateScheduleRepImp
-import com.platdmit.data.retrofit.ApiAccountRepoImp
-import com.platdmit.data.retrofit.ApiDomainRepoImp
-import com.platdmit.data.retrofit.ApiServerRepoImp
+import com.platdmit.data.retrofit.impl.ApiAccountRepoImp
+import com.platdmit.data.retrofit.impl.ApiDomainRepoImp
+import com.platdmit.data.retrofit.impl.ApiServerRepoImp
 import com.platdmit.data.converters.*
 import com.platdmit.data.room.dao.*
 import com.platdmit.domain.utilities.UpdateScheduleService
@@ -19,6 +19,15 @@ import dagger.hilt.android.components.ApplicationComponent
 @Module
 @InstallIn(ApplicationComponent::class)
 object RepositoryModule {
+
+    @Provides
+    fun provideAuthRepo(
+            apiAccountRepo: ApiAccountRepoImp,
+            accountDao: AccountDao,
+            accountConverter: AccountConvertImp
+    ): AuthRepo {
+        return AccountRepoImp(apiAccountRepo, accountDao, accountConverter)
+    }
 
     @Provides
     fun provideAccountRepo(

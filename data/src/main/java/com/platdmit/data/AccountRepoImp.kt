@@ -1,6 +1,6 @@
 package com.platdmit.data
 
-import com.platdmit.domain.repositories.api.ApiAccountRepo
+import com.platdmit.data.retrofit.ApiAccountRepo
 import com.platdmit.data.retrofit.models.ApiAccount
 import com.platdmit.data.retrofit.models.ApiAuth
 import com.platdmit.data.room.dao.AccountDao
@@ -8,6 +8,7 @@ import com.platdmit.data.room.entity.DbAccount
 import com.platdmit.domain.converters.AccountConverter
 import com.platdmit.domain.models.UserAccount
 import com.platdmit.domain.repositories.AccountRepo
+import com.platdmit.domain.repositories.AuthRepo
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
@@ -18,7 +19,7 @@ class AccountRepoImp(
         private val apiAccountRepo: ApiAccountRepo<ApiAuth, ApiAccount>,
         private val accountDao: AccountDao,
         private val accountConverter: AccountConverter<ApiAccount, UserAccount, DbAccount>
-) : AccountRepo {
+) : AccountRepo, AuthRepo {
 
     override fun getActiveAccount(): Single<UserAccount> {
         return Single.create {
@@ -53,5 +54,13 @@ class AccountRepoImp(
             accountDao.insert(dbAccount)
             it.onComplete()
         }.doOnError {println(it.message) }
+    }
+
+    override fun getApiKey(userAccount: UserAccount): Single<String> {
+        return apiAccountRepo.getApiKey(userAccount.login, userAccount.pass)
+                .subscribeOn(Schedulers.newThread())
+                .map { it.sessionKey }
+                .doOnError { println(it.message) }
+                .observeOn(AndroidSchedulers.mainThread())
     }
 }

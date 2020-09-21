@@ -1,24 +1,23 @@
-package com.platdmit.data.retrofit
+package com.platdmit.data.retrofit.impl
 
-import com.platdmit.domain.repositories.api.ApiDomainRepo
-import com.platdmit.data.retrofit.models.ApiDomain
-import com.platdmit.data.retrofit.models.ApiDomainRecord
-import com.platdmit.data.retrofit.rest.RestDomain
+import com.platdmit.data.retrofit.ApiServerRepo
+import com.platdmit.data.retrofit.models.*
+import com.platdmit.data.retrofit.rest.RestServer
 import io.reactivex.rxjava3.core.Single
 import java.io.IOException
 
-class ApiDomainRepoImp(
-        private val restDomain: RestDomain
-) : ApiDomainRepo<ApiDomain, ApiDomainRecord> {
-    private val TAG = ApiDomainRepoImp::class.java.simpleName
+class ApiServerRepoImp(
+        private val restServer: RestServer
+) : ApiServerRepo<ApiServer, ApiAction, ApiStatistic, ApiBackup, ApiLoadAverage> {
+    private val TAG = ApiServerRepoImp::class.java.simpleName
 
-    override fun getDomains(): Single<List<ApiDomain>> {
+    override fun getServers(): Single<List<ApiServer>> {
         return Single.create {
             try {
-                val response = restDomain.getDomains().execute()
+                val response = restServer.getServers().execute()
                 if (response.isSuccessful) {
                     val apiRequestBody = response.body()
-                    it.onSuccess(apiRequestBody!!.domains)
+                    it.onSuccess(apiRequestBody!!.servers)
                 } else {
                     throw Throwable(response.message())
                 }
@@ -31,13 +30,13 @@ class ApiDomainRepoImp(
         }
     }
 
-    override fun getDomain(domainId: Long): Single<ApiDomain> {
+    override fun getServerActions(serverId: Long): Single<List<ApiAction>> {
         return Single.create {
             try {
-                val response = restDomain.getDomain(domainId).execute()
+                val response = restServer.getServerActions(serverId).execute()
                 if (response.isSuccessful) {
                     val apiRequestBody = response.body()
-                    it.onSuccess(apiRequestBody!!.domain)
+                    it.onSuccess(apiRequestBody!!.actions)
                 } else {
                     throw Throwable(response.message())
                 }
@@ -50,13 +49,13 @@ class ApiDomainRepoImp(
         }
     }
 
-    override fun getDomainRecords(domainId: Long): Single<List<ApiDomainRecord>> {
+    override fun getServerStatistics(serverId: Long): Single<List<ApiStatistic>> {
         return Single.create {
             try {
-                val response = restDomain.getDomainRecords(domainId).execute()
+                val response = restServer.getServerStatistics(serverId).execute()
                 if (response.isSuccessful) {
                     val apiRequestBody = response.body()
-                    it.onSuccess(apiRequestBody!!.domainRecords)
+                    it.onSuccess(apiRequestBody!!.statistics)
                 } else {
                     throw Throwable(response.message())
                 }
@@ -69,13 +68,32 @@ class ApiDomainRepoImp(
         }
     }
 
-    override fun getDomainRecord(domainId: Int, recordId: Int): Single<ApiDomainRecord> {
+    override fun getServerBackups(serverId: Long): Single<List<ApiBackup>> {
         return Single.create {
             try {
-                val response = restDomain.getDomain(domainId.toLong()).execute()
+                val response = restServer.getServerBackups(serverId).execute()
                 if (response.isSuccessful) {
                     val apiRequestBody = response.body()
-                    it.onSuccess(apiRequestBody!!.domainRecord)
+                    it.onSuccess(apiRequestBody!!.backups)
+                } else {
+                    throw Throwable(response.message())
+                }
+            } catch (e: IOException) {
+                println(TAG + e.localizedMessage)
+            } catch (e: Exception) {
+                println(TAG + e.localizedMessage)
+                it.onError(e)
+            }
+        }
+    }
+
+    override fun getServerLoadAverage(serverId: Long): Single<ApiLoadAverage> {
+        return Single.create {
+            try {
+                val response = restServer.getServerLoadAverage(serverId).execute()
+                if (response.isSuccessful) {
+                    val apiRequestBody = response.body()
+                    it.onSuccess(apiRequestBody!!.loadAverage)
                 } else {
                     throw Throwable(response.message())
                 }

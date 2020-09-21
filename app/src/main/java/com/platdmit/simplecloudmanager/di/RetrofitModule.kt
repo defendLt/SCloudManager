@@ -1,6 +1,6 @@
 package com.platdmit.simplecloudmanager.di
 
-import com.platdmit.data.retrofit.*
+import com.platdmit.data.retrofit.impl.*
 import com.platdmit.data.retrofit.rest.*
 import com.platdmit.domain.utilities.ActualApiKeyService
 import dagger.Module
