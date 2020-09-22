@@ -22,13 +22,15 @@ class DomainListFragment : Fragment(R.layout.fragment_domains_list){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        domainListViewBinding.fragmentsList.layoutManager = LinearLayoutManager(context)
-        domainListViewBinding.updateSwipe.setOnRefreshListener{
-            setStateInstance(DomainListViewModel.StateIntent.RefreshResult)
+        domainListViewBinding.run {
+            fragmentsList.layoutManager = LinearLayoutManager(context)
+
+            updateSwipe.setOnRefreshListener{
+                setStateInstance(DomainListViewModel.StateIntent.RefreshResult)
+            }
         }
 
-        domainListViewModel.domainsStateLiveData.observe(viewLifecycleOwner, {stateHandler(it)})
-        domainListViewModel.messageLiveData.observe(viewLifecycleOwner, {showResultMessage(it)})
+        domainListViewModel.domainsStateLiveData.observe(viewLifecycleOwner, ::stateHandler)
     }
 
     private fun stateHandler(domainListState: DomainListState){
@@ -52,13 +54,13 @@ class DomainListFragment : Fragment(R.layout.fragment_domains_list){
     }
 
     private fun updateAdapterData(domains: List<Domain>) {
-        domainListAdapter.setContentData(domains)
-        domainListViewBinding.updateSwipe.isRefreshing = false
+        domainListViewBinding.run {
+            updateSwipe.isRefreshing = false
 
-        if (domainListViewBinding.fragmentsList.adapter == null) {
-            domainListViewBinding.fragmentsList.adapter = domainListAdapter
-        } else {
-            domainListAdapter.notifyDataSetChanged()
+            if (fragmentsList.adapter == null) {
+                fragmentsList.adapter = domainListAdapter
+            }
         }
+        domainListAdapter.setContentData(domains)
     }
 }

@@ -30,10 +30,11 @@ class DomainListAdapter : RecyclerView.Adapter<DomainListHolder>() {
     fun setContentData(elements: List<Domain>) {
         elementList.clear()
         elementList.addAll(elements)
+        notifyDataSetChanged()
     }
 
     inner class DomainListHolder(
-            val viewBinding: FragmentDomainsItemBinding
+            private val viewBinding: FragmentDomainsItemBinding
     ) : RecyclerView.ViewHolder(viewBinding.root) {
         fun bindData(data: Domain) {
             viewBinding.run {
