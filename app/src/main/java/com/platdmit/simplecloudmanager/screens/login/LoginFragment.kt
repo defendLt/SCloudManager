@@ -16,6 +16,7 @@ import com.platdmit.domain.BuildConfig
 import com.platdmit.simplecloudmanager.R
 import com.platdmit.simplecloudmanager.base.extensions.setLoaderStatus
 import com.platdmit.simplecloudmanager.base.extensions.showResultMessage
+import com.platdmit.simplecloudmanager.base.extensions.toComposite
 import com.platdmit.simplecloudmanager.base.extensions.visibleStat
 import com.platdmit.simplecloudmanager.databinding.FragmentLoginBinding
 import com.platdmit.simplecloudmanager.utilities.ErrorMassageHandler
@@ -110,9 +111,7 @@ class LoginFragment : Fragment(R.layout.fragment_login){
                 authSuccess()
             }
             is LoginState.Error -> {
-                showResultMessage(
-                        errorMassageHandler.getMessageId(loginState.errorType)
-                )
+                showResultMessage(errorMassageHandler.getMessageId(loginState.errorType))
             }
             is LoginState.Loading -> {
                 setLoaderStatus(true)
@@ -125,43 +124,43 @@ class LoginFragment : Fragment(R.layout.fragment_login){
     }
 
     private fun pinFormInit(isNew: Boolean) {
-        if (isNew) {
-            loginViewBinding.pinLayoutTitle.setText(R.string.pin_layout_title_new)
-            compositeDisposable.add(
-                    loginViewBinding.userPinCode.textChanges()
-                            .filter { it.toString().length == 4 }
-                            .map { it.toString() }
-                            .subscribe {
-                                setStateIntent(
-                                        LoginViewModel.StateIntent.NewAccountPin(it)
-                                )
-                            }
-            )
-        } else {
-            compositeDisposable.add(
-                    loginViewBinding.userPinCode.textChanges()
-                            .filter { it.toString().length == 4 }
-                            .map { it.toString() }
-                            .subscribe {
-                                setStateIntent(
-                                        LoginViewModel.StateIntent.CheckAccountPin(it)
-                                )
-                            }
-            )
+        loginViewBinding.run {
+            if (isNew) {
+                pinLayoutTitle.setText(R.string.pin_layout_title_new)
+                userPinCode.textChanges()
+                        .filter { it.toString().length == 4 }
+                        .map { it.toString() }
+                        .subscribe {
+                            setStateIntent(
+                                    LoginViewModel.StateIntent.NewAccountPin(it)
+                            )
+                        }.toComposite(compositeDisposable)
+            } else {
+                userPinCode.textChanges()
+                        .filter { it.toString().length == 4 }
+                        .map { it.toString() }
+                        .subscribe {
+                            setStateIntent(
+                                    LoginViewModel.StateIntent.CheckAccountPin(it)
+                            )
+                        }.toComposite(compositeDisposable)
+            }
+            pinLayout.visibleStat(true)
+            userPinCode.requestFocus()
+            inputMethodManager?.showSoftInput(userPinCode, InputMethodManager.SHOW_IMPLICIT)
         }
-        loginViewBinding.pinLayout.visibleStat(true)
-        loginViewBinding.userPinCode.requestFocus()
-        inputMethodManager?.showSoftInput(loginViewBinding.userPinCode, InputMethodManager.SHOW_IMPLICIT)
     }
 
     private fun loginFormInit() {
-        loginViewBinding.loginLayout.visibleStat(true)
-        compositeDisposable.add(Observable.combineLatest(
-                loginViewBinding.userLogin.textChanges(),
-                loginViewBinding.userPass.textChanges(),
-                { login: CharSequence, pass: CharSequence -> login.isNotEmpty() && pass.isNotEmpty() })
-                .subscribe { loginViewBinding.formSubmit.isEnabled = it }
-        )
+        loginViewBinding.run {
+            loginLayout.visibleStat(true)
+            Observable.combineLatest(
+                    userLogin.textChanges(),
+                    userPass.textChanges(),
+                    { login: CharSequence, pass: CharSequence -> login.isNotEmpty() && pass.isNotEmpty() })
+                    .subscribe { formSubmit.isEnabled = it }
+                    .toComposite(compositeDisposable)
+        }
     }
 
     private fun authSuccess() {

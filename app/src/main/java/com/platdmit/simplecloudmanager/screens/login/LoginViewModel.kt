@@ -8,6 +8,7 @@ import com.platdmit.domain.enums.ErrorType
 import com.platdmit.domain.models.UserAccount
 import com.platdmit.domain.usecase.LoginUseCase
 import com.platdmit.simplecloudmanager.base.BaseViewModel
+import com.platdmit.simplecloudmanager.base.extensions.toComposite
 import com.platdmit.simplecloudmanager.utilities.NetworkHelper
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -53,20 +54,18 @@ constructor(
 
     private fun initAccountData(){
         if(networkHelper.getNetworkStatus()) {
-            compositeDisposable.add(
-                    loginUseCase.getActiveAccount()
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe({
-                                if (it.pin.isEmpty()) {
-                                    stateProvider.onNext(LoginState.UserNeedPin)
-                                } else {
-                                    userAccount = it
-                                    stateProvider.onNext(LoginState.ActiveUserYes)
-                                }
-                            }, {
-                                stateProvider.onNext(LoginState.ActiveUserNo)
-                            })
-            )
+            loginUseCase.getActiveAccount()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        if (it.pin.isEmpty()) {
+                            stateProvider.onNext(LoginState.UserNeedPin)
+                        } else {
+                            userAccount = it
+                            stateProvider.onNext(LoginState.ActiveUserYes)
+                        }
+                    }, {
+                        stateProvider.onNext(LoginState.ActiveUserNo)
+                    }).toComposite(compositeDisposable)
         } else {
             stateProvider.onNext(
                     LoginState.Error(ErrorType.FALL_CONNECT)
@@ -75,59 +74,49 @@ constructor(
     }
 
     private fun addNewAccount(login: String, pass: String) {
-        compositeDisposable.add(
-                loginUseCase.addAccount(login, pass)
-                        .subscribe({
-                            userAccount = it
-                            stateProvider.onNext(LoginState.UserNeedPin)
-                        }, {
-                            stateProvider.onNext(LoginState.AuthInvalid)
-                        })
-        )
+        loginUseCase.addAccount(login, pass)
+                .subscribe({
+                    userAccount = it
+                    stateProvider.onNext(LoginState.UserNeedPin)
+                }, {
+                    stateProvider.onNext(LoginState.AuthInvalid)
+                }).toComposite(compositeDisposable)
     }
 
     private fun addNewAccountPin(pin: String) {
         userAccount.pin = pin
-        compositeDisposable.add(
-                loginUseCase.addAccountPin(userAccount)
-                        .subscribe ({
-                            stateProvider.onNext(LoginState.Success)
-                        }, {
-                            stateProvider.onNext(LoginState.Error(ErrorType.FALL_AUTH))
-                        })
-        )
+        loginUseCase.addAccountPin(userAccount)
+                .subscribe({
+                    stateProvider.onNext(LoginState.Success)
+                }, {
+                    stateProvider.onNext(LoginState.Error(ErrorType.FALL_AUTH))
+                }).toComposite(compositeDisposable)
     }
 
     private fun checkAccountPin(pin: String?) {
-        compositeDisposable.add(
-                loginUseCase.checkAccountPin(pin, userAccount)
-                        .observeOn(Schedulers.newThread())
-                        .subscribe({
-                            successAuth()
-                        }, {
-                            stateProvider.onNext(LoginState.PinInvalid)
-                        })
-        )
+        loginUseCase.checkAccountPin(pin, userAccount)
+                .observeOn(Schedulers.newThread())
+                .subscribe({
+                    successAuth()
+                }, {
+                    stateProvider.onNext(LoginState.PinInvalid)
+                }).toComposite(compositeDisposable)
     }
 
     private fun successAuth() {
-        compositeDisposable.add(
-                loginUseCase.successAuthAccount()
-                        .observeOn(Schedulers.newThread())
-                        .onErrorComplete()
-                        .subscribe {
-                            stateProvider.onNext(LoginState.Success)
-                        }
-        )
+        loginUseCase.successAuthAccount()
+                .observeOn(Schedulers.newThread())
+                .onErrorComplete()
+                .subscribe {
+                    stateProvider.onNext(LoginState.Success)
+                }.toComposite(compositeDisposable)
     }
 
     private fun onDemoAccount() {
-        compositeDisposable.add(
-                loginUseCase.startDemoAccount()
-                        .subscribe {
-                            stateProvider.onNext(LoginState.OnDemo)
-                        }
-        )
+        loginUseCase.startDemoAccount()
+                .subscribe {
+                    stateProvider.onNext(LoginState.OnDemo)
+                }.toComposite(compositeDisposable)
     }
 
     sealed class StateIntent {
