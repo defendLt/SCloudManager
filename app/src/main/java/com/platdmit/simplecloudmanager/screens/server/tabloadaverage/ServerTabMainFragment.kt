@@ -14,7 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ServerTabMainFragment(
-        private val mTitle: String = "empty"
+        private val title: String = "empty"
 ) : Fragment(R.layout.fragment_server_tab_main), ServerTabFragment<ServerTabMainFragment> {
     private val loadAverageViewModel: LoadAverageViewModel by viewModels()
     private val loadAverageViewBinding: FragmentServerTabMainBinding by viewBinding()
@@ -24,12 +24,10 @@ class ServerTabMainFragment(
         super.onViewCreated(view, savedInstanceState)
 
         loadAverageViewBinding.serverLoadAverage.layoutManager = LinearLayoutManager(context)
-        loadAverageViewModel.loadAverageStateLiveData.observe(viewLifecycleOwner, { stateHandler(it) })
+        loadAverageViewModel.loadAverageStateLiveData.observe(viewLifecycleOwner, ::stateHandler)
     }
 
-    override fun getTitle(): String {
-        return mTitle
-    }
+    override fun getTitle(): String = title
 
     override fun getInstance(): ServerTabMainFragment {
         return ServerTabMainFragment()
@@ -51,11 +49,9 @@ class ServerTabMainFragment(
     }
 
     private fun updateServerLoadAverageData(loadAverages: List<LoadAverage>) {
-        loadAverageListAdapter.setContentData(loadAverages)
         if (loadAverageViewBinding.serverLoadAverage.adapter == null) {
             loadAverageViewBinding.serverLoadAverage.adapter = loadAverageListAdapter
-        } else {
-            loadAverageListAdapter.notifyDataSetChanged()
         }
+        loadAverageListAdapter.setContentData(loadAverages)
     }
 }

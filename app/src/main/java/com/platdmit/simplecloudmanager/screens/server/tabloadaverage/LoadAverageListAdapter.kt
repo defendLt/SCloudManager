@@ -20,13 +20,12 @@ class LoadAverageListAdapter : RecyclerView.Adapter<LoadAverageListHolder>() {
         holder.bindData(elementList[position])
     }
 
-    override fun getItemCount(): Int {
-        return elementList.size
-    }
+    override fun getItemCount(): Int = elementList.size
 
     fun setContentData(elements: List<LoadAverage>) {
         elementList.clear()
         elementList.addAll(elements)
+        notifyDataSetChanged()
     }
 
     inner class LoadAverageListHolder(

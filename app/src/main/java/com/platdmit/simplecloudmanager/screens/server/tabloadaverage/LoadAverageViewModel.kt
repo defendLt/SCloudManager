@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.SavedStateHandle
 import com.platdmit.domain.repositories.ServerLoadAveragesRepo
 import com.platdmit.simplecloudmanager.base.BaseViewModel
+import com.platdmit.simplecloudmanager.base.extensions.toComposite
 
 class LoadAverageViewModel
 @ViewModelInject
@@ -14,7 +15,6 @@ constructor(
         @Assisted private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel<LoadAverageState>() {
     val loadAverageStateLiveData = LiveDataReactiveStreams.fromPublisher(stateProvider)
-    val messageLiveData = LiveDataReactiveStreams.fromPublisher(messageProvider)
 
     init {
         stateProvider.onNext(LoadAverageState.Loading)
@@ -34,14 +34,12 @@ constructor(
 
     private fun setActiveId(id: Long){
         //Fast fix for prevent overSubscription after resize
-        compositeDisposable.add(
-                serverLoadAveragesRepo.getServerLoadAverages(id)
-                        .subscribe ({
-                            stateProvider.onNext(LoadAverageState.Success(it))
-                        },{
-                            stateProvider.onNext(LoadAverageState.Error)
-                        })
-        )
+        serverLoadAveragesRepo.getServerLoadAverages(id)
+                .subscribe ({
+                    stateProvider.onNext(LoadAverageState.Success(it))
+                },{
+                    stateProvider.onNext(LoadAverageState.Error)
+                }).toComposite(compositeDisposable)
     }
 
     sealed class StateIntent {
