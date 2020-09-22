@@ -13,11 +13,7 @@ class ServerViewStateAdapter(
         private val serverTabFragments: List<ServerTabFragment<out Fragment>>
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
-    private val tabCount : Int = serverTabFragments.size
-
-    override fun getItemCount(): Int {
-        return tabCount
-    }
+    override fun getItemCount(): Int = serverTabFragments.size
 
     override fun createFragment(position: Int): Fragment {
         val fragment : Fragment = serverTabFragments[position].getInstance();
@@ -31,7 +27,7 @@ class ServerViewStateAdapter(
         private val serverTabFragments : MutableList<ServerTabFragment<out Fragment>> = ArrayList();
 
         fun add(serverTabFragment: ServerTabFragment<out Fragment>): Companion {
-            serverTabFragments.add  (serverTabFragment);
+            serverTabFragments.add  (serverTabFragment)
             return this
         }
 

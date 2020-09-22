@@ -11,6 +11,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.tabs.TabLayoutMediator.TabConfigurationStrategy
 import com.platdmit.domain.models.Server
 import com.platdmit.simplecloudmanager.R
+import com.platdmit.simplecloudmanager.base.extensions.setLoaderStatus
 import com.platdmit.simplecloudmanager.databinding.FragmentServerBinding
 import com.platdmit.simplecloudmanager.screens.server.tabactions.ServerTabActionsFragment
 import com.platdmit.simplecloudmanager.screens.server.tabbackups.ServerTabBackupsFragment
@@ -26,7 +27,7 @@ class ServerFragment : Fragment(R.layout.fragment_server) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        serverViewModel.serverStateLiveData.observe(viewLifecycleOwner, { stateHandler(it) })
+        serverViewModel.serverStateLiveData.observe(viewLifecycleOwner, ::stateHandler)
 
         val serverViewPagerAdapter = ServerViewStateAdapter
                 .add(ServerTabMainFragment(resources.getString(R.string.server_tab_main)))
@@ -45,8 +46,11 @@ class ServerFragment : Fragment(R.layout.fragment_server) {
 
     private fun stateHandler(serverState: ServerState){
         when(serverState){
-            is ServerState.Loading -> {}
+            is ServerState.Loading -> {
+                setLoaderStatus(true)
+            }
             is ServerState.Success -> {
+                setLoaderStatus(false)
                 initData(serverState.server)
             }
             is ServerState.Empty -> {}
@@ -60,14 +64,14 @@ class ServerFragment : Fragment(R.layout.fragment_server) {
 
     @SuppressLint("SetTextI18n")
     private fun initData(server: Server) {
-        server.run {
-            serverViewBinding.serverImageName.text = name
-            serverViewBinding.serverId.text = resources.getString(R.string.server_ip_pref) + v4Ip
-            serverViewBinding.serverStatus.text = status
-            serverViewBinding.serverId.text = resources.getString(R.string.server_id_pref) + id
-            serverViewBinding.serverPrice.text = paymentPrice
-            serverViewBinding.serverPaymentDate.text = paymentDate
-            activity?.actionBar?.title = name
+        serverViewBinding.run {
+            serverImageName.text = server.name
+            serverStatus.text = server.status
+            serverId.text = resources.getString(R.string.server_id_pref) + id
+            serverPrice.text = server.paymentPrice
+            serverPaymentDate.text = server.paymentDate
         }
+
+        activity?.actionBar?.title = server.name
     }
 }

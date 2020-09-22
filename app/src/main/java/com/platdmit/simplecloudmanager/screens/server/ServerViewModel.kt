@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.SavedStateHandle
 import com.platdmit.domain.repositories.ServerBaseRepo
 import com.platdmit.simplecloudmanager.base.BaseViewModel
+import com.platdmit.simplecloudmanager.base.extensions.toComposite
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 
@@ -16,7 +17,6 @@ constructor(
         @Assisted private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel<ServerState>() {
     val serverStateLiveData = LiveDataReactiveStreams.fromPublisher(stateProvider)
-    val messageLiveData = LiveDataReactiveStreams.fromPublisher(messageProvider)
 
     init {
         stateProvider.onNext(ServerState.Loading)
@@ -36,20 +36,18 @@ constructor(
 
     private fun setActiveId(id: Long){
         //Fast fix for prevent overSubscription after resize
-        compositeDisposable.add(
-                serverBaseRepo.getServer(id)
-                        .subscribeOn(Schedulers.newThread())
-                        .onErrorComplete {
-                            println(it.message)
-                            true
-                        }
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe ({
-                            stateProvider.onNext(ServerState.Success(it))
-                        },{
-                            stateProvider.onNext(ServerState.Error)
-                        })
-        )
+        serverBaseRepo.getServer(id)
+                .subscribeOn(Schedulers.newThread())
+                .onErrorComplete {
+                    println(it.message)
+                    true
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    stateProvider.onNext(ServerState.Success(it))
+                }, {
+                    stateProvider.onNext(ServerState.Error)
+                }).toComposite(compositeDisposable)
     }
 
     sealed class StateIntent {
