@@ -21,13 +21,14 @@ class ServerListFragment : Fragment(R.layout.fragment_servers_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        serverListViewBinding.updateSwipe.setOnRefreshListener {
-            setStateInstance(ServerListViewModel.StateIntent.RefreshResult)
+        serverListViewBinding.run {
+            updateSwipe.setOnRefreshListener {
+                setStateInstance(ServerListViewModel.StateIntent.RefreshResult)
+            }
+            fragmentsList.layoutManager = LinearLayoutManager(context)
         }
-        serverListViewBinding.fragmentsList.layoutManager = LinearLayoutManager(context)
 
-        serverListViewModel.serversStateLiveData.observe(viewLifecycleOwner, { stateHandler(it) })
-        serverListViewModel.messageLiveData.observe(viewLifecycleOwner, { showResultMessage(it) })
+        serverListViewModel.serversStateLiveData.observe(viewLifecycleOwner, ::stateHandler)
     }
 
 
@@ -47,12 +48,14 @@ class ServerListFragment : Fragment(R.layout.fragment_servers_list) {
     }
 
     private fun updateAdapterData(servers: List<Server>) {
-        serverListAdapter.setContentData(servers)
-        serverListViewBinding.updateSwipe.isRefreshing = false
-        if (serverListViewBinding.fragmentsList.adapter == null) {
-            serverListViewBinding.fragmentsList.adapter = serverListAdapter
-        } else {
-            serverListAdapter.notifyDataSetChanged()
+        serverListViewBinding.run {
+            updateSwipe.isRefreshing = false
+
+            if (fragmentsList.adapter == null) {
+                fragmentsList.adapter = serverListAdapter
+            }
         }
+
+        serverListAdapter.setContentData(servers)
     }
 }

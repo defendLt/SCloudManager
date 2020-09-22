@@ -23,17 +23,16 @@ class ServerListAdapter : RecyclerView.Adapter<ServerListHolder>() {
         holder.bindData(elementList[position])
     }
 
-    override fun getItemCount(): Int {
-        return elementList.size
-    }
+    override fun getItemCount(): Int = elementList.size
 
     fun setContentData(elements: List<Server>) {
         elementList.clear()
         elementList.addAll(elements)
+        notifyDataSetChanged()
     }
 
     inner class ServerListHolder(
-            val viewBinding: FragmentServersItemBinding
+            private val viewBinding: FragmentServersItemBinding
     ) : RecyclerView.ViewHolder(viewBinding.root) {
         fun bindData(data: Server) {
             viewBinding.run {
