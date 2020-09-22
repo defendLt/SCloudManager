@@ -4,20 +4,19 @@ import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.SavedStateHandle
-import com.platdmit.domain.utilities.ActualApiKeyServiceManager
+import com.platdmit.domain.enums.ErrorType
 import com.platdmit.domain.models.UserAccount
-import com.platdmit.domain.repositories.AccountRepo
+import com.platdmit.domain.usecase.LoginUseCase
 import com.platdmit.simplecloudmanager.base.BaseViewModel
+import com.platdmit.simplecloudmanager.utilities.NetworkHelper
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import org.mindrot.BCrypt
 
 class LoginViewModel
 @ViewModelInject
 constructor(
-        private val accountRepo: AccountRepo,
-        private val actualApiKeyServiceManager: ActualApiKeyServiceManager,
+        private val loginUseCase: LoginUseCase,
+        private val networkHelper: NetworkHelper,
         @Assisted private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel<LoginState>() {
 
@@ -26,21 +25,7 @@ constructor(
 
     init {
         stateProvider.onNext(LoginState.Loading)
-        compositeDisposable.add(
-                accountRepo.getActiveAccount()
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            if (it.pin.isEmpty()) {
-                                userAccount = it
-                                stateProvider.onNext(LoginState.ActiveUserYes)
-                            } else {
-                                stateProvider.onNext(LoginState.UserNeedPin)
-                            }
-                        }, {
-                            stateProvider.onNext(LoginState.ActiveUserNo)
-                        })
-        )
+        initAccountData()
     }
 
     fun setStateIntent(stateIntent: StateIntent){
@@ -54,68 +39,103 @@ constructor(
             is StateIntent.CheckAccountPin -> {
                 checkAccountPin(stateIntent.pin)
             }
+            is StateIntent.RepeatConnect -> {
+                initAccountData()
+            }
             is StateIntent.OnDemoMode -> {
                 onDemoAccount()
+            }
+            is StateIntent.ResetScreen -> {
+                stateProvider.onNext(LoginState.ActiveUserNo)
             }
         }
     }
 
+    private fun initAccountData(){
+        if(networkHelper.getNetworkStatus()) {
+            compositeDisposable.add(
+                    loginUseCase.getActiveAccount()
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({
+                                if (it.pin.isEmpty()) {
+                                    stateProvider.onNext(LoginState.UserNeedPin)
+                                } else {
+                                    userAccount = it
+                                    stateProvider.onNext(LoginState.ActiveUserYes)
+                                }
+                            }, {
+                                stateProvider.onNext(LoginState.ActiveUserNo)
+                            })
+            )
+        } else {
+            stateProvider.onNext(
+                    LoginState.Error(ErrorType.FALL_CONNECT)
+            )
+        }
+    }
+
     private fun addNewAccount(login: String, pass: String) {
-        compositeDisposable.add(accountRepo.getPrepareAccountInfo(login, pass)
-                .subscribe({
-                    userAccount = it
-                    stateProvider.onNext(LoginState.UserNeedPin)
-                }, {
-                    stateProvider.onNext(LoginState.AuthInvalid)
-                })
+        compositeDisposable.add(
+                loginUseCase.addAccount(login, pass)
+                        .subscribe({
+                            userAccount = it
+                            stateProvider.onNext(LoginState.UserNeedPin)
+                        }, {
+                            stateProvider.onNext(LoginState.AuthInvalid)
+                        })
         )
     }
 
     private fun addNewAccountPin(pin: String) {
         userAccount.pin = pin
         compositeDisposable.add(
-                accountRepo.addAccountPin(userAccount)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.newThread())
+                loginUseCase.addAccountPin(userAccount)
+                        .subscribe ({
+                            stateProvider.onNext(LoginState.Success)
+                        }, {
+                            stateProvider.onNext(LoginState.Error(ErrorType.FALL_AUTH))
+                        })
+        )
+    }
+
+    private fun checkAccountPin(pin: String?) {
+        compositeDisposable.add(
+                loginUseCase.checkAccountPin(pin, userAccount)
+                        .observeOn(Schedulers.newThread())
+                        .subscribe({
+                            successAuth()
+                        }, {
+                            stateProvider.onNext(LoginState.PinInvalid)
+                        })
+        )
+    }
+
+    private fun successAuth() {
+        compositeDisposable.add(
+                loginUseCase.successAuthAccount()
+                        .observeOn(Schedulers.newThread())
+                        .onErrorComplete()
                         .subscribe {
-                            actualApiKeyServiceManager.startAutoUpdate(userAccount)
                             stateProvider.onNext(LoginState.Success)
                         }
         )
     }
 
-    private fun checkAccountPin(pin: String?) {
-        Completable.fromAction {
-            if (BCrypt.checkpw(pin, userAccount.pin)) {
-                stateProvider.onNext(LoginState.Loading)
-                actualApiKeyServiceManager.startAutoUpdate(userAccount)
-                successAuth()
-            } else {
-                stateProvider.onNext(LoginState.PinInvalid)
-            }
-        }.observeOn(Schedulers.newThread()).subscribe()
-    }
-
-    private fun successAuth() {
+    private fun onDemoAccount() {
         compositeDisposable.add(
-                actualApiKeyServiceManager.getAccountStatus()
-                        .observeOn(Schedulers.newThread())
-                        .onErrorComplete()
+                loginUseCase.startDemoAccount()
                         .subscribe {
-                            if (it) stateProvider.onNext(LoginState.Success)
+                            stateProvider.onNext(LoginState.OnDemo)
                         }
         )
-    }
-
-    private fun onDemoAccount() {
-        actualApiKeyServiceManager.startDemoMode()
-        stateProvider.onNext(LoginState.OnDemo)
     }
 
     sealed class StateIntent {
         data class NewAccount(val login: String, val pass: String) : StateIntent()
         data class NewAccountPin(val pin: String) : StateIntent()
         data class CheckAccountPin(val pin: String?) : StateIntent()
+        object RepeatConnect: StateIntent()
         object OnDemoMode : StateIntent()
+        object ResetScreen : StateIntent()
     }
 }

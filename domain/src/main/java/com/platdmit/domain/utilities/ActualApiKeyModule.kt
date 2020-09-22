@@ -1,54 +1,48 @@
 package com.platdmit.domain.utilities
 
+import com.platdmit.domain.BuildConfig
 import com.platdmit.domain.models.UserAccount
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.subjects.BehaviorSubject
+import com.platdmit.domain.repositories.AuthRepo
+import io.reactivex.rxjava3.core.Completable
 
 class ActualApiKeyModule(
-//        private val mApiAccountRepo: ApiAccountRepo
+        private val authRepo: AuthRepo
 ) : ActualApiKeyServiceManager {
-    private val DEMO_API_KEY = "kdDZDD9pNgv1jiakld784riyjiAtXzQj"
-    private val mCompositeDisposable = CompositeDisposable()
-    private lateinit var mValidAccount: BehaviorSubject<Boolean>
-    private lateinit var mUserAccount: UserAccount
+    private lateinit var activeUserAccount: UserAccount
     override var apiKey: String = ""
-    
-    override fun setActiveAccount(userAccount: UserAccount) {
-        stopAutoUpdate()
-        startAutoUpdate(userAccount)
+
+    override fun setActiveAccount(activeAccount: UserAccount) {
+        activeUserAccount = activeAccount
+        refreshApiKey().subscribe().dispose()
     }
 
-    override fun startAutoUpdate(activeAccount: UserAccount) {
-        mValidAccount = BehaviorSubject.create()
-        mUserAccount = activeAccount
-        startAutoUpdater()
-    }
-
-    override fun stopAutoUpdate() {
-        mValidAccount.onComplete()
-        mCompositeDisposable.clear()
-    }
-
-    override fun getAccountStatus(): BehaviorSubject<Boolean> {
-        return mValidAccount
+    override fun getAccountStatus(): Completable {
+        return Completable.create{ status ->
+            if (apiKey.isEmpty()){
+                status.onError(Throwable("Not active"))
+            } else {
+                status.onComplete()
+            }
+        }
     }
 
     override fun startDemoMode() {
         apiKey = DEMO_API_KEY
     }
 
-    private fun startAutoUpdater() {
-//        mCompositeDisposable.add(
-//                mApiAccountRepo.getApiKey(mUserAccount.login, mUserAccount.pass)
-//                        .subscribeOn(Schedulers.newThread())
-//                        .onErrorComplete {
-//                            mValidAccount.onNext(false)
-//                            true
-//                        }
-//                        .doOnSuccess {mValidAccount.onNext(true) }
-//                        .repeatWhen { it.filter { mValidAccount.value }.delay(25, TimeUnit.MINUTES).onErrorComplete() }
-//                        .subscribe { apiKey = it.sessionKey }
-//        )
+    override fun refreshApiKey(): Completable {
+        return Completable.create { status ->
+            authRepo.getApiKey(activeUserAccount)
+                    .subscribe({
+                        apiKey = it
+                        status.onComplete()
+                    }, {
+                        status.onError(it)
+                    })
+        }
     }
 
+    companion object {
+        const val DEMO_API_KEY = BuildConfig.DEMO_API_KEY
+    }
 }

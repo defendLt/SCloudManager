@@ -14,6 +14,6 @@ constructor(
 ) : ViewModel() {
     override fun onCleared() {
         super.onCleared()
-        actualApiKeyServiceManager.stopAutoUpdate()
+//        actualApiKeyServiceManager.stopAutoUpdate()
     }
 }

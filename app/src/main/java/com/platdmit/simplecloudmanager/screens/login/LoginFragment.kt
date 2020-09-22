@@ -9,26 +9,34 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
-import com.google.android.material.snackbar.Snackbar
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.jakewharton.rxbinding4.widget.textChanges
+import com.platdmit.domain.BuildConfig
 import com.platdmit.simplecloudmanager.R
+import com.platdmit.simplecloudmanager.base.extensions.setLoaderStatus
+import com.platdmit.simplecloudmanager.base.extensions.showResultMessage
+import com.platdmit.simplecloudmanager.base.extensions.visibleStat
+import com.platdmit.simplecloudmanager.databinding.FragmentLoginBinding
+import com.platdmit.simplecloudmanager.utilities.ErrorMassageHandler
 import com.platdmit.simplecloudmanager.utilities.UiVisibilityStatus
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.functions.BiFunction
-import kotlinx.android.synthetic.main.fragment_login.*
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class LoginFragment : Fragment(R.layout.fragment_login) {
+class LoginFragment : Fragment(R.layout.fragment_login){
     private val loginViewModel: LoginViewModel by viewModels()
+    private val loginViewBinding: FragmentLoginBinding by viewBinding()
     private val inputMethodManager: InputMethodManager? = context?.getSystemService()
     private val compositeDisposable = CompositeDisposable()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    @Inject
+    lateinit var errorMassageHandler : ErrorMassageHandler
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         //Hide Bottom menu and Toolbar
         setUiVisibleStatus(false)
     }
@@ -36,21 +44,29 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loginViewModel.loginStateLiveData.observe(viewLifecycleOwner, Observer { stateHandler(it) })
+        //ViewModel observe
+        loginViewModel.loginStateLiveData.observe(viewLifecycleOwner, ::stateHandler)
 
-        //On demo mode
-        form_demo_submit.setOnClickListener {
-            setStateIntent(
-                    LoginViewModel.StateIntent.OnDemoMode
-            )
-        }
-
-        //On check auth
-        form_submit.setOnClickListener {
-            it.isEnabled = false
-            setStateIntent(
-                    LoginViewModel.StateIntent.NewAccount(user_login.text.toString(), user_pass.text.toString())
-            )
+        loginViewBinding.run {
+            //On check auth
+            formSubmit.setOnClickListener {
+                it.isEnabled = false
+                setStateIntent(
+                        LoginViewModel.StateIntent.NewAccount(
+                                userLogin.text.toString(),
+                                userPass.text.toString()
+                        )
+                )
+            }
+            //On demo mode
+            if(BuildConfig.DEBUG){
+                formDemoSubmit.visibleStat(true)
+                formDemoSubmit.setOnClickListener {
+                    setStateIntent(
+                            LoginViewModel.StateIntent.OnDemoMode
+                    )
+                }
+            }
         }
     }
 
@@ -60,26 +76,31 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         setUiVisibleStatus(true)
     }
 
+    override fun onPause() {
+        super.onPause()
+        setStateIntent(LoginViewModel.StateIntent.ResetScreen)
+    }
+
     private fun stateHandler(loginState: LoginState){
         when(loginState){
             is LoginState.ActiveUserYes -> {
-                loader_layout.visibility = View.GONE
+                setLoaderStatus(false)
                 pinFormInit(false)
             }
             is LoginState.ActiveUserNo -> {
-                loader_layout.visibility = View.GONE
+                setLoaderStatus(false)
                 loginFormInit()
             }
             is LoginState.UserNeedPin -> {
-                showTextAlert(R.string.login_submit_correct)
-                login_layout.visibility = View.GONE
+                showResultMessage(R.string.login_submit_correct)
+                loginViewBinding.loginLayout.visibleStat(false)
                 pinFormInit(true)
             }
             is LoginState.PinInvalid -> {
                 authFall()
             }
             is LoginState.AuthInvalid -> {
-                showTextAlert(R.string.login_submit_not_found)
+                showResultMessage(R.string.login_submit_not_found)
                 showVibratorAlert()
             }
             is LoginState.OnDemo -> {
@@ -88,8 +109,13 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             is LoginState.Success -> {
                 authSuccess()
             }
+            is LoginState.Error -> {
+                showResultMessage(
+                        errorMassageHandler.getMessageId(loginState.errorType)
+                )
+            }
             is LoginState.Loading -> {
-
+                setLoaderStatus(true)
             }
         }
     }
@@ -100,9 +126,9 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
     private fun pinFormInit(isNew: Boolean) {
         if (isNew) {
-            pin_layout_title.setText(R.string.pin_layout_title_new)
+            loginViewBinding.pinLayoutTitle.setText(R.string.pin_layout_title_new)
             compositeDisposable.add(
-                    user_pin_code.textChanges()
+                    loginViewBinding.userPinCode.textChanges()
                             .filter { it.toString().length == 4 }
                             .map { it.toString() }
                             .subscribe {
@@ -113,7 +139,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             )
         } else {
             compositeDisposable.add(
-                    user_pin_code.textChanges()
+                    loginViewBinding.userPinCode.textChanges()
                             .filter { it.toString().length == 4 }
                             .map { it.toString() }
                             .subscribe {
@@ -123,18 +149,18 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                             }
             )
         }
-        pin_layout.visibility = View.VISIBLE
-        user_pin_code.requestFocus()
-        inputMethodManager?.showSoftInput(user_pin_code, InputMethodManager.SHOW_IMPLICIT)
+        loginViewBinding.pinLayout.visibleStat(true)
+        loginViewBinding.userPinCode.requestFocus()
+        inputMethodManager?.showSoftInput(loginViewBinding.userPinCode, InputMethodManager.SHOW_IMPLICIT)
     }
 
     private fun loginFormInit() {
-        login_layout.visibility = View.VISIBLE
+        loginViewBinding.loginLayout.visibleStat(true)
         compositeDisposable.add(Observable.combineLatest(
-                user_login.textChanges(),
-                user_pass.textChanges(),
-                BiFunction { login: CharSequence, pass: CharSequence -> login.isNotEmpty() && pass.isNotEmpty() })
-                .subscribe { form_submit.isEnabled = it }
+                loginViewBinding.userLogin.textChanges(),
+                loginViewBinding.userPass.textChanges(),
+                { login: CharSequence, pass: CharSequence -> login.isNotEmpty() && pass.isNotEmpty() })
+                .subscribe { loginViewBinding.formSubmit.isEnabled = it }
         )
     }
 
@@ -144,35 +170,32 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     }
 
     private fun authFall() {
-        showTextAlert(R.string.login_pin_incorrect)
+        showResultMessage(R.string.login_pin_incorrect)
         showVibratorAlert()
-        user_pin_code.text.clear()
+        loginViewBinding.userPinCode.text.clear()
     }
 
     private fun authDemo() {
         inputMethodManager?.hideSoftInputFromWindow(requireView().windowToken, 0)
-        this.viewModelStore.clear()
         view?.findNavController()?.navigate(R.id.serverListFragment)
         setUiVisibleStatus(true)
     }
 
     private fun setUiVisibleStatus(status: Boolean) {
-        (activity as? UiVisibilityStatus)?.setVisibilityToolbar(status)
-        (activity as? UiVisibilityStatus)?.setVisibilityNavigation(status)
-    }
-
-    private fun showTextAlert(stringId: Int) {
-        Snackbar.make(requireView(), stringId, Snackbar.LENGTH_SHORT).show()
+        (activity as? UiVisibilityStatus)?.run {
+            setVisibilityToolbar(status)
+            setVisibilityNavigation(status)
+        }
     }
 
     private fun showVibratorAlert() {
         val vibrator : Vibrator? = context?.getSystemService()
-        vibrator?.let {
-            if (vibrator.hasVibrator()) {
+        vibrator?.run {
+            if (hasVibrator()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+                    vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
                 } else {
-                    vibrator.vibrate(200)
+                    vibrate(200)
                 }
             }
         }

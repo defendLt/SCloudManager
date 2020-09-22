@@ -1,8 +1,12 @@
 package com.platdmit.simplecloudmanager.di
 
 import com.platdmit.data.UpdateScheduleRepImp
-import com.platdmit.data.retrofit.ApiAccountRepoImp
+import com.platdmit.domain.repositories.AuthRepo
 import com.platdmit.domain.utilities.*
+import com.platdmit.simplecloudmanager.utilities.ErrorMassageHandler
+import com.platdmit.simplecloudmanager.utilities.ErrorMessageHandlerImp
+import com.platdmit.simplecloudmanager.utilities.NetworkHelper
+import com.platdmit.simplecloudmanager.utilities.NetworkHelperImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,9 +27,9 @@ object UtilsModule {
     @Singleton
     @Provides
     fun provideActualApiKeyService(
-            apiAccountRepo: ApiAccountRepoImp
+            authRepo: AuthRepo
     ) : ActualApiKeyService {
-        return ActualApiKeyModule()
+        return ActualApiKeyModule(authRepo)
     }
 
     @Provides
@@ -33,6 +37,22 @@ object UtilsModule {
             actualApiKeyService: ActualApiKeyService
     ) : ActualApiKeyServiceManager {
         return actualApiKeyService as ActualApiKeyServiceManager
+    }
+
+    @Singleton
+    @Provides
+    fun bindNetworkHelper(
+            networkHelperImpl: NetworkHelperImpl
+    ) : NetworkHelper {
+        return networkHelperImpl
+    }
+
+    @Singleton
+    @Provides
+    fun bindErrorMessageHandler(
+            errorMessageHandlerImp: ErrorMessageHandlerImp
+    ) : ErrorMassageHandler {
+        return errorMessageHandlerImp
     }
 
 }
