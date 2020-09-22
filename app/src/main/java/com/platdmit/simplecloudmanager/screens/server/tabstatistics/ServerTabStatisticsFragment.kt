@@ -13,7 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ServerTabStatisticsFragment(
-        private val mTitle: String = "empty"
+        private val title: String = "empty"
 ) : Fragment(R.layout.fragment_server_tab_statistics), ServerTabFragment<ServerTabStatisticsFragment> {
     private val statisticsViewModel: StatisticsViewModel by viewModels()
     private val statisticsViewBinding: FragmentServerTabStatisticsBinding by viewBinding()
@@ -22,15 +22,16 @@ class ServerTabStatisticsFragment(
         super.onViewCreated(view, savedInstanceState)
 
         chartStyleInit()
-        statisticsViewBinding.cpuChart.setScaleEnabled(false)
-        statisticsViewBinding.ramChart.setScaleEnabled(false)
 
-        statisticsViewModel.statisticsStateLiveData.observe(viewLifecycleOwner, { stateHandler(it) })
+        statisticsViewBinding.run {
+            cpuChart.setScaleEnabled(false)
+            ramChart.setScaleEnabled(false)
+        }
+
+        statisticsViewModel.statisticsStateLiveData.observe(viewLifecycleOwner, ::stateHandler )
     }
 
-    override fun getTitle(): String {
-        return mTitle
-    }
+    override fun getTitle(): String = title
 
     override fun getInstance(): ServerTabStatisticsFragment {
         return ServerTabStatisticsFragment()
@@ -54,18 +55,22 @@ class ServerTabStatisticsFragment(
 
     private fun updateCpuData(cpuData: ComplexChartsData) {
         try {
-            statisticsViewBinding.cpuChart.data = cpuData.lineData
-            statisticsViewBinding.cpuChart.xAxis.valueFormatter = cpuData.valueFormatter
-            statisticsViewBinding.cpuChart.invalidate()
+            statisticsViewBinding.cpuChart.run {
+                data = cpuData.lineData
+                xAxis.valueFormatter = cpuData.valueFormatter
+                invalidate()
+            }
         } catch (e: NullPointerException) {
         }
     }
 
     private fun updateRamData(ramData: ComplexChartsData) {
         try {
-            statisticsViewBinding.ramChart.data = ramData.lineData
-            statisticsViewBinding.ramChart.xAxis.valueFormatter = ramData.valueFormatter
-            statisticsViewBinding.ramChart.invalidate()
+            statisticsViewBinding.ramChart.run {
+                data = ramData.lineData
+                xAxis.valueFormatter = ramData.valueFormatter
+                invalidate()
+            }
         } catch (e: NullPointerException) {
         }
     }

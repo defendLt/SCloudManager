@@ -12,6 +12,7 @@ import com.platdmit.domain.models.Statistic
 import com.platdmit.domain.repositories.ServerStatisticsRepo
 import com.platdmit.simplecloudmanager.utilities.charts.ServerValueFormatter
 import com.platdmit.simplecloudmanager.base.BaseViewModel
+import com.platdmit.simplecloudmanager.base.extensions.toComposite
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*
@@ -24,7 +25,6 @@ constructor(
         @Assisted private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel<StatisticsState>() {
     val statisticsStateLiveData = LiveDataReactiveStreams.fromPublisher(stateProvider)
-    val messageLiveData = LiveDataReactiveStreams.fromPublisher(messageProvider)
 
     init {
         stateProvider.onNext(StatisticsState.Loading)
@@ -43,13 +43,11 @@ constructor(
     }
 
     private fun setActiveId(id: Long){
-        compositeDisposable.add(
-                serverStatisticsRepo.getServerStatistics(id).subscribe ({
-                    generateChart(it)
-                },{
-                    stateProvider.onNext(StatisticsState.Error)
-                })
-        )
+        serverStatisticsRepo.getServerStatistics(id).subscribe ({
+            generateChart(it)
+        },{
+            stateProvider.onNext(StatisticsState.Error)
+        }).toComposite(compositeDisposable)
     }
 
     private fun generateChart(statistics: List<Statistic>) {
