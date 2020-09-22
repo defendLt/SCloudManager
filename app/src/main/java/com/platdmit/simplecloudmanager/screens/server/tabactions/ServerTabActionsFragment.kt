@@ -14,7 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ServerTabActionsFragment(
-        private val mTitle: String = "empty"
+        private val title: String = "empty"
 ) : Fragment(R.layout.fragment_server_tab_actions), ServerTabFragment<ServerTabActionsFragment> {
     private val actionViewModel: ActionViewModel by viewModels()
     private val actionViewBinding: FragmentServerTabActionsBinding by viewBinding()
@@ -25,7 +25,7 @@ class ServerTabActionsFragment(
 
         actionViewBinding.serverActionsList.layoutManager = LinearLayoutManager(context)
 
-        actionViewModel.actionStateLiveData.observe(viewLifecycleOwner, { stateHandler(it) })
+        actionViewModel.actionStateLiveData.observe(viewLifecycleOwner, ::stateHandler)
     }
 
     private fun stateHandler(actionState: ActionState){
@@ -43,20 +43,16 @@ class ServerTabActionsFragment(
         actionViewModel.setStateIntent(stateInstance)
     }
 
-    override fun getTitle(): String {
-        return mTitle
-    }
+    override fun getTitle(): String = title
 
     override fun getInstance(): ServerTabActionsFragment {
         return ServerTabActionsFragment()
     }
 
     private fun updateServerActionData(actions: List<Action>) {
-        actionListAdapter.setContentData(actions)
         if (actionViewBinding.serverActionsList.adapter == null) {
             actionViewBinding.serverActionsList.adapter = actionListAdapter
-        } else {
-            actionListAdapter.notifyDataSetChanged()
         }
+        actionListAdapter.setContentData(actions)
     }
 }

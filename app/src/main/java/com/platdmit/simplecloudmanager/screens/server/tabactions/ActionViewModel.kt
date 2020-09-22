@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.SavedStateHandle
 import com.platdmit.domain.repositories.ServerActionsRepo
 import com.platdmit.simplecloudmanager.base.BaseViewModel
+import com.platdmit.simplecloudmanager.base.extensions.toComposite
 
 class ActionViewModel
 @ViewModelInject
@@ -14,7 +15,6 @@ constructor(
         @Assisted private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel<ActionState>() {
     val actionStateLiveData = LiveDataReactiveStreams.fromPublisher(stateProvider)
-    val messageLiveData = LiveDataReactiveStreams.fromPublisher(messageProvider)
 
     init {
         stateProvider.onNext(ActionState.Loading)
@@ -32,15 +32,13 @@ constructor(
         }
     }
 
-    private fun setActiveId(id: Long){
-        compositeDisposable.add(
-                serverActionsRepo.getServerActions(id)
-                        .subscribe({
-                            stateProvider.onNext(ActionState.Success(it))
-                        }, {
-                            stateProvider.onNext(ActionState.Error)
-                        })
-        )
+    private fun setActiveId(id: Long) {
+        serverActionsRepo.getServerActions(id)
+                .subscribe({
+                    stateProvider.onNext(ActionState.Success(it))
+                }, {
+                    stateProvider.onNext(ActionState.Error)
+                }).toComposite(compositeDisposable)
     }
 
     sealed class StateIntent {

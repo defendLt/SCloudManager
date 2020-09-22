@@ -21,17 +21,16 @@ class ActionListAdapter : RecyclerView.Adapter<ActionListHolder>() {
         holder.bindData(elementList[position])
     }
 
-    override fun getItemCount(): Int {
-        return elementList.size
-    }
+    override fun getItemCount(): Int = elementList.size
 
     fun setContentData(elements: List<Action>) {
         elementList.clear()
         elementList.addAll(elements)
+        notifyDataSetChanged()
     }
 
     inner class ActionListHolder(
-            val viewBinding: FragmentActionsItemBinding
+            private val viewBinding: FragmentActionsItemBinding
     ) : RecyclerView.ViewHolder(viewBinding.root) {
         @SuppressLint("SetTextI18n")
         fun bindData(data: Action) {
