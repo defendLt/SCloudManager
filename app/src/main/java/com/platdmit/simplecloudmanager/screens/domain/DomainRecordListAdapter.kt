@@ -17,7 +17,7 @@ class DomainRecordListAdapter : RecyclerView.Adapter<DomainRecordListHolder>() {
     }
 
     override fun onBindViewHolder(holder: DomainRecordListHolder, position: Int) {
-        elementList[position].let { holder.bindData(it) }
+        holder.bindData(elementList[position])
     }
 
     override fun getItemCount(): Int {
@@ -27,15 +27,20 @@ class DomainRecordListAdapter : RecyclerView.Adapter<DomainRecordListHolder>() {
     fun setContentData(elements: List<DomainRecord>) {
         elementList.clear()
         elementList.addAll(elements)
+        notifyDataSetChanged()
     }
 
-    inner class DomainRecordListHolder(private val viewBinding: FragmentDrecordListItemBinding) : RecyclerView.ViewHolder(viewBinding.root) {
+    inner class DomainRecordListHolder(
+            private val viewBinding: FragmentDrecordListItemBinding
+    ) : RecyclerView.ViewHolder(viewBinding.root) {
         fun bindData(data: DomainRecord) {
-            viewBinding.recordHost.text = data.name
-            viewBinding.recordType.text = data.type
-            viewBinding.recordData.text = data.data
-            viewBinding.recordPriority.text = data.priority
-            viewBinding.recordData.text = data.ttl
+            viewBinding.run {
+                recordHost.text = data.name
+                recordType.text = data.type
+                recordData.text = data.data
+                recordPriority.text = data.priority
+                recordData.text = data.ttl
+            }
         }
     }
 }

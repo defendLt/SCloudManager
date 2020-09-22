@@ -21,7 +21,7 @@ class DomainFragment : Fragment(R.layout.fragment_domain) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         domainViewBinding.domainRecordList.layoutManager = LinearLayoutManager(context)
-        domainViewModel.domainStateLiveData.observe(viewLifecycleOwner, { stateHandler(it) })
+        domainViewModel.domainStateLiveData.observe(viewLifecycleOwner, ::stateHandler)
     }
 
     private fun stateHandler(domainState: DomainState){
@@ -45,13 +45,15 @@ class DomainFragment : Fragment(R.layout.fragment_domain) {
     }
 
     private fun initData(domain: Domain) {
-        domainViewBinding.domainName.text = domain.name
-        domainViewBinding.domainType.text = domain.type
-        domain.domainRecords?.let { domainRecordListAdapter.setContentData(it) }
-        if (domainViewBinding.domainRecordList.adapter == null) {
-            domainViewBinding.domainRecordList.adapter = domainRecordListAdapter
-        } else {
-            domainRecordListAdapter.notifyDataSetChanged()
+        domainViewBinding.run {
+            domainName.text = domain.name
+            domainType.text = domain.type
+            if (domainRecordList.adapter == null) {
+                domainRecordList.adapter = domainRecordListAdapter
+            }
+            domain.domainRecords?.let {
+                domainRecordListAdapter.setContentData(it)
+            }
         }
     }
 }

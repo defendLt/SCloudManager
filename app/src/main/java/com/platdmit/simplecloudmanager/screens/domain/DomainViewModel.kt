@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.SavedStateHandle
 import com.platdmit.domain.repositories.DomainBaseRepo
 import com.platdmit.simplecloudmanager.base.BaseViewModel
+import com.platdmit.simplecloudmanager.base.extensions.toComposite
 
 class DomainViewModel
 @ViewModelInject
@@ -14,7 +15,6 @@ constructor(
         @Assisted private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel<DomainState>() {
     val domainStateLiveData = LiveDataReactiveStreams.fromPublisher(stateProvider)
-    val messageLiveData = LiveDataReactiveStreams.fromPublisher(messageProvider)
 
     init {
         stateProvider.onNext(DomainState.Loading)
@@ -34,13 +34,11 @@ constructor(
 
     private fun setActiveId(id: Long){
         //Fast fix for prevent overSubscription after resize
-        compositeDisposable.add(
-                domainBaseRepo.getDomain(id).subscribe ({
-                    stateProvider.onNext(DomainState.Success(it))
-                },{
-                    stateProvider.onNext(DomainState.Error)
-                })
-        )
+        domainBaseRepo.getDomain(id).subscribe ({
+            stateProvider.onNext(DomainState.Success(it))
+        },{
+            stateProvider.onNext(DomainState.Error)
+        }).toComposite(compositeDisposable)
     }
 
     sealed class StateIntent {
