@@ -20,17 +20,16 @@ class BackupListAdapter : RecyclerView.Adapter<BackupListHolder>() {
         holder.bindData(elementList[position])
     }
 
-    override fun getItemCount(): Int {
-        return elementList.size
-    }
+    override fun getItemCount(): Int = elementList.size
 
     fun setContentData(elements: List<Backup>) {
         elementList.clear()
         elementList.addAll(elements)
+        notifyDataSetChanged()
     }
 
     inner class BackupListHolder(
-            val viewBinding: FragmentBackupItemBinding
+            private val viewBinding: FragmentBackupItemBinding
     ) : RecyclerView.ViewHolder(viewBinding.root) {
         fun bindData(data: Backup) {
             viewBinding.run {

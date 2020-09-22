@@ -14,7 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ServerTabBackupsFragment(
-        private val mTitle: String = "empty"
+        private val title: String = "empty"
 ) : Fragment(R.layout.fragment_server_tab_backups), ServerTabFragment<ServerTabBackupsFragment> {
     private val backupsViewModel: BackupsViewModel by viewModels()
     private val backupsViewBindings: FragmentServerTabBackupsBinding by viewBinding()
@@ -25,12 +25,10 @@ class ServerTabBackupsFragment(
 
         backupsViewBindings.serverBackupList.layoutManager = LinearLayoutManager(context)
 
-        backupsViewModel.backupsStateLiveData.observe(viewLifecycleOwner, { stateHandler(it) })
+        backupsViewModel.backupsStateLiveData.observe(viewLifecycleOwner, ::stateHandler)
     }
 
-    override fun getTitle(): String {
-        return mTitle
-    }
+    override fun getTitle(): String = title
 
     override fun getInstance(): ServerTabBackupsFragment {
         return ServerTabBackupsFragment()
@@ -52,11 +50,9 @@ class ServerTabBackupsFragment(
     }
 
     private fun updateServerBackupsData(backups: List<Backup>) {
-        backupListAdapter.setContentData(backups)
         if (backupsViewBindings.serverBackupList.adapter == null) {
             backupsViewBindings.serverBackupList.adapter = backupListAdapter
-        } else {
-            backupListAdapter.notifyDataSetChanged()
         }
+        backupListAdapter.setContentData(backups)
     }
 }
