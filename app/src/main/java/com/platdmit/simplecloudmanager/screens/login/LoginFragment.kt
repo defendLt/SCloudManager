@@ -7,6 +7,7 @@ import android.os.Vibrator
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.getSystemService
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
@@ -17,7 +18,6 @@ import com.platdmit.simplecloudmanager.R
 import com.platdmit.simplecloudmanager.base.extensions.setLoaderStatus
 import com.platdmit.simplecloudmanager.base.extensions.showResultMessage
 import com.platdmit.simplecloudmanager.base.extensions.toComposite
-import com.platdmit.simplecloudmanager.base.extensions.visibleStat
 import com.platdmit.simplecloudmanager.databinding.FragmentLoginBinding
 import com.platdmit.simplecloudmanager.utilities.ErrorMassageHandler
 import com.platdmit.simplecloudmanager.utilities.UiVisibilityStatus
@@ -61,7 +61,7 @@ class LoginFragment : Fragment(R.layout.fragment_login){
             }
             //On demo mode
             if(BuildConfig.DEBUG){
-                formDemoSubmit.visibleStat(true)
+                formDemoSubmit.isVisible = true
                 formDemoSubmit.setOnClickListener {
                     setStateIntent(
                             LoginViewModel.StateIntent.OnDemoMode
@@ -94,7 +94,7 @@ class LoginFragment : Fragment(R.layout.fragment_login){
             }
             is LoginState.UserNeedPin -> {
                 showResultMessage(R.string.login_submit_correct)
-                loginViewBinding.loginLayout.visibleStat(false)
+                loginViewBinding.loginLayout.isVisible = false
                 pinFormInit(true)
             }
             is LoginState.PinInvalid -> {
@@ -145,7 +145,7 @@ class LoginFragment : Fragment(R.layout.fragment_login){
                             )
                         }.toComposite(compositeDisposable)
             }
-            pinLayout.visibleStat(true)
+            pinLayout.isVisible = true
             userPinCode.requestFocus()
             inputMethodManager?.showSoftInput(userPinCode, InputMethodManager.SHOW_IMPLICIT)
         }
@@ -153,7 +153,7 @@ class LoginFragment : Fragment(R.layout.fragment_login){
 
     private fun loginFormInit() {
         loginViewBinding.run {
-            loginLayout.visibleStat(true)
+            loginLayout.isVisible = true
             Observable.combineLatest(
                     userLogin.textChanges(),
                     userPass.textChanges(),

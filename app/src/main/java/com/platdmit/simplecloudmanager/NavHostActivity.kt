@@ -5,12 +5,12 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.platdmit.simplecloudmanager.base.extensions.visibleStat
 import com.platdmit.simplecloudmanager.databinding.ActivityMainBinding
 import com.platdmit.simplecloudmanager.screens.main.MainViewModel
 import com.platdmit.simplecloudmanager.utilities.UiVisibilityStatus
@@ -66,14 +66,14 @@ class NavHostActivity : AppCompatActivity(R.layout.activity_main), UiVisibilityS
     }
 
     override fun setVisibilityToolbar(status: Boolean) {
-        viewBinding.toolbar.visibleStat(status)
+        viewBinding.toolbar.isVisible = status
     }
 
     override fun setVisibilityNavigation(status: Boolean) {
-        viewBinding.bottomNav.visibleStat(status)
+        viewBinding.bottomNav.isVisible = status
     }
 
     override fun setVisibilityLoader(status: Boolean) {
-        viewBinding.loaderHover.visibleStat(status)
+        viewBinding.loaderHover.isVisible = status
     }
 }
