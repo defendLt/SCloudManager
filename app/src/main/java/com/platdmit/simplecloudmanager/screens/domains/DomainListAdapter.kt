@@ -2,21 +2,22 @@ package com.platdmit.simplecloudmanager.screens.domains
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.platdmit.domain.models.Domain
-import com.platdmit.simplecloudmanager.R
 import com.platdmit.simplecloudmanager.databinding.FragmentDomainsItemBinding
 import com.platdmit.simplecloudmanager.screens.domains.DomainListAdapter.DomainListHolder
 
-class DomainListAdapter : RecyclerView.Adapter<DomainListHolder>() {
+class DomainListAdapter(
+        private val clickListener: (Domain) -> Unit
+) : RecyclerView.Adapter<DomainListHolder>() {
     private val elementList: MutableList<Domain> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DomainListHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val dataBinding = FragmentDomainsItemBinding.inflate(layoutInflater, parent, false)
-        return DomainListHolder(dataBinding)
+        return DomainListHolder(dataBinding){
+            clickListener(elementList[it])
+        }
     }
 
     override fun onBindViewHolder(holder: DomainListHolder, position: Int) {
@@ -34,15 +35,14 @@ class DomainListAdapter : RecyclerView.Adapter<DomainListHolder>() {
     }
 
     inner class DomainListHolder(
-            private val viewBinding: FragmentDomainsItemBinding
+            private val viewBinding: FragmentDomainsItemBinding,
+            private val onClickPosition: (Int) -> Unit
     ) : RecyclerView.ViewHolder(viewBinding.root) {
         fun bindData(data: Domain) {
             viewBinding.run {
                 domainName.text = data.name
                 domainType.text = data.type
-                root.setOnClickListener {
-                    it.findNavController().navigate(R.id.domainFragment, bundleOf("ELEMENT_ID" to data.id))
-                }
+                itemView.setOnClickListener { onClickPosition(bindingAdapterPosition) }
             }
         }
     }

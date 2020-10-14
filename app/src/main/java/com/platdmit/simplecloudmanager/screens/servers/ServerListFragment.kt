@@ -2,13 +2,14 @@ package com.platdmit.simplecloudmanager.screens.servers
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.platdmit.domain.models.Server
 import com.platdmit.simplecloudmanager.R
-import com.platdmit.simplecloudmanager.base.extensions.showResultMessage
 import com.platdmit.simplecloudmanager.databinding.FragmentServersListBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -16,7 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class ServerListFragment : Fragment(R.layout.fragment_servers_list) {
     private val serverListViewModel: ServerListViewModel by viewModels()
     private val serverListViewBinding: FragmentServersListBinding by viewBinding()
-    private val serverListAdapter: ServerListAdapter = ServerListAdapter()
+    private val serverListAdapter: ServerListAdapter = ServerListAdapter(::recyclerItemsClickListener)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -57,5 +58,9 @@ class ServerListFragment : Fragment(R.layout.fragment_servers_list) {
         }
 
         serverListAdapter.setContentData(servers)
+    }
+
+    private fun recyclerItemsClickListener(server: Server){
+        findNavController().navigate(R.id.serverFragment, bundleOf("ELEMENT_ID" to server.id))
     }
 }

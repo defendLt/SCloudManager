@@ -2,21 +2,22 @@ package com.platdmit.simplecloudmanager.screens.servers
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.platdmit.domain.models.Server
-import com.platdmit.simplecloudmanager.R
 import com.platdmit.simplecloudmanager.databinding.FragmentServersItemBinding
 import com.platdmit.simplecloudmanager.screens.servers.ServerListAdapter.ServerListHolder
 
-class ServerListAdapter : RecyclerView.Adapter<ServerListHolder>() {
+class ServerListAdapter(
+        private val clickListener: (Server) -> Unit
+) : RecyclerView.Adapter<ServerListHolder>() {
     private val elementList: MutableList<Server> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ServerListHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val viewBinding = FragmentServersItemBinding.inflate(layoutInflater, parent, false)
-        return ServerListHolder(viewBinding)
+        return ServerListHolder(viewBinding){
+            clickListener(elementList[it])
+        }
     }
 
     override fun onBindViewHolder(holder: ServerListHolder, position: Int) {
@@ -32,7 +33,8 @@ class ServerListAdapter : RecyclerView.Adapter<ServerListHolder>() {
     }
 
     inner class ServerListHolder(
-            private val viewBinding: FragmentServersItemBinding
+            private val viewBinding: FragmentServersItemBinding,
+            private val onClickPosition: (Int) -> Unit
     ) : RecyclerView.ViewHolder(viewBinding.root) {
         fun bindData(data: Server) {
             viewBinding.run {
@@ -40,10 +42,7 @@ class ServerListAdapter : RecyclerView.Adapter<ServerListHolder>() {
                 serverUptime.text = data.uptime
                 serverId.text = data.id.toString()
                 serverStatus.text = data.status
-
-                root.setOnClickListener {
-                    it.findNavController().navigate(R.id.serverFragment, bundleOf("ELEMENT_ID" to data.id))
-                }
+                itemView.setOnClickListener { onClickPosition(bindingAdapterPosition) }
             }
         }
     }
